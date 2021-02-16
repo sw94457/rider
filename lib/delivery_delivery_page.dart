@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DeliveryDelivery extends StatefulWidget {
   @override
@@ -6,6 +7,15 @@ class DeliveryDelivery extends StatefulWidget {
 }
 
 class _DeliveryDeliveryState extends State<DeliveryDelivery> {
+
+  var text1;
+  var text2;
+  var text3;
+  var text4;
+  var text5;
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +79,7 @@ class _DeliveryDeliveryState extends State<DeliveryDelivery> {
                   ),
                   Container(
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5), //모서리를 둥글게
+                        borderRadius: BorderRadius.circular(5),
                         border: Border.all(color: const Color(0xff9C9C9C), width: 1)),
                     width: 344, height: 106,
                     child: Column(
@@ -88,7 +98,7 @@ class _DeliveryDeliveryState extends State<DeliveryDelivery> {
                                       Container(
                                           width: 45, height: 20, alignment: Alignment.bottomCenter,
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(30), //모서리를 둥글게
+                                            borderRadius: BorderRadius.circular(30),
                                             border: Border.all(color: const Color(0xffC4C4C4), width: 1),color: const Color(0xffC4C4C4)),
                                           child: Text('출발지',style: TextStyle(fontSize: 14, fontFamily: 'cafe24'),textAlign: TextAlign.center,)
                                       ),
@@ -107,8 +117,34 @@ class _DeliveryDeliveryState extends State<DeliveryDelivery> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Image.asset('images/call.png',width: 33, height: 33,),
-                                      Image.asset('images/map.png',width: 33, height: 33,),
+                                      Stack(
+                                        children : [
+                                          Container(
+                                            width: 34, height: 34,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(30),
+                                                border: Border.all(color: const Color(0xffDBDBDB), width: 1),color: const Color(0xffDBDBDB)),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(6,6,0,0),
+                                            child: Image.asset('images/call.png',width: 22, height: 22,),
+                                          )
+                                        ],
+                                      ),
+                                      Stack(
+                                        children : [
+                                          Container(
+                                            width: 34, height: 34,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(30),
+                                                border: Border.all(color: const Color(0xffDBDBDB), width: 1),color: const Color(0xffDBDBDB)),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(6,6,0,0),
+                                            child: Image.asset('images/map.png',width: 22, height: 22,),
+                                          )
+                                        ],
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -130,7 +166,7 @@ class _DeliveryDeliveryState extends State<DeliveryDelivery> {
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5), //모서리를 둥글게
-                      border: Border.all(color: const Color(0xff9C9C9C), width: 1)),
+                      border: Border.all(color: const Color(0xff62FF2B), width: 1)),
                     width: 344, height: 106,
                     child: Column(
                       children: [
@@ -164,14 +200,53 @@ class _DeliveryDeliveryState extends State<DeliveryDelivery> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      Image.asset('images/call_b.png',width: 33, height: 33,),
+                                      Stack(
+                                        children : [
+                                          Container(
+                                            width: 34, height: 34,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(30),
+                                              border: Border.all(color: const Color(0xff62FF2B), width: 1)),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(6,6,0,0),
+                                            child: Image.asset('images/call_b.png',width: 22, height: 22,),
+                                          )
+                                        ]
+                                      ),
                                       InkWell(
                                         onTap: (){
                                           _showDialog1();
                                         },
-                                          child: Image.asset('images/message_b.png',width: 33, height: 33,)
+                                          child: Stack(
+                                              children : [
+                                                Container(
+                                                  width: 34, height: 34,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(30),
+                                                      border: Border.all(color: const Color(0xff62FF2B), width: 1)),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.fromLTRB(6,6,0,0),
+                                                  child: Image.asset('images/message_b.png',width: 22, height: 22,),
+                                                )
+                                              ]
+                                          ),
                                       ),
-                                      Image.asset('images/map_b.png',width: 33, height: 33,),
+                                      Stack(
+                                          children : [
+                                            Container(
+                                              width: 34, height: 34,
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(30),
+                                                  border: Border.all(color: const Color(0xff62FF2B), width: 1)),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.fromLTRB(6,6,0,0),
+                                              child: Image.asset('images/map_b.png',width: 22, height: 22,),
+                                            )
+                                          ]
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -284,11 +359,37 @@ class _DeliveryDeliveryState extends State<DeliveryDelivery> {
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: [
-                        Image.asset('images/call_b.png',width: 33, height: 33,),
+                        Stack(
+                            children : [
+                              Container(
+                                width: 34, height: 34,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(30),
+                                    border: Border.all(color: const Color(0xff62FF2B), width: 1)),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(7,7,0,0),
+                                child: Image.asset('images/call_b.png',width: 20, height: 20,),
+                              )
+                            ]
+                        ),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(8,0,0,0),
-                          child: Image.asset('images/message_b.png',width: 33, height: 33,),
-                        )
+                          child: Stack(
+                              children : [
+                                Container(
+                                  width: 34, height: 34,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(30),
+                                      border: Border.all(color: const Color(0xff62FF2B), width: 1)),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(7,7,0,0),
+                                  child: Image.asset('images/message_b.png',width: 20, height: 20,),
+                                )
+                              ]
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -296,31 +397,31 @@ class _DeliveryDeliveryState extends State<DeliveryDelivery> {
                     color: const Color(0x80DBDBDB),),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('문 앞에 두고 갑니다.',style: TextStyle(fontSize: 18,color: Colors.white),),
+                    child: Text('${text1}',style: TextStyle(fontSize: 18,color: Colors.white),),
                   ),
                   Container( height:1.0,width:344,
                     color: const Color(0x80DBDBDB),),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('1분 후에 도착 예정입니다.',style: TextStyle(fontSize: 18,color: Colors.white),),
+                    child: Text('${text2}',style: TextStyle(fontSize: 18,color: Colors.white),),
                   ),
                   Container( height:1.0,width:344,
                     color: const Color(0x80DBDBDB),),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('5분 후에 도착 예정입니다.',style: TextStyle(fontSize: 18,color: Colors.white),),
+                    child: Text('${text3}',style: TextStyle(fontSize: 18,color: Colors.white),),
                   ),
                   Container( height:1.0,width:344,
                     color: const Color(0x80DBDBDB),),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('10분 후에 도착 예정입니다.',style: TextStyle(fontSize: 18,color: Colors.white),),
+                    child: Text('${text4}',style: TextStyle(fontSize: 18,color: Colors.white),),
                   ),
                   Container( height:1.0,width:344,
                     color: const Color(0x80DBDBDB),),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('조금 늦을것 같습니다.',style: TextStyle(fontSize: 18,color: Colors.white),),
+                    child: Text('${text5}',style: TextStyle(fontSize: 18,color: Colors.white),),
                   ),
                   Container( height:1.0,width:344,
                     color: const Color(0x80DBDBDB),),
@@ -360,6 +461,22 @@ class _DeliveryDeliveryState extends State<DeliveryDelivery> {
         );
       },
     );
+  }
+
+  @override
+  void initState() {
+    getCounterFromSharedPrefs();
+  }
+
+  getCounterFromSharedPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      text1 = prefs.getString('simpletext1') ?? '문 앞에 두고 갑니다.';
+      text2 = prefs.getString('simpletext2') ?? '1분 후에 도착 예정입니다.';
+      text3 = prefs.getString('simpletext3') ?? '5분 후에 도착 예정입니다.';
+      text4 = prefs.getString('simpletext4') ?? '10분 후에 도착 예정입니다.';
+      text5 = prefs.getString('simpletext5') ?? '조금 늦을것 같습니다.';
+    });
   }
 
 

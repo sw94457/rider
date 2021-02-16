@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tttttttt/login_page.dart';
+import 'package:ibagudelivery_rider/login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Setting extends StatefulWidget {
@@ -13,6 +13,7 @@ enum Gender1 {NAddress, OAddress}
 class _SettingState extends State<Setting>  {
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
   final myController = TextEditingController();
+
 
 
   Gender _gender = Gender.MIDDLE;
@@ -29,12 +30,19 @@ class _SettingState extends State<Setting>  {
   var _isChecked = false;
 
   var sn = 0;
-  var text1 = '문 앞에 두고 갑니다.';
-  var text2 = '1분 후에 도착 예정입니다.';
-  var text3 = '5분 후에 도착 예정입니다.';
-  var text4 = '10분 후에 도착 예정입니다.';
-  var text5 = '조금 늦을것 같습니다.';
+  var text1;
+  var text2;
+  var text3;
+  var text4;
+  var text5;
 
+
+  @override
+  void initState() {
+    super.initState();
+
+    getCounterFromSharedPrefs();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +77,7 @@ class _SettingState extends State<Setting>  {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(0,0,24,0),
                             child: IconButton(
-                              icon: Image.asset('images/${one1}.png'),
+                              icon: Image.asset('images/${one1}.png',width: 16,),
                               onPressed: (){
                                 setState(() {
                                   _visible1 = !_visible1;
@@ -138,7 +146,7 @@ class _SettingState extends State<Setting>  {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(0,0,24,0),
                             child: IconButton(
-                              icon: Image.asset('images/${one2}.png'),
+                              icon: Image.asset('images/${one2}.png',width: 16,),
                               onPressed: (){
                                 setState(() {
                                   _visible2 = !_visible2;
@@ -186,7 +194,7 @@ class _SettingState extends State<Setting>  {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(0,0,24,0),
                             child: IconButton(
-                              icon: Image.asset('images/${one3}.png'),
+                              icon: Image.asset('images/${one3}.png',width: 16,),
                               onPressed: (){
                                 setState(() {
                                   _visible3 = !_visible3;
@@ -245,7 +253,7 @@ class _SettingState extends State<Setting>  {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(0,0,24,0),
                             child: IconButton(
-                              icon: Image.asset('images/${one4}.png'),
+                              icon: Image.asset('images/${one4}.png',width: 16,),
                               onPressed: (){
                                 setState(() {
                                   _visible4 = !_visible4;
@@ -504,23 +512,29 @@ class _SettingState extends State<Setting>  {
                         },
                         ),
                         InkWell(child: Text('완료',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: const Color(0xffFFE600)),),
-                        onTap: (){
+                        onTap: () async {
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
                           setState(() {
-                            switch(sn){
+                            switch(sn)  {
                               case 1:
                                 text1=myController.text;
+                                prefs.setString('simpletext1', text1);
                                 break;
                               case 2:
                                 text2=myController.text;
+                                prefs.setString('simpletext2', text2);
                                 break;
                               case 3:
                                 text3=myController.text;
+                                prefs.setString('simpletext3', text3);
                                 break;
                               case 4:
                                 text4=myController.text;
+                                prefs.setString('simpletext4', text4);
                                 break;
                               case 5:
                                 text5=myController.text;
+                                prefs.setString('simpletext5', text5);
                                 break;
                               default:
                                 break;
@@ -550,6 +564,17 @@ class _SettingState extends State<Setting>  {
         );
       },
     );
+  }
+
+  getCounterFromSharedPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      text1 = prefs.getString('simpletext1') ?? '문 앞에 두고 갑니다.';
+      text2 = prefs.getString('simpletext2') ?? '1분 후에 도착 예정입니다.';
+      text3 = prefs.getString('simpletext3') ?? '5분 후에 도착 예정입니다.';
+      text4 = prefs.getString('simpletext4') ?? '10분 후에 도착 예정입니다.';
+      text5 = prefs.getString('simpletext5') ?? '조금 늦을것 같습니다.';
+    });
   }
 
 

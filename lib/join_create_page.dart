@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 
-import 'package:flutter_tttttttt/under_review_page.dart';
+import 'package:ibagudelivery_rider/under_review_page.dart';
 
 class JoinCreate extends StatefulWidget {
   @override

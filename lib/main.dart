@@ -1,25 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tttttttt/access_terms_page.dart';
-import 'package:flutter_tttttttt/account_create_page.dart';
-import 'package:flutter_tttttttt/account_management_page.dart';
-import 'package:flutter_tttttttt/calculate_detail_page.dart';
-import 'package:flutter_tttttttt/calculate_page.dart';
-import 'package:flutter_tttttttt/delivery_delivery_page.dart';
-import 'package:flutter_tttttttt/delivery_list_page.dart';
-import 'package:flutter_tttttttt/delivery_pick_page.dart';
-import 'package:flutter_tttttttt/history_detail_page.dart';
-import 'package:flutter_tttttttt/history_page.dart';
-import 'package:flutter_tttttttt/join_create_page.dart';
-import 'package:flutter_tttttttt/login_page.dart';
-import 'package:flutter_tttttttt/new_order_list.dart';
-import 'package:flutter_tttttttt/notice_detail_page.dart';
-import 'package:flutter_tttttttt/notice_page.dart';
-import 'package:flutter_tttttttt/order_detail_page.dart';
-import 'package:flutter_tttttttt/personal_information_page.dart';
-import 'package:flutter_tttttttt/phone_authent_page.dart';
-import 'package:flutter_tttttttt/setting_page.dart';
-import 'package:flutter_tttttttt/tab_page.dart';
-import 'package:flutter_tttttttt/under_review_page.dart';
+import 'package:ibagudelivery_rider/login_page.dart';
+import 'package:ibagudelivery_rider/tab_page.dart';
 import 'dart:ui';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -45,27 +26,6 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MyHomePage(),
-      //Loginpage(),
-      //AaccessTerms(),
-      //PhoneAuthent(),
-      //JoinCreate(),
-      //UnderReview(),
-      //NewOrderList(),
-      //OrderDetail(),
-      //DeliveryList(),
-      //DeliveryPick(),
-      //DeliveryDelivery(),
-      //History(),
-      //HistoryDetail(),
-      //Calculate(),
-      //CalculateDetail(),
-      //AccountCreate(),
-      //AccountManagement(),
-      //Notice(),
-      //NoticeDetail(),
-      //Setting(),
-      //PersonalInformation(),
-      //TabPage(),
 
     );
   }
@@ -143,31 +103,6 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     }
     );
-      
-    //   Scaffold(
-    //   // backgroundColor: const Color(0xff20283E),
-    //   // body: Center(
-    //   //   child: Column(
-    //   //     children: <Widget>[
-    //   //       Text('displaySize : ${MediaQuery.of(context).size}'),
-    //   //       Padding(
-    //   //         padding: const EdgeInsets.fromLTRB(0,137,0,48),
-    //   //         child: Container(
-    //   //           //margin: const EdgeInsets.fromLTRB(43, 32, 43, 566),
-    //   //           child: Text(
-    //   //               '부산동구딜리버리',
-    //   //                 style: TextStyle(fontWeight: FontWeight.bold,
-    //   //                     fontSize: 36,
-    //   //                     color: const Color(0xffFFE600)),
-    //   //             ),
-    //   //         ),
-    //   //       ),
-    //   //       Container(
-    //   //           //margin: const EdgeInsets.fromLTRB(102, 0, 101, 318),
-    //   //           child: Image.asset("images/logo_m.png", width: 157, height: 95,))
-    //   //     ],
-    //   //   )
-    //   // ),
-    // );
+
   }
 }

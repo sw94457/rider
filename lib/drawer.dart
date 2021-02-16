@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tttttttt/personal_information_page.dart';
-import 'package:flutter_tttttttt/setting_page.dart';
+import 'package:ibagudelivery_rider/personal_information_page.dart';
+import 'package:ibagudelivery_rider/setting_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'account_create_page.dart';
@@ -66,7 +66,7 @@ class _MyDrawerState extends State<MyDrawer> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              Image.asset("images/edit.png"),
+                              Image.asset("images/edit.png",width: 12,),
                               TextButton(onPressed: (){
                                 Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalInformation()));
                               }, child: Text("개인정보수정",
@@ -102,7 +102,7 @@ class _MyDrawerState extends State<MyDrawer> {
             ListTile(
               title: Row(
                 children: [
-                  Image.asset("images/Group 67.png", width: 24, height: 24,),
+                  Image.asset("images/Group 67.png", width: 22,),
                   SizedBox(width: 4,),
                   Text('정산', style: TextStyle(fontSize: 14,color: Colors.white)),
                 ],
@@ -115,7 +115,7 @@ class _MyDrawerState extends State<MyDrawer> {
             ListTile(
               title: Row(
                 children: [
-                  Image.asset("images/data-two.png", width: 24, height: 24,),
+                  Image.asset("images/data-two.png", width: 22,),
                   SizedBox(width: 4,),
                   Text('출금 계좌 관리', style: TextStyle(fontSize: 14,color: Colors.white)),
                 ],
@@ -128,7 +128,7 @@ class _MyDrawerState extends State<MyDrawer> {
             ListTile(
               title: Row(
                 children: [
-                  Image.asset("images/attention.png", width: 24, height: 24,),
+                  Image.asset("images/attention.png", width: 22,),
                   SizedBox(width: 4,),
                   Text('공지사항', style: TextStyle(fontSize: 14,color: Colors.white)),
                 ],
@@ -141,7 +141,7 @@ class _MyDrawerState extends State<MyDrawer> {
             ListTile(
               title: Row(
                 children: [
-                  Image.asset("images/uil_setting.png", width: 24, height: 24,),
+                  Image.asset("images/uil_setting.png", width: 22,),
                   SizedBox(width: 4,),
                   Text('환경설정', style: TextStyle(fontSize: 14,color: Colors.white)),
                 ],
@@ -154,7 +154,7 @@ class _MyDrawerState extends State<MyDrawer> {
             ListTile(
               title: Row(
                 children: [
-                  Image.asset("images/Vector.png", width: 24, height: 24,),
+                  Image.asset("images/Vector.png", width: 22,),
                   SizedBox(width: 4,),
                   Text('고객센터', style: TextStyle(fontSize: 14,color: Colors.white)),
                 ],
@@ -169,10 +169,8 @@ class _MyDrawerState extends State<MyDrawer> {
   }
 
   getCounterFromSharedPrefs() async {
-    // 인스턴스를 가져오고
     prefs = await SharedPreferences.getInstance();
     setState(() {
-      // 카운터를 가져옵니다.값이 없다면 0을 넣어줍니다.
       _uid = prefs.getString('uid') ?? '김동구';
     });
   }

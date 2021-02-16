@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_tttttttt/access_terms_page.dart';
-import 'package:flutter_tttttttt/tab_page.dart';
+import 'package:ibagudelivery_rider/access_terms_page.dart';
+import 'package:ibagudelivery_rider/tab_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Loginpage extends StatefulWidget {

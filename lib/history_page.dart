@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tttttttt/history_detail_page.dart';
-import 'package:flutter_tttttttt/widgets/main_drawer.dart';
+import 'package:ibagudelivery_rider/history_detail_page.dart';
 
 class History extends StatefulWidget {
   @override
@@ -23,7 +22,6 @@ class _HistoryState extends State<History> {
           ],
         ),
       ),
-      drawer: MainDrawer(),
     );
   }
 }
@@ -107,7 +105,7 @@ class MyListView extends StatelessWidget {
                                         Text('290M',style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,color: Colors.white),),
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(5,0,5,0),
-                                          child: Image.asset('images/ss_a.png'),
+                                          child: Image.asset('images/ss_a.png',width: 15,),
                                         ),
                                         Text('300M',style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,color: Colors.white),),
                                       ],
@@ -121,10 +119,10 @@ class MyListView extends StatelessWidget {
                               child: Column(
                                 children: [
                                   Container(
-                                    width: 225,
+                                    width: 228,
                                     child: Row(
                                       children: [
-                                        Image.asset('images/st_a.png'),
+                                        Image.asset('images/st_a.png',width: 20,),
                                         SizedBox(
                                             width: 208,
                                             child: Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 18,color: Colors.white))
@@ -133,10 +131,10 @@ class MyListView extends StatelessWidget {
                                     ),
                                   ),
                                   Container(
-                                    width: 225,
+                                    width: 228,
                                     child: Row(
                                       children: [
-                                        Image.asset('images/end_a.png'),
+                                        Image.asset('images/end_a.png',width: 20,),
                                         SizedBox(
                                             width: 208,
                                             child: Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 18,color: Colors.white))

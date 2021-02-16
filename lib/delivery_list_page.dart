@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tttttttt/delivery_delivery_page.dart';
-import 'package:flutter_tttttttt/delivery_pick_page.dart';
-
-import 'widgets/main_drawer.dart';
+import 'package:ibagudelivery_rider/delivery_delivery_page.dart';
+import 'package:ibagudelivery_rider/delivery_pick_page.dart';
 
 class DeliveryList extends StatefulWidget {
   @override
@@ -25,7 +23,6 @@ class _DeliveryListState extends State<DeliveryList> {
           ],
         ),
       ),
-      drawer: MainDrawer(),
     );
   }
 }
@@ -37,8 +34,8 @@ class MyListView extends StatelessWidget {
       itemBuilder: (context, index) {
         return InkWell(
           onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => DeliveryDelivery()));
-            //Navigator.push(context, MaterialPageRoute(builder: (context) => DeliveryPick()));
+            //Navigator.push(context, MaterialPageRoute(builder: (context) => DeliveryDelivery()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => DeliveryPick()));
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -110,7 +107,7 @@ class MyListView extends StatelessWidget {
                                         Text('290M',style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,color: const Color(0xffEBFF00)),),
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(5,0,5,0),
-                                          child: Image.asset('images/ss.png'),
+                                          child: Image.asset('images/ss.png',width: 15,),
                                         ),
                                         Text('300M',style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,color: const Color(0xff62FF2B)),),
                                       ],
@@ -127,7 +124,7 @@ class MyListView extends StatelessWidget {
                                     width: 228,
                                     child: Row(
                                       children: [
-                                        Image.asset('images/st.png'),
+                                        Image.asset('images/st.png',width: 20,),
                                         Text('부산시 부산진구 동천로116\n 한신밴오피스텔 1018호',style: TextStyle(fontSize: 18,color: Colors.white)),
                                       ],
                                     ),
@@ -136,7 +133,7 @@ class MyListView extends StatelessWidget {
                                     width: 228,
                                     child: Row(
                                       children: [
-                                        Image.asset('images/end.png'),
+                                        Image.asset('images/end.png',width: 20,),
                                         Text('부산시 부산진구 동천로116\n 한신밴오피스텔 1018호',style: TextStyle(fontSize: 18,color: Colors.white)),
                                       ],
                                     ),

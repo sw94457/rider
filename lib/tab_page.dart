@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tttttttt/delivery_list_page.dart';
-import 'package:flutter_tttttttt/drawer.dart';
-import 'package:flutter_tttttttt/history_page.dart';
-import 'package:flutter_tttttttt/new_order_list.dart';
-import 'package:flutter_tttttttt/widgets/main_drawer.dart';
+import 'package:ibagudelivery_rider/delivery_list_page.dart';
+import 'package:ibagudelivery_rider/drawer.dart';
+import 'package:ibagudelivery_rider/history_page.dart';
+import 'package:ibagudelivery_rider/new_order_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TabPage extends StatefulWidget {
@@ -34,10 +33,8 @@ class _TabPageState extends State<TabPage> {
   }
 
   getCounterFromSharedPrefs() async {
-    // 인스턴스를 가져오고
     prefs = await SharedPreferences.getInstance();
     setState(() {
-      // 카운터를 가져옵니다.값이 없다면 0을 넣어줍니다.
       _uid = prefs.getString('uid') ?? '김동구';
     });
   }

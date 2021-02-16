@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tttttttt/phone_authent_page.dart';
+import 'package:ibagudelivery_rider/phone_authent_page.dart';
 
 class AaccessTerms extends StatefulWidget {
   @override

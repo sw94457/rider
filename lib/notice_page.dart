@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tttttttt/notice_detail_page.dart';
+import 'package:ibagudelivery_rider/notice_detail_page.dart';
 
 class Notice extends StatefulWidget {
   @override

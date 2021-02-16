@@ -2,8 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tttttttt/order_detail_page.dart';
-import 'package:flutter_tttttttt/widgets/main_drawer.dart';
+import 'package:ibagudelivery_rider/order_detail_page.dart';
 
 class NewOrderList extends StatefulWidget {
   @override
@@ -117,7 +116,7 @@ class MyListView extends StatelessWidget {
                                         Text('290M',style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,color: const Color(0xffEBFF00)),),
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(5,0,5,0),
-                                          child: Image.asset('images/ss.png'),
+                                          child: Image.asset('images/ss.png',width: 15,),
                                         ),
                                         Text('300M',style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,color: const Color(0xff62FF2B)),),
                                       ],
@@ -134,7 +133,7 @@ class MyListView extends StatelessWidget {
                                     width: 228,
                                     child: Row(
                                       children: [
-                                        Image.asset('images/st.png'),
+                                        Image.asset('images/st.png',width: 20,),
                                         SizedBox(
                                             width: 208,
                                             child: Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 18,color: Colors.white))
@@ -146,7 +145,7 @@ class MyListView extends StatelessWidget {
                                     width: 228,
                                     child: Row(
                                       children: [
-                                        Image.asset('images/end.png'),
+                                        Image.asset('images/end.png',width: 20,),
                                         SizedBox(
                                             width: 208,
                                             child: Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 18,color: Colors.white))

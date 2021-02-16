@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ibagudelivery_rider/delivery_delivery_page.dart';
 
 class DeliveryPick extends StatefulWidget {
   @override
@@ -70,7 +71,7 @@ class _DeliveryPickState extends State<DeliveryPick> {
                   Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5), //모서리를 둥글게
-                        border: Border.all(color: const Color(0xff9C9C9C), width: 1)),
+                        border: Border.all(color: const Color(0xffEBFF00), width: 1)),
                     width: 344, height: 106,
                     child: Column(
                       children: [
@@ -107,8 +108,34 @@ class _DeliveryPickState extends State<DeliveryPick> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Image.asset('images/call.png',width: 33, height: 33,),
-                                      Image.asset('images/map.png',width: 33, height: 33,),
+                                      Stack(
+                                        children : [
+                                          Container(
+                                            width: 34, height: 34,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(30),
+                                                border: Border.all(color: const Color(0xffEBFF00), width: 1)),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(6,6,0,0),
+                                            child: Image.asset('images/call_a.png',width: 22, height: 22,),
+                                          )
+                                        ],
+                                      ),
+                                      Stack(
+                                        children : [
+                                          Container(
+                                            width: 34, height: 34,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(30),
+                                                border: Border.all(color: const Color(0xffEBFF00), width: 1)),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(6,6,0,0),
+                                            child: Image.asset('images/map_a.png',width: 22, height: 22,),
+                                          )
+                                        ],
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -164,9 +191,48 @@ class _DeliveryPickState extends State<DeliveryPick> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      Image.asset('images/call_b.png',width: 33, height: 33,),
-                                      Image.asset('images/message_b.png',width: 33, height: 33,),
-                                      Image.asset('images/map_b.png',width: 33, height: 33,),
+                                      Stack(
+                                        children : [
+                                          Container(
+                                            width: 34, height: 34,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(30),
+                                                border: Border.all(color: const Color(0xffDBDBDB), width: 1),color: const Color(0xffDBDBDB)),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(6,6,0,0),
+                                            child: Image.asset('images/call.png',width: 22, height: 22,),
+                                          )
+                                        ],
+                                      ),
+                                      Stack(
+                                        children : [
+                                          Container(
+                                            width: 34, height: 34,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(30),
+                                                border: Border.all(color: const Color(0xffDBDBDB), width: 1),color: const Color(0xffDBDBDB)),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(6,6,0,0),
+                                            child: Image.asset('images/message.png',width: 22, height: 22,),
+                                          )
+                                        ],
+                                      ),
+                                      Stack(
+                                        children : [
+                                          Container(
+                                            width: 34, height: 34,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(30),
+                                                border: Border.all(color: const Color(0xffDBDBDB), width: 1),color: const Color(0xffDBDBDB)),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(6,6,0,0),
+                                            child: Image.asset('images/map.png',width: 22, height: 22,),
+                                          )
+                                        ],
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -234,7 +300,10 @@ class _DeliveryPickState extends State<DeliveryPick> {
                     Container( width: 168, height: 56,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5)),
-                      child: RaisedButton(onPressed: (){},
+                      child: RaisedButton(onPressed: (){
+                        Navigator.pop(context);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => DeliveryDelivery()));
+                      },
                         child: Text("픽업완료",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
                         color: const Color(0xffEBFF00),
                       ),

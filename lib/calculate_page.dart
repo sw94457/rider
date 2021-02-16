@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tttttttt/calculate_detail_page.dart';
+import 'package:ibagudelivery_rider/calculate_detail_page.dart';
 
 class Calculate extends StatefulWidget {
   @override
