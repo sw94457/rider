@@ -143,7 +143,7 @@ class MyListView extends StatelessWidget {
                               Text('131,211원',style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold,color: const Color(0xffFFE600),),),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Image.asset('images/Union.png'),
+                                child: Image.asset('images/Union.png',width: 8,),
                               ),
                             ],
                           )

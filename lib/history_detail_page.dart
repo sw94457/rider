@@ -96,7 +96,7 @@ class _HistoryDetailState extends State<HistoryDetail> {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(0,0,0,8),
-              child: Image.asset('images/arrow_a.png',width: 48, height: 28 ,),
+              child: Image.asset('images/arrow_a.png', height: 50 ,),
             ),
             Container(
               decoration: BoxDecoration(

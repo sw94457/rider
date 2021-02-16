@@ -71,7 +71,7 @@ class _AccountCreateState extends State<AccountCreate> {
                                           },
                                           style: TextStyle(color: Colors.white),
                                           dropdownColor: const Color(0xff20283E),
-                                          icon: Image.asset('images/Union_b.png'),
+                                          icon: Image.asset('images/Union_b.png',width: 10,),
                                         ),
                                       ),
                                     ],

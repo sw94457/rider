@@ -152,7 +152,7 @@ class _DeliveryPickState extends State<DeliveryPick> {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0,0,0,8),
-                    child: Image.asset('images/arrow.png'),
+                    child: Image.asset('images/arrow.png',height: 51, ),
                   ),
                   Container(
                     decoration: BoxDecoration(
