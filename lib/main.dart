@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:ibagudelivery_rider/login_page.dart';
 import 'package:ibagudelivery_rider/tab_page.dart';
 import 'dart:ui';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
 
 
 final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
@@ -44,14 +46,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String chid;
 
-  SharedPreferences prefs;
-
-
   @override
   void initState() {
     super.initState();
     firebaseCloudMessaging_Listeners();
     getCounterFromSharedPrefs();
+    Timer.periodic(Duration(minutes : 1), (timer) {getCurrentLocation(); });
   }
 
   getCounterFromSharedPrefs() async {
@@ -59,6 +59,15 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       chid = prefs.getString('uid');
     });
+  }
+
+  Future<Position> getCurrentLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    print(position.latitude);
+    print(position.longitude);
+
+    return position;
   }
 
   void firebaseCloudMessaging_Listeners() {
