@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:ibagudelivery_rider/bloc/bloc.dart';
 import 'package:ibagudelivery_rider/login_page.dart';
-import 'package:ibagudelivery_rider/tab_page.dart';
-import 'dart:ui';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:async';
-
+import 'login_page.dart';
 
 final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
@@ -16,65 +14,58 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return MultiProvider(
+      providers: [ChangeNotifierProvider<Bloc>(create: (_) => Bloc())],
+      child: Consumer<Bloc>(
+        builder: (context, bloc, _) {
+          return MaterialApp(
+            title: '부산동구배달앱',
+            theme: ThemeData(primarySwatch: Colors.blue),
+            home: MyHomePage(bloc),
+            // home: TabRootPage(bloc),
+          );
+        },
       ),
-      home: MyHomePage(),
-
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage();
+  Bloc bloc;
 
-
+  MyHomePage(this.bloc);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   String chid;
+  SharedPreferences prefs;
+  bool isLogin = false;
 
   @override
   void initState() {
     super.initState();
     firebaseCloudMessaging_Listeners();
     getCounterFromSharedPrefs();
-    Timer.periodic(Duration(minutes : 1), (timer) {getCurrentLocation(); });
   }
 
   getCounterFromSharedPrefs() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs = await SharedPreferences.getInstance();
     setState(() {
       chid = prefs.getString('uid');
+      print(prefs.getString('serial'));
     });
-  }
-
-  Future<Position> getCurrentLocation() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    print(position.latitude);
-    print(position.longitude);
-
-    return position;
   }
 
   void firebaseCloudMessaging_Listeners() {
     if (Platform.isIOS) iOS_Permission();
 
-    _firebaseMessaging.getToken().then((token){
-      print('token:'+token);
+    _firebaseMessaging.getToken().then((token) {
+      print('token:' + token);
     });
 
     _firebaseMessaging.configure(
@@ -92,26 +83,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void iOS_Permission() {
     _firebaseMessaging.requestNotificationPermissions(
-        IosNotificationSettings(sound: true, badge: true, alert: true)
-    );
+        IosNotificationSettings(sound: true, badge: true, alert: true));
     _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings)
-    {
+        .listen((IosNotificationSettings settings) {
       print("Settings registered: $settings");
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-        builder: (BuildContext context){
-      if (chid == null) {
-        return Loginpage();
-      } else {
-        return TabPage();
-      }
-    }
-    );
-
+    return Builder(builder: (BuildContext context) {
+      return Loginpage(widget.bloc);
+    });
   }
 }

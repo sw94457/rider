@@ -1,13 +1,22 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:ibagudelivery_rider/personal_information_page.dart';
 import 'package:ibagudelivery_rider/setting_page.dart';
+import 'package:ibagudelivery_rider/ui/color.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'account_create_page.dart';
+import 'bloc/bloc.dart';
 import 'calculate_page.dart';
 import 'notice_page.dart';
 
 class MyDrawer extends StatefulWidget {
+  Bloc bloc;
+
+  MyDrawer(this.bloc);
+
   @override
   _MyDrawerState createState() => _MyDrawerState();
 }
@@ -15,6 +24,37 @@ class MyDrawer extends StatefulWidget {
 class _MyDrawerState extends State<MyDrawer> {
   SharedPreferences prefs;
   String _uid;
+  Timer _timer;
+
+  Future<Position> getCurrentLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    print(position.latitude);
+    print(position.longitude);
+
+    widget.bloc.updateLocation(serial: prefs.getString('serial'), lat: position.latitude.toString(), long: position.longitude.toString()).then((res){
+      if(res.success){
+        print('위치 보냄');
+      }else{
+        print('위치 못보냄');
+      }
+    });
+
+    return position;
+  }
+
+  start(){
+    print('출근');
+    getCurrentLocation();
+    _timer = Timer.periodic(Duration(seconds: 30), (timer) {
+      getCurrentLocation();
+    });
+  }
+
+  stop(){
+    print('퇴근');
+    _timer?.cancel();
+  }
 
   @override
   void initState() {
@@ -29,7 +69,7 @@ class _MyDrawerState extends State<MyDrawer> {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        color: const Color(0xff20283E),
+        color: AppColor.navy,
         child: ListView(
           padding: EdgeInsets.zero ,
           children: [
@@ -70,7 +110,7 @@ class _MyDrawerState extends State<MyDrawer> {
                               TextButton(onPressed: (){
                                 Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalInformation()));
                               }, child: Text("개인정보수정",
-                                  style: TextStyle(fontSize: 14, color: const Color(0xffFFE600)),textAlign: TextAlign.end))
+                                  style: TextStyle(fontSize: 14, color: AppColor.yellow),textAlign: TextAlign.end))
                             ],
                           )
                       ),
@@ -80,16 +120,20 @@ class _MyDrawerState extends State<MyDrawer> {
                       children: [
                         SizedBox(
                             width: 124, height: 56,
-                            child: RaisedButton(onPressed: (){},child: Text("출근하기",
+                            child: RaisedButton(onPressed: (){
+                              start();
+                            },child: Text("출근하기",
                                 style: TextStyle(fontSize: 14, color: Colors.white)),
                               color: Colors.white12,
                             )
                         ),
                         SizedBox(
                             width: 124, height: 56,
-                            child: RaisedButton(onPressed: (){},child: Text("퇴근하기",
+                            child: RaisedButton(onPressed: (){
+                              stop();
+                            },child: Text("퇴근하기",
                                 style: TextStyle(fontSize: 14)),
-                              color: const Color(0xffFFE600),
+                              color: AppColor.yellow,
                             )
                         ),
                       ],
