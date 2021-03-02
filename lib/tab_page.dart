@@ -4,8 +4,11 @@ import 'package:ibagudelivery_rider/drawer.dart';
 import 'package:ibagudelivery_rider/history_page.dart';
 import 'package:ibagudelivery_rider/new_order_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'bloc/bloc.dart';
 
 class TabPage extends StatefulWidget {
+  Bloc bloc;
+
   @override
   _TabPageState createState() => _TabPageState();
 }
@@ -89,7 +92,7 @@ class _TabPageState extends State<TabPage> {
             backgroundColor: const Color(0xff20283E),
           ),
           body: Center(child: _pages[_selectedIndx]),
-          drawer: MyDrawer(),
+          drawer: MyDrawer(widget.bloc),
         ),
       ),
     );

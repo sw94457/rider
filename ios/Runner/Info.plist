@@ -47,6 +47,13 @@
     <string>Used to Location&apos;s Info always for Using Beacon.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Used to Location&apos;s Info for Using Beacon when In Use.</string>
-
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Need to upload image</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Need to upload image</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Need to upload image</string>
+    <key>FirebaseAppDelegateProxyEnabled</key>
+    <false/>
 </dict>
 </plist>

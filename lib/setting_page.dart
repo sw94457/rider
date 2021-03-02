@@ -71,182 +71,6 @@ class _SettingState extends State<Setting>  {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(16,0,0,0),
                             child: Container(
-                              child: Text('폰트 크기 설정',style: TextStyle(fontSize: 18,color: Colors.white),),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0,0,24,0),
-                            child: IconButton(
-                              icon: Image.asset('images/${one1}.png',width: 16,),
-                              onPressed: (){
-                                setState(() {
-                                  _visible1 = !_visible1;
-                                  if (_visible1 == true){
-                                    one1 = 'left-one_a';
-                                  } else {
-                                    one1 = 'left-one';
-                                  }
-                                });
-                              },
-                            ),
-                          )
-                        ],
-                      ),
-                      Container(
-                        child: Visibility(
-                            visible: _visible1,
-                            child: Column(
-                              children: [
-                                RadioListTile(
-                                  title: Text('작은글씨',style: TextStyle(fontSize: 12,color: Colors.white),),
-                                  value: Gender.SMALL,
-                                  groupValue: _gender,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _gender = value;
-                                    });
-                                  },
-                                  activeColor: Colors.white,
-                                ),
-                                RadioListTile(
-                                  title: Text('중간글씨',style: TextStyle(fontSize: 14,color: Colors.white),),
-                                  value: Gender.MIDDLE,
-                                  groupValue: _gender,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _gender = value;
-                                    });
-                                  },
-                                  activeColor: Colors.white,
-                                ),
-                                RadioListTile(
-                                  title: Text('큰글씨',style: TextStyle(fontSize: 18,color: Colors.white),),
-                                  value: Gender.BIG,
-                                  groupValue: _gender,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _gender = value;
-                                    });
-                                  },
-                                  activeColor: Colors.white,
-                                ),
-                              ],
-                            )),
-                      ),
-                      Container( height:0.5,color: const Color(0x80DBDBDB)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(16,8,0,10),
-                            child: Container(
-                              child: Text('알림설정',style: TextStyle(fontSize: 18,color: Colors.white),),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0,0,24,0),
-                            child: IconButton(
-                              icon: Image.asset('images/${one2}.png',width: 16,),
-                              onPressed: (){
-                                setState(() {
-                                  _visible2 = !_visible2;
-                                  if (_visible2 == true){
-                                    one2 = 'left-one_a';
-                                  } else {
-                                    one2 = 'left-one';
-                                  }
-                                });
-                              },
-                            ),
-                          )
-                        ],
-                      ),
-                      Container(
-                        child: Visibility(
-                            visible: _visible2,
-                            child: Row(
-                              children: [
-                                Switch(
-                                  value: _isChecked,
-                                  onChanged: (value){
-                                    setState(() {
-                                      _isChecked = value;
-                                    });
-                                  },
-                                  inactiveTrackColor: const Color(0xff20283E),
-                                  inactiveThumbColor: const Color(0xff595959),
-                                  activeColor: Colors.white,
-                                ),
-                                Text('신규 주문 알림팝업 허용',style: TextStyle(fontSize: 14,color: Colors.white),),
-                              ],
-                            )),
-                      ),
-                      Container( height:0.5,color: const Color(0x80DBDBDB)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(16,8,0,10),
-                            child: Container(
-                              child: Text('주소보기',style: TextStyle(fontSize: 18,color: Colors.white),),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0,0,24,0),
-                            child: IconButton(
-                              icon: Image.asset('images/${one3}.png',width: 16,),
-                              onPressed: (){
-                                setState(() {
-                                  _visible3 = !_visible3;
-                                  if (_visible3 == true){
-                                    one3 = 'left-one_a';
-                                  } else {
-                                    one3 = 'left-one';
-                                  }
-
-                                });
-                              },
-                            ),
-                          )
-                        ],
-                      ),
-                      Container(
-                        child: Visibility(
-                            visible: _visible3,
-                            child: Column(
-                              children: [
-                                RadioListTile(
-                                  title: Text('구주소',style: TextStyle(fontSize: 14,color: Colors.white),),
-                                  value: Gender1.OAddress,
-                                  groupValue: _gender1,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _gender1 = value;
-                                    });
-                                  },
-                                  activeColor: Colors.white,
-                                ),
-                                RadioListTile(
-                                  title: Text('신주소',style: TextStyle(fontSize: 14,color: Colors.white),),
-                                  value: Gender1.NAddress,
-                                  groupValue: _gender1,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _gender1 = value;
-                                    });
-                                  },
-                                  activeColor: Colors.white,
-                                ),
-                              ],
-                            )),
-                      ),
-                      Container( height:0.5,color: const Color(0x80DBDBDB)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(16,0,0,0),
-                            child: Container(
                               child: Text('간편메세지 설정',style: TextStyle(fontSize: 18,color: Colors.white),),
                             ),
                           ),
@@ -434,9 +258,9 @@ class _SettingState extends State<Setting>  {
                                   SharedPreferences prefs = await SharedPreferences.getInstance();
                                   prefs.remove('uid');
                                   Navigator.pop(context);
-                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          Loginpage()), (route) => false);
+                                  // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                                  //     builder: (BuildContext context) =>
+                                  //         Loginpage()), (route) => false);
                                 },
                               )
 
@@ -452,6 +276,24 @@ class _SettingState extends State<Setting>  {
                             padding: const EdgeInsets.fromLTRB(16,8,0,10),
                             child: Container(
                               child: Text('회원탈퇴',style: TextStyle(fontSize: 18,color: Colors.white),),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Container( height:0.5,color: const Color(0x80DBDBDB)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16,8,0,0),
+                            child: Container(
+                              child: Text('버전정보',style: TextStyle(fontSize: 18,color: Colors.white),),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0,8,24,0),
+                            child: Container(
+                              child: Text('현재버전 1.1.0',style: TextStyle(fontSize: 14,color: Colors.white),),
                             ),
                           ),
                         ],
@@ -478,10 +320,6 @@ class _SettingState extends State<Setting>  {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0,16,0,0),
-                    child: Text('현재버전 10.1.1',style: TextStyle(fontSize: 12,color: Colors.white),textAlign: TextAlign.center,),
-                  )
                 ],
               ),
             ),

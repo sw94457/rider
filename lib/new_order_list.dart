@@ -67,15 +67,14 @@ class MyListView extends StatelessWidget {
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.fromLTRB(40,0,5,0),
-                                        child: Text('29,800원',style: TextStyle(fontSize: 16,)),
+                                        child: Text('배달비 3,800원',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
                                         ),
-                                      Text('배달비 3,800원',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
                                      ],
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.fromLTRB(0,0,8,0),
-                                  child: Text('7분전',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
+                                  child: Text('PM 11:52',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
                                   ),
                               ],
                             ),
@@ -84,7 +83,7 @@ class MyListView extends StatelessWidget {
                                 alignment: Alignment.center,
                                 height: 24, width: 36,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5), //모서리를 둥글게
+                                  borderRadius: BorderRadius.circular(5),
                                   border: Border.all(color: const Color(0xff62FF2B), width: 1),
                                   color: const Color(0xff62FF2B)),
                                   child: Text('카드',style: TextStyle(fontSize: 16, fontFamily: 'cafe24'),),
@@ -92,71 +91,26 @@ class MyListView extends StatelessWidget {
                         ],
                       ),
                       Container(
-                        height: 107,
-                      decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5), //모서리를 둥글게
+                        decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
                       border: Border.all(color: const Color(0xffFF2098), width: 1)),
-                        child: Row(
-                          children: [
-                            Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(8,8,0,0),
-                                  child: Container(
-                                    width: 95, height: 57,
-                                      child: Text('대독장',style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,color: const Color(0xffEBFF00)),textAlign: TextAlign.center,)
-                                  ),
-                                ),
-                                Container(
-                                  height: 17,
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(9,0,0,0),
-                                    child: Row(
-                                      children: [
-                                        Text('290M',style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,color: const Color(0xffEBFF00)),),
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(5,0,5,0),
-                                          child: Image.asset('images/ss.png',width: 15,),
-                                        ),
-                                        Text('300M',style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,color: const Color(0xff62FF2B)),),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(5,0,0,0),
-                              child: Column(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
                                 children: [
                                   Container(
-                                    width: 228,
-                                    child: Row(
-                                      children: [
-                                        Image.asset('images/st.png',width: 20,),
-                                        SizedBox(
-                                            width: 208,
-                                            child: Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 18,color: Colors.white))
-                                        )
-                                      ],
-                                    ),
+                                    alignment: Alignment.centerLeft,
+                                    child: Text('대독장',style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,color: const Color(0xffEBFF00)),)
                                   ),
+                                  Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 20,color: Colors.white)),
+                                  Image.asset('images/arrow1.png',width: 18,),
                                   Container(
-                                    width: 228,
-                                    child: Row(
-                                      children: [
-                                        Image.asset('images/end.png',width: 20,),
-                                        SizedBox(
-                                            width: 208,
-                                            child: Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 18,color: Colors.white))
-                                        )
-                                      ],
-                                    ),
-                                  )
+                                      alignment: Alignment.centerLeft,
+                                    child: Text('01012341234',style: TextStyle(fontSize: 24,color: const Color(0xffEBFF00)))
+                                  ),
+                                  Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 20,color: Colors.white))
                                 ],
                               ),
-                            )
-                          ],
                         ),
                       )
                     ],

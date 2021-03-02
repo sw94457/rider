@@ -33,7 +33,7 @@ class _OrderDetailState extends State<OrderDetail> {
                           Container(
                             height: 24,
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5), //모서리를 둥글게
+                                borderRadius: BorderRadius.circular(5),
                                 border: Border.all(color: const Color(0xffFF2098), width: 1),
                                 color: const Color(0xffFF2098)),
                             child: Row(
@@ -61,7 +61,7 @@ class _OrderDetailState extends State<OrderDetail> {
                             alignment: Alignment.center,
                             height: 24, width: 36,
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5), //모서리를 둥글게
+                                borderRadius: BorderRadius.circular(5),
                                 border: Border.all(color: const Color(0xff62FF2B), width: 1),
                                 color: const Color(0xff62FF2B)),
                             child: Text('카드',style: TextStyle(fontSize: 16, fontFamily: 'cafe24'),),
@@ -96,10 +96,10 @@ class _OrderDetailState extends State<OrderDetail> {
                       ],
                     ),
                   ),
-                    Image.asset('images/arrow.png'),
+                    Image.asset('images/arrow.png',width: 24,),
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5), //모서리를 둥글게
+                        borderRadius: BorderRadius.circular(5),
                         border: Border.all(color: const Color(0xff9C9C9C), width: 1)),
                       width: 344, height: 106,
                       child: Column(
@@ -113,6 +113,7 @@ class _OrderDetailState extends State<OrderDetail> {
                                   padding: const EdgeInsets.fromLTRB(5,0,45,0),
                                   child: Text('300M',style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: const Color(0xff62FF2B)),),
                                 ),
+                                Text('01012341234',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: const Color(0xffEBFF00)),)
                             ],
                       ),
                     ),
