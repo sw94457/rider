@@ -14,7 +14,7 @@ class _HistoryDetailState extends State<HistoryDetail> {
       appBar: AppBar(
         backgroundColor: const Color(0xff20283E),
         iconTheme: IconThemeData(
-          color: const Color(0xffFFE600), //change your color here
+          color: const Color(0xffFFE600),
         ),
       ),
       body: Container(
@@ -28,7 +28,7 @@ class _HistoryDetailState extends State<HistoryDetail> {
                   Container(
                     height: 24,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5), //모서리를 둥글게
+                        borderRadius: BorderRadius.circular(5),
                         border: Border.all(color: const Color(0xff9C9C9C), width: 1),
                         color: const Color(0xff9C9C9C)),
                     child: Row(
@@ -56,7 +56,7 @@ class _HistoryDetailState extends State<HistoryDetail> {
                     alignment: Alignment.center,
                     height: 24, width: 36,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5), //모서리를 둥글게
+                        borderRadius: BorderRadius.circular(5),
                         border: Border.all(color: const Color(0xff62FF2B), width: 1),
                         color: const Color(0xff62FF2B)),
                     child: Text('카드',style: TextStyle(fontSize: 16, fontFamily: 'cafe24'),),
@@ -68,30 +68,57 @@ class _HistoryDetailState extends State<HistoryDetail> {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
                   border: Border.all(color: const Color(0xff9C9C9C), width: 1)),
-              width: 344, height: 106,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(15,12,0,5),
-                    child: Row(
+              width: 344,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Image.asset('images/Group 7.png'),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(5,0,0,0),
-                          child: Text('290M',style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: Colors.white)),
-                        ),
                         Container(
-                            width: 155,
-                            child: Text('대독장',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: Colors.white),textAlign: TextAlign.center,)
+                          child: Container(
+                            height: 55,
+                            alignment: Alignment.topLeft,
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(0,0,6,0),
+                                  child:Container(
+                                      width: 45, height: 20, alignment: Alignment.bottomCenter,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(30),
+                                          border: Border.all(color: const Color(0xff9C9C9C), width: 1),color: const Color(0xff9C9C9C)),
+                                      child: Text('출발지',style: TextStyle(fontSize: 14, fontFamily: 'cafe24'),textAlign: TextAlign.center,)
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
+                        Container(),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0,0,8,0),
+                          child: Container(
+                            width: 118,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Image.asset('images/call.png',width: 55),
+                                Image.asset('images/map.png',width: 55),
+                              ],
+                            ),
+                          ),
+                        )
                       ],
                     ),
-                  ),
-                  SizedBox(
-                      width: 312,
-                      child: Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 18,color: Colors.white))
-                  )
-                ],
+                    Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text('대독장',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: Colors.white))
+                    ),
+                    Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 18,color: Colors.white))
+                  ],
+                ),
               ),
             ),
             Padding(
@@ -100,28 +127,60 @@ class _HistoryDetailState extends State<HistoryDetail> {
             ),
             Container(
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5), //모서리를 둥글게
+                  borderRadius: BorderRadius.circular(5),
                   border: Border.all(color: const Color(0xff9C9C9C), width: 1)),
-              width: 344, height: 106,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(15,8,0,5),
-                    child: Row(
+              width: 344,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Image.asset('images/Group 8.png'),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(5,0,45,0),
-                          child: Text('300M',style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: Colors.white),),
+                        Container(
+                          child: Container(
+                            height: 55,
+                            alignment: Alignment.topLeft,
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(0,0,6,0),
+                                  child:Container(
+                                      width: 45, height: 20, alignment: Alignment.bottomCenter,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(30),
+                                          border: Border.all(color: const Color(0xff9C9C9C), width: 1),color: const Color(0xff9C9C9C)),
+                                      child: Text('도착지',style: TextStyle(fontSize: 14, fontFamily: 'cafe24'),textAlign: TextAlign.center,)
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
+                        Container(),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0,0,8,0),
+                          child: Container(
+                            width: 181,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Image.asset('images/call.png',width: 55),
+                                Image.asset('images/message.png',width: 55),
+                                Image.asset('images/map.png',width: 55),
+                              ],
+                            ),
+                          ),
+                        )
                       ],
                     ),
-                  ),
-                  SizedBox(
-                      width: 312,
-                      child: Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 18,color: Colors.white))
-                  )
-                ],
+                    Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text('01012345678',style: TextStyle(fontSize: 24,color: Colors.white))
+                    ),
+                    Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 18,color: Colors.white))
+                  ],
+                ),
               ),
             ),
             Container(

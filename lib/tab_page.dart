@@ -9,6 +9,8 @@ import 'bloc/bloc.dart';
 class TabPage extends StatefulWidget {
   Bloc bloc;
 
+  TabPage(this.bloc);
+
   @override
   _TabPageState createState() => _TabPageState();
 }

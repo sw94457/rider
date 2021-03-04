@@ -180,7 +180,7 @@ class _DeliveryPickState extends State<DeliveryPick> {
                           ),
                           Container(
                               alignment: Alignment.centerLeft,
-                              child: Text('대독장',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: const Color(0xffEBFF00)))
+                              child: Text('01012345678',style: TextStyle(fontSize: 20,color: Colors.white))
                           ),
                           Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 18,color: Colors.white))
                         ],

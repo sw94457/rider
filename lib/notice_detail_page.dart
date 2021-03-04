@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:ibagudelivery_rider/notice_page.dart';
 
 class NoticeDetail extends StatefulWidget {
+
   @override
   _NoticeDetailState createState() => _NoticeDetailState();
 }
 
 class _NoticeDetailState extends State<NoticeDetail> {
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,3 +66,5 @@ class _NoticeDetailState extends State<NoticeDetail> {
     );
   }
 }
+
+

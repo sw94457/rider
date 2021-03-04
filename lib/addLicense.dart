@@ -24,163 +24,118 @@ class _AddLicensePageState extends State<AddLicensePage> {
   Widget build(BuildContext context) {
     Size screen = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: AppColor.navy,
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: AppColor.yellow),
-        title: Text('면허증 등록', style: TextStyle(color: AppColor.yellow)),
-        centerTitle: true,
         backgroundColor: AppColor.navy,
-      ),
-      body: Container(
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 29, 0, 85),
-                      child: Text('면허증을 업로드해주세요.',style: TextStyle(fontSize: 18, color: Colors.white))
-                  ),
-                  InkWell(
-                    onTap: (){
-                      showModalBottomSheet(context: context, builder: (context){
-                        return Container(
-                          height: 200,
-                          color: const Color(0xff3B4255),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Container(width: 344,height: 56,
-                                color: const Color(0xffFFE600),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Image.asset('images/VectorStroke.png',width: 18,),
-                                    Text('면허증 업로드',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: Colors.black),),
-                                    Container()
-                                  ],
-                                ),
-                              ),
-                              Container(width: 344,height: 56,
-                                child: RaisedButton(
-                                  color: const Color(0xffFFE600),
-                                  onPressed: () {
-                                    _getImage2(_image2).then((value) {
-                                      _image2 = value;
-                                      print(_image2);
-                                      setState(() {
-                                        isFile = true;
-                                      });
-                                    });
-                                  },
-                                  child: Text('사진찍기',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: Colors.black),
-                                  ),
-                                ),
-                              ),
-                              Container(width: 344,height: 56,
-                                child: RaisedButton(
-                                  color: const Color(0xffFFE600),
-                                  onPressed: () {
-                                    _getImage(_image2).then((value) {
-                                      _image2 = value;
-                                      print(_image2);
-                                      setState(() {
-                                        isFile = true;
-                                      });
-                                    });
-                                  },
-                                  child: Text('앨범에서 선택',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: Colors.black),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      });
-                    },
-                    child: Container(
-                      width: 288,height: 162,
-                      child: _image2 != null
-                          // ? FileImage(_image2.path)
-                      ? Image.file(File(_image2.path),)
-                          : Image.asset('images/Group 77.png'),
+        appBar: AppBar(
+          iconTheme: IconThemeData(color: AppColor.yellow),
+          backgroundColor: AppColor.navy,
+        ),
+        body: Container(
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                alignment: Alignment.center,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 29, 0, 85),
+                        child: Text('면허증을 업로드해주세요.',style: TextStyle(fontSize: 18, color: Colors.white))
                     ),
-                  ),
-                  // Stack(
-                  //   children: [
-                  //     SizedBox(
-                  //       width: 80,
-                  //       height: 80,
-                  //       child: CircleAvatar(
-                  //           backgroundImage: _image2 != null
-                  //               ? FileImage(_image2)
-                  //               : AssetImage('images/Group 77.png')),
-                  //     ),
-                  //     InkWell(
-                  //       radius: 50,
-                  //       child: Container(
-                  //         width: 80,
-                  //         height: 80,
-                  //         alignment: Alignment.bottomRight,
-                  //         child: CircleAvatar(
-                  //             backgroundImage: AssetImage('images/camera.png'),
-                  //             radius: 15),
-                  //       ),
-                  //       onTap: () {
-                  //         _getImage(_image2).then((value) {
-                  //           _image2 = value;
-                  //           print(_image2);
-                  //           setState(() {
-                  //             isFile = true;
-                  //           });
-                  //         });
-                  //       },
-                  //     ),
-                  //   ],
-                  // ),
-                  SizedBox(height: 10),
+                    InkWell(
+                      onTap: (){
+                        showModalBottomSheet(context: context, builder: (context){
+                          return Container(
+                            height: 200,
+                            color: const Color(0xff3B4255),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Container(width: 344,height: 56,
+                                  color: const Color(0xffFFE600),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      InkWell(
+                                          onTap: (){
+                                            Navigator.pop(context);
+                                          },
+                                          child: Image.asset('images/VectorStroke.png',width: 18,)
+                                      ),
+                                      Text('면허증 업로드',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: Colors.black),),
+                                      Container()
+                                    ],
+                                  ),
+                                ),
+                                Container(width: 344,height: 56,
+                                  child: RaisedButton(
+                                    color: const Color(0xffFFE600),
+                                    onPressed: () {
+                                      _getImage2(_image2).then((value) {
+                                        _image2 = value;
+                                        print(_image2);
+                                        setState(() {
+                                          isFile = true;
+                                        });
+                                      });
+                                    },
+                                    child: Text('사진찍기',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: Colors.black),
+                                    ),
+                                  ),
+                                ),
+                                Container(width: 344,height: 56,
+                                  child: RaisedButton(
+                                    color: const Color(0xffFFE600),
+                                    onPressed: () {
+                                      _getImage(_image2).then((value) {
+                                        _image2 = value;
+                                        print(_image2);
+                                        setState(() {
+                                          isFile = true;
+                                        });
+                                      });
+                                    },
+                                    child: Text('앨범에서 선택',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: Colors.black),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        });
+                      },
+                      child: Container(
+                        width: 288,height: 162,
+                        child: _image2 != null
+                        //? FileImage(_image2)
+                            ? Image.file(File(_image2.path),)
+                            : Image.asset('images/Group 77.png'),
+                      ),
+                    ),
+                    SizedBox(height: 10),
 
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-              child: SizedBox(
-                width: 344,
-                height: 56,
-                child: isFile?RaisedButton(
-                  onPressed: () {
-                    if (isFile) {
-                      widget.bloc.user.joinImage2 = _image2.path;
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => JoinCreate(widget.bloc)));
-                    }
-                  },
-                  child: Text("다음",
-                      style:
-                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  color: AppColor.yellow,
-                ):OutlineButton(
-                  onPressed: () {},
-                  color: AppColor.yellow,
-                  child: Text("다음",
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: AppColor.yellow)),
-                  borderSide: BorderSide(color: AppColor.yellow),
+                  ],
                 ),
               ),
-            ),
-          ],
-        ),
-      )
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                child: SizedBox(
+                    width: 344,
+                    height: 56,
+                    child: RaisedButton(
+                      onPressed: () {
+                      },
+                      child: Text("다음",
+                          style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      color: AppColor.yellow,
+                    )
+                ),
+              ),
+            ],
+          ),
+        )
     );
   }
 

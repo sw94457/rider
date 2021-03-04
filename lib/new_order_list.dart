@@ -17,8 +17,6 @@ class _NewOrderListState extends State<NewOrderList> {
     return Scaffold(
       key: _scaffoldkey,
       backgroundColor: const Color(0xff20283E),
-
-
       body: Container(
         child: Column(
           children: [
@@ -30,10 +28,8 @@ class _NewOrderListState extends State<NewOrderList> {
       ),
     //drawer: MainDrawer(),
     );
-
   }
 }
-
 
 
 

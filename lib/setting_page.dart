@@ -1,33 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:ibagudelivery_rider/login_page.dart';
+import 'package:ibagudelivery_rider/ui/color.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Setting extends StatefulWidget {
   @override
   _SettingState createState() => _SettingState();
 }
-enum Gender {SMALL, MIDDLE, BIG}
-enum Gender1 {NAddress, OAddress}
-
 
 class _SettingState extends State<Setting>  {
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
   final myController = TextEditingController();
 
-
-
-  Gender _gender = Gender.MIDDLE;
-  Gender1 _gender1 = Gender1.NAddress;
-
-  bool _visible1 = false;
-  bool _visible2 = false;
-  bool _visible3 = false;
+  bool _visibletext = false;
   bool _visible4 = false;
-  var one1 = 'left-one';
-  var one2 = 'left-one';
-  var one3 = 'left-one';
+
+  var _textcolor = Colors.white;
+
   var one4 = 'left-one';
-  var _isChecked = false;
 
   var sn = 0;
   var text1;
@@ -35,6 +25,7 @@ class _SettingState extends State<Setting>  {
   var text3;
   var text4;
   var text5;
+  var textcounter;
 
 
   @override
@@ -118,6 +109,7 @@ class _SettingState extends State<Setting>  {
                                       onTap: (){
                                         sn=1;
                                         myController.text = text1;
+                                        textcounter = text1.length;
                                         _showDialog1();
                                       },
                                       )
@@ -147,6 +139,7 @@ class _SettingState extends State<Setting>  {
                                           onTap: (){
                                             sn=2;
                                             myController.text = text2;
+                                            textcounter = text2.length;
                                             _showDialog1();
                                           },
                                         )
@@ -175,6 +168,7 @@ class _SettingState extends State<Setting>  {
                                         onTap: (){
                                           sn=3;
                                           myController.text = text3;
+                                          textcounter = text3.length;
                                           _showDialog1();
                                         },
                                       )
@@ -204,8 +198,9 @@ class _SettingState extends State<Setting>  {
                                           onTap: (){
                                             sn=4;
                                             myController.text = text4;
+                                            textcounter = text4.length;
                                             _showDialog1();
-                                          },
+                                                                                      },
                                         )
                                       ],
                                     ),
@@ -234,6 +229,7 @@ class _SettingState extends State<Setting>  {
                                           onTap: (){
                                             sn=5;
                                             myController.text = text5;
+                                            textcounter = text5.length;
                                             _showDialog1();
                                           },
                                         )
@@ -332,10 +328,12 @@ class _SettingState extends State<Setting>  {
   void _showDialog1() {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-            backgroundColor: const Color(0xff3B4255),
-            content: Container(
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              backgroundColor: const Color(0xff3B4255),
+              content: Container(
               height: 280,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -345,63 +343,102 @@ class _SettingState extends State<Setting>  {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         InkWell(child: Text('취소',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: const Color(0xffFFE600)),),
-                        onTap: (){
-                          Navigator.pop(context);
-                        },
+                          onTap: (){
+                            Navigator.pop(context);
+                          },
                         ),
                         InkWell(child: Text('완료',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: const Color(0xffFFE600)),),
-                        onTap: () async {
-                          SharedPreferences prefs = await SharedPreferences.getInstance();
-                          setState(() {
-                            switch(sn)  {
-                              case 1:
-                                text1=myController.text;
-                                prefs.setString('simpletext1', text1);
-                                break;
-                              case 2:
-                                text2=myController.text;
-                                prefs.setString('simpletext2', text2);
-                                break;
-                              case 3:
-                                text3=myController.text;
-                                prefs.setString('simpletext3', text3);
-                                break;
-                              case 4:
-                                text4=myController.text;
-                                prefs.setString('simpletext4', text4);
-                                break;
-                              case 5:
-                                text5=myController.text;
-                                prefs.setString('simpletext5', text5);
-                                break;
-                              default:
-                                break;
-                            }
-                          });
-                          Navigator.pop(context);
-                        },
+                          onTap: () async {
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            setState(() {
+                              switch(sn)  {
+                                case 1:
+                                  text1=myController.text;
+                                  prefs.setString('simpletext1', text1);
+                                  break;
+                                case 2:
+                                  text2=myController.text;
+                                  prefs.setString('simpletext2', text2);
+                                  break;
+                                case 3:
+                                  text3=myController.text;
+                                  prefs.setString('simpletext3', text3);
+                                  break;
+                                case 4:
+                                  text4=myController.text;
+                                  prefs.setString('simpletext4', text4);
+                                  break;
+                                case 5:
+                                  text5=myController.text;
+                                  prefs.setString('simpletext5', text5);
+                                  break;
+                                default:
+                                  break;
+                              }
+                            });
+                            Navigator.pop(context);
+                          },
                         )
                       ],
                     ),
                   ),
-                  Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5), //모서리를 둥글게
-                        border: Border.all(color: Colors.white, width: 1),),
-                      child: TextField(
-                        style: TextStyle(color: Colors.white),
-                        controller: myController,
+                  Column(
+                    children: [
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          child: Visibility(
+                            visible: _visibletext,
+                            child: Row(
+                              children: [
+                                Image.asset('images/alt.png',width: 20,),
+                                Text('글자 수를 초과했습니다.',style: TextStyle(fontSize: 20,color: AppColor.yellow)),
+                              ],
+                            ),
+                          )
                       ),
-                    ),
-                  Container(
-
-                  )
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text('${textcounter}/80 byte',style: TextStyle(fontSize: 20,color: _textcolor),)
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0,8,0,0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(color: Colors.white, width: 1),),
+                          child: TextField(
+                            maxLines: 4,minLines: 1,
+                            style: TextStyle(color: Colors.white),
+                            controller: myController, maxLength: 80,
+                            onChanged: (text){
+                              setState(() {
+                                textcounter = text.length;
+                                if (text.length >= 80){
+                                  _visibletext = true;
+                                  _textcolor = const Color(0xffFFE600);
+                                } else {
+                                  _visibletext = false;
+                                  _textcolor = Colors.white;
+                                }
+                              });
+                            },
+                            decoration: InputDecoration(
+                              counterText:'',
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container()
                 ],
               ),
-            )
+            ),);
+          },
         );
       },
     );
+
   }
 
   getCounterFromSharedPrefs() async {

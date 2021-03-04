@@ -70,7 +70,7 @@ class MyListView extends StatelessWidget {
                             alignment: Alignment.center,
                             height: 24, width: 36,
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5), //모서리를 둥글게
+                                borderRadius: BorderRadius.circular(5),
                                 border: Border.all(color: const Color(0xff62FF2B), width: 1),
                                 color: const Color(0xff62FF2B)),
                             child: Text('카드',style: TextStyle(fontSize: 16, fontFamily: 'cafe24'),),
@@ -79,12 +79,9 @@ class MyListView extends StatelessWidget {
                       ),
                       Container(
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5), //모서리를 둥글게
-                            border: Border.all(color: const Color(0xffFF2098), width: 1)),
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(color: const Color(0xff62FF2B), width: 1)),
                         child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(color: const Color(0xffFF2098), width: 1)),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(

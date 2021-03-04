@@ -88,9 +88,7 @@ class _PhoneAuthentState extends State<PhoneAuthent> {
                                   style: TextStyle(fontSize: 18)),
                               color: Colors.white,
                               onPressed: () {
-                                widget.bloc
-                                    .getJoinSms(num: phone.text)
-                                    .then((res) {
+                                widget.bloc.getJoinSms(num: phone.text).then((res) {
                                   if (res.success) {
                                     Toast.show('인증코드가 발송되었습니다.', context);
                                   } else {

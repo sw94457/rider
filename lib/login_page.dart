@@ -37,7 +37,7 @@ class _LoginpageState extends State<Loginpage> {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => TabPage()));
+                    builder: (context) => TabPage(widget.bloc)));
           }
           else{
             pref.clear();
@@ -133,7 +133,7 @@ class _LoginpageState extends State<Loginpage> {
                       widget.bloc.login(id: id.text, pw: pw.text).then((res) {
                         if(res.success){
                           Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => TabPage()));
+                              MaterialPageRoute(builder: (context) => TabPage(widget.bloc)));
                         }else{
                           Toast.show(res.errorMsg,context);
                         }

@@ -7,7 +7,7 @@ class ResponseData{
 class ResponseData2 {
   String code;
   String message;
-  String data;
+  dynamic data;
 
   ResponseData2({this.code, this.message, this.data});
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ibagudelivery_rider/ui/color.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DeliveryDelivery extends StatefulWidget {
@@ -42,8 +43,8 @@ class _DeliveryDeliveryState extends State<DeliveryDelivery> {
                           height: 24,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5), //모서리를 둥글게
-                              border: Border.all(color: const Color(0xff62FF2B), width: 1),
-                              color: const Color(0xff62FF2B)),
+                              border: Border.all(color: const Color(0xffEBFF00), width: 1),
+                              color: const Color(0xffEBFF00)),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -52,15 +53,14 @@ class _DeliveryDeliveryState extends State<DeliveryDelivery> {
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.fromLTRB(40,0,5,0),
-                                      child: Text('29,800원',style: TextStyle(fontSize: 16,)),
+                                      child: Text('배달비 3,800원',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
                                     ),
-                                    Text('배달비 3,800원',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
                                   ],
                                 ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(0,0,8,0),
-                                child: Text('7분전',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
+                                child: Text('PM 12:08',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
                               ),
                             ],
                           ),
@@ -80,212 +80,153 @@ class _DeliveryDeliveryState extends State<DeliveryDelivery> {
                   Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
-                        border: Border.all(color: const Color(0xff9C9C9C), width: 1)),
-                    width: 344, height: 106,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(15,12,0,5),
-                          child: Row(
+                        border: Border.all(color: const Color(0x80DBDBDB), width: 1)),
+                    width: 344,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                child: Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(0,0,6,0),
-                                      child:
-                                      Container(
-                                          width: 45, height: 20, alignment: Alignment.bottomCenter,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(30),
-                                            border: Border.all(color: const Color(0xffC4C4C4), width: 1),color: const Color(0xffC4C4C4)),
-                                          child: Text('출발지',style: TextStyle(fontSize: 14, fontFamily: 'cafe24'),textAlign: TextAlign.center,)
+                                child: Container(
+                                  height: 55,
+                                  alignment: Alignment.topLeft,
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(0,0,6,0),
+                                        child:Container(
+                                            width: 45, height: 20, alignment: Alignment.bottomCenter,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(30),
+                                                border: Border.all(color: const Color(0xffEBFF00), width: 1),color: const Color(0xffEBFF00)),
+                                            child: Text('출발지',style: TextStyle(fontSize: 14, fontFamily: 'cafe24'),textAlign: TextAlign.center,)
+                                        ),
                                       ),
-                                    ),
-                                    Text('290M',style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: const Color(0xffEBFF00)),),
-                                  ],
+                                      Text('290M',style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: const Color(0xffEBFF00)),),
+                                    ],
+                                  ),
                                 ),
                               ),
-                              Container(
-                                  child: Text('대독장',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: const Color(0xffEBFF00)),textAlign: TextAlign.center,)
-                              ),
+                              Container(),
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(0,0,8,0),
                                 child: Container(
-                                  width: 74,
+                                  width: 118,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Stack(
-                                        children : [
-                                          Container(
-                                            width: 34, height: 34,
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(30),
-                                                border: Border.all(color: const Color(0xffDBDBDB), width: 1),color: const Color(0xffDBDBDB)),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(6,6,0,0),
-                                            child: Image.asset('images/call.png',width: 22, height: 22,),
-                                          )
-                                        ],
-                                      ),
-                                      Stack(
-                                        children : [
-                                          Container(
-                                            width: 34, height: 34,
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(30),
-                                                border: Border.all(color: const Color(0xffDBDBDB), width: 1),color: const Color(0xffDBDBDB)),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(6,6,0,0),
-                                            child: Image.asset('images/map.png',width: 22, height: 22,),
-                                          )
-                                        ],
-                                      ),
+                                      Image.asset('images/call.png',width: 55),
+                                      Image.asset('images/map.png',width: 55),
                                     ],
                                   ),
                                 ),
                               )
                             ],
                           ),
-                        ),
-                        SizedBox(
-                            width: 312,
-                            child: Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 18,color: Colors.white))
-                        )
-                      ],
+                          Container(
+                              alignment: Alignment.centerLeft,
+                              child: Text('대독장',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: const Color(0xffEBFF00)))
+                          ),
+                          Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 18,color: Colors.white))
+                        ],
+                      ),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0,0,0,8),
-                    child: Image.asset('images/arrow.png',height: 51, ),
+                    child: Image.asset('images/arrow.png',width: 24),
                   ),
                   Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5), //모서리를 둥글게
-                      border: Border.all(color: const Color(0xff62FF2B), width: 1)),
-                    width: 344, height: 106,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(15,8,0,5),
-                          child: Row(
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(color: const Color(0xff62FF2B), width: 1)),
+                    width: 344,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                child: Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(0,0,6,0),
-                                      child:
-                                      Container(
-                                        width: 45, height: 20, alignment: Alignment.bottomCenter,
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(30), //모서리를 둥글게
-                                              border: Border.all(color: const Color(0xff62FF2B), width: 1)),
-                                          child: Text('도착지',style: TextStyle(fontSize: 14, fontFamily: 'cafe24',color: const Color(0xff62FF2B)),textAlign: TextAlign.center,)
+                                child: Container(
+                                  height: 55,
+                                  alignment: Alignment.topLeft,
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(0,0,6,0),
+                                        child:Container(
+                                            width: 45, height: 20, alignment: Alignment.bottomCenter,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(30), color: const Color(0xff9C9C9C)),
+                                            child: Text('도착지',style: TextStyle(fontSize: 14, fontFamily: 'cafe24'),textAlign: TextAlign.center,)
+                                        ),
                                       ),
-                                    ),
-                                    Text('300M',style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: const Color(0xff62FF2B)),),
-                                  ],
+                                      Text('300M',style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: const Color(0xff62FF2B)),),
+                                    ],
+                                  ),
                                 ),
                               ),
+                              Container(),
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(0,0,8,0),
                                 child: Container(
-                                  width: 110,
+                                  width: 181,
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Stack(
-                                        children : [
-                                          Container(
-                                            width: 34, height: 34,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(30),
-                                              border: Border.all(color: const Color(0xff62FF2B), width: 1)),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(6,6,0,0),
-                                            child: Image.asset('images/call_b.png',width: 22, height: 22,),
-                                          )
-                                        ]
-                                      ),
+                                      Image.asset('images/call_b.png',width: 55),
                                       InkWell(
                                         onTap: (){
                                           _showDialog1();
                                         },
-                                          child: Stack(
-                                              children : [
-                                                Container(
-                                                  width: 34, height: 34,
-                                                  decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.circular(30),
-                                                      border: Border.all(color: const Color(0xff62FF2B), width: 1)),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.fromLTRB(6,6,0,0),
-                                                  child: Image.asset('images/message_b.png',width: 22, height: 22,),
-                                                )
-                                              ]
-                                          ),
+                                          child: Image.asset('images/message_b.png',width: 55)
                                       ),
-                                      Stack(
-                                          children : [
-                                            Container(
-                                              width: 34, height: 34,
-                                              decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(30),
-                                                  border: Border.all(color: const Color(0xff62FF2B), width: 1)),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.fromLTRB(6,6,0,0),
-                                              child: Image.asset('images/map_b.png',width: 22, height: 22,),
-                                            )
-                                          ]
-                                      ),
+                                      Image.asset('images/map_b.png',width: 55),
                                     ],
                                   ),
                                 ),
                               )
                             ],
                           ),
-                        ),
-                        SizedBox(
-                          width: 312,
-                          child: Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 18,color: Colors.white))
-                        )
-                      ],
+                          Container(
+                              alignment: Alignment.centerLeft,
+                              child: Text('01012345678',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: const Color(0xffEBFF00)))
+                          ),
+                          Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 18,color: Colors.white))
+                        ],
+                      ),
                     ),
                   ),
                   Container(
-                    width: 324,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0,10,0,8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text('요청사항 메세지',style: TextStyle(fontSize: 18,color: const Color(0xffFFE600)),),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(2,0,0,0),
-                                child: Image.asset('images/mail.png',width: 16, height: 16,),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Container(width: 8,),
-                              Text('초인종 누르지 말아주세요',style: TextStyle(fontSize: 18,color: Colors.white),),
-                            ],
-                          )
-                        ],
-                      ),
-                    )
+                      width: 324,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0,10,0,8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text('요청사항 메세지',style: TextStyle(fontSize: 18,color: const Color(0xffFFE600)),),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(2,0,0,0),
+                                  child: Image.asset('images/mail.png',width: 16, height: 16,),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Container(width: 8,),
+                                Text('초인종 누르지 말아주세요',style: TextStyle(fontSize: 18,color: Colors.white),),
+                              ],
+                            )
+                          ],
+                        ),
+                      )
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0,0,0,8),
@@ -301,11 +242,6 @@ class _DeliveryDeliveryState extends State<DeliveryDelivery> {
                         Text('#1211',style: TextStyle(fontSize: 18,color: Colors.white),),
                       ],
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container( height:1.0,width:344,
-                      color: const Color(0x80DBDBDB),),
                   ),
                 ],
               ),
@@ -358,38 +294,16 @@ class _DeliveryDeliveryState extends State<DeliveryDelivery> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Stack(
-                            children : [
-                              Container(
-                                width: 34, height: 34,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(30),
-                                    border: Border.all(color: const Color(0xff62FF2B), width: 1)),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(7,7,0,0),
-                                child: Image.asset('images/call_b.png',width: 20, height: 20,),
-                              )
-                            ]
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(8,0,0,0),
-                          child: Stack(
-                              children : [
-                                Container(
-                                  width: 34, height: 34,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(30),
-                                      border: Border.all(color: const Color(0xff62FF2B), width: 1)),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(7,7,0,0),
-                                  child: Image.asset('images/message_b.png',width: 20, height: 20,),
-                                )
-                              ]
-                          ),
-                        ),
+                       InkWell(
+                         onTap: (){
+                           Navigator.pop(context);
+                         },
+                           child: Image.asset('images/close.png',width: 20)
+                       ),
+                       Text('간편메세지',style: TextStyle(fontSize: 24,color: AppColor.yellow)),
+                       Container()
                       ],
                     ),
                   ),
@@ -427,32 +341,12 @@ class _DeliveryDeliveryState extends State<DeliveryDelivery> {
                     color: const Color(0x80DBDBDB),),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: 100, height: 48,
-                          child: OutlineButton(onPressed: (){
-                            Navigator.pop(context);
-                          },
-                            child: Text('취소',style: TextStyle(fontSize: 24,color: Colors.white),),
-                            color: const Color(0xff3B4255),
-                            borderSide: BorderSide(
-                                color: Colors.white, width: 2
-                            ),
-                          ),
-                        ),
-
-                        Container(
-                          width: 100, height: 48,
-                          child: RaisedButton(onPressed: (){
-
-                          },
-                            child: Text('확인',style: TextStyle(fontSize: 24),),
-                            color: const Color(0xffFFE600),
-                          ),
-                        ),
-                      ],
+                    child: Container(
+                      height: 48, width: 290,
+                      child: RaisedButton(onPressed: (){},
+                        child: Text('보내기',style: TextStyle(fontSize: 24),),
+                        color: const Color(0xffFFE600),
+                      ),
                     ),
                   )
                 ],
