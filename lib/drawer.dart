@@ -1,8 +1,9 @@
 import 'dart:async';
+import 'dart:isolate';
 
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:ibagudelivery_rider/account_management_page.dart';
 import 'package:ibagudelivery_rider/personal_information_page.dart';
 import 'package:ibagudelivery_rider/setting_page.dart';
 import 'package:ibagudelivery_rider/ui/color.dart';
@@ -13,34 +14,25 @@ import 'bloc/bloc.dart';
 import 'calculate_page.dart';
 import 'notice_page.dart';
 
-class MyDrawer extends StatefulWidget {
-  Bloc bloc;
-
-  MyDrawer(this.bloc);
-
-  @override
-  _MyDrawerState createState() => _MyDrawerState();
-}
-
-class _MyDrawerState extends State<MyDrawer> {
+class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
   SharedPreferences prefs;
   var serial;
   var userfaceImage;
   String _uid;
+  String lat;
+  String long;
   Timer _timer;
   bool workState = false;
   bool isload = false;
+  var a=0;
 
   Future<Position> getCurrentLocation() async {
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    var lat = position.latitude.toString();
-    var long = position.longitude.toString();
-    print(position.latitude);
-    print(position.longitude);
-
+    lat = position.latitude.toString();
+    long = position.longitude.toString();
 
     widget.bloc.updateLocation(serial: serial, lat: lat, long: long).then((res){
-      if(res.success){
+      if(res.success) {
         print('위치 보냄');
       }else{
         print('위치 못보냄');
@@ -50,22 +42,29 @@ class _MyDrawerState extends State<MyDrawer> {
     return position;
   }
 
+
   start(){
     print('출근');
-    widget.bloc.riderOn(serial: serial).then((res){
-      if(res.success){
-        print('출근1');
-        getCurrentLocation();
-        _timer = Timer.periodic(Duration(seconds: 30), (timer) {
+
+    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+      widget.bloc.riderOn(serial: serial).then((res){
+        if(res.success){
+          print('출근1');
           getCurrentLocation();
-        });
-      }else{
-        print('출근2');
-      }
+          // _timer = Timer.periodic(Duration(seconds: 10), (timer) {
+          //   getCurrentLocation();
+          // });
+
+        }else{
+          print('출근2');
+        }
+      });
+      setState(() {
+        workState = true;
+      });
+
     });
-    setState(() {
-      workState = true;
-    });
+
 
   }
 
@@ -91,9 +90,9 @@ class _MyDrawerState extends State<MyDrawer> {
     super.initState();
 
     getCounterFromSharedPrefs();
+    WidgetsBinding.instance.removeObserver(this);
 
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -261,4 +260,13 @@ class _MyDrawerState extends State<MyDrawer> {
       isload = true;
     });
   }
+}
+
+class MyDrawer extends StatefulWidget {
+  Bloc bloc;
+
+  MyDrawer(this.bloc);
+
+  @override
+  _MyDrawerState createState() => _MyDrawerState();
 }

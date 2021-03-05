@@ -20,7 +20,6 @@ class _TabPageState extends State<TabPage> {
   List _pages;
   var _tabcolor1 = const Color(0xffFFE600);
   var _tabcolor2 = Colors.white60;
-  var _tabcolor3 = Colors.white60;
   String _uid;
 
   SharedPreferences prefs;
@@ -29,9 +28,8 @@ class _TabPageState extends State<TabPage> {
   // ignore: must_call_super
   void initState() {
     _pages = [
-      NewOrderList(),
-      DeliveryList(),
-      History(),
+      NewOrderList(widget.bloc),
+      DeliveryList(widget.bloc),
     ];
 
     getCounterFromSharedPrefs();
@@ -52,18 +50,10 @@ class _TabPageState extends State<TabPage> {
         case 0:
           _tabcolor1 = const Color(0xffFFE600);
           _tabcolor2 = Colors.white60;
-          _tabcolor3 = Colors.white60;
       break;
       case 1:
         _tabcolor1 = Colors.white60;
         _tabcolor2 = const Color(0xffFFE600);
-        _tabcolor3 = Colors.white60;
-      break;
-
-      case 2:
-        _tabcolor1 = Colors.white60;
-        _tabcolor2 = Colors.white60;
-        _tabcolor3 = const Color(0xffFFE600);
       break;
 
       default:
@@ -77,16 +67,15 @@ class _TabPageState extends State<TabPage> {
     return MaterialApp(
 
       home: DefaultTabController(
-        length: 3,
+        length: 2,
         child: Scaffold(
           backgroundColor: const Color(0xff20283E),
           appBar: AppBar(
             title: TabBar(
               onTap: _onItemTapped,
               tabs: [
-                Text('신규(12)', style: TextStyle(fontSize: 16,color: _tabcolor1,letterSpacing: -1),textAlign: TextAlign.center,),
+                Text('신규(12)', style: TextStyle(fontSize: 16,color: _tabcolor1),textAlign: TextAlign.center,),
                 Text('배달중(12)', style: TextStyle(fontSize: 16,color: _tabcolor2),textAlign: TextAlign.center,),
-                Text('내역(18)', style: TextStyle(fontSize: 16,color: _tabcolor3,letterSpacing: -1),textAlign: TextAlign.center,),
               ],
               indicatorColor: const Color(0xffFFE600),
             ),

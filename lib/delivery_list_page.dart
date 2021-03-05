@@ -1,13 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:ibagudelivery_rider/delivery_delivery_page.dart';
 import 'package:ibagudelivery_rider/delivery_pick_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'bloc/bloc.dart';
 
 class DeliveryList extends StatefulWidget {
+  Bloc bloc;
+
+  DeliveryList(this.bloc);
+
   @override
   _DeliveryListState createState() => _DeliveryListState();
 }
 
 class _DeliveryListState extends State<DeliveryList> {
+  List orderlist = [];
+  bool _isloadind = true;
+  int _itemCount = 0;
+  var serial;
+  var paytype;
+
+  @override
+  void initState() {
+    super.initState();
+    getCounterFromSharedPrefs();
+  }
+
+  getCounterFromSharedPrefs() async {
+
+    await SharedPreferences.getInstance().then((pref) {
+      serial = pref.getString('serial');
+    });
+
+    await widget.bloc.orderlist(serial: serial).then((res){
+      orderlist = res;
+      _itemCount = orderlist.length;
+    });
+
+    setState(() {
+      _isloadind = false;
+    });
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
@@ -18,29 +55,43 @@ class _DeliveryListState extends State<DeliveryList> {
         child: Column(
           children: [
             Expanded(
-              child: MyListView(),
+              child: _isloadind ? Center(child: CircularProgressIndicator()): MyListView(),
             ),
           ],
         ),
       ),
     );
   }
-}
 
-class MyListView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemBuilder: (context, index) {
-        return InkWell(
-          onTap: (){
-            //Navigator.push(context, MaterialPageRoute(builder: (context) => DeliveryDelivery()));
-            Navigator.push(context, MaterialPageRoute(builder: (context) => DeliveryPick()));
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-                child: Column(
+  MyListView(){
+    return StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        return ListView.builder(
+          itemCount: _itemCount,
+          itemBuilder: (context, int i) {
+            switch(orderlist[i]['pay_type']) {
+              case 'A':
+                paytype = '카드결제';
+                break;
+              case 'B':
+                paytype = '카드결제';
+                break;
+              case 'C':
+                paytype = '카드결제';
+                break;
+              default:
+                break;
+            }
+            return  InkWell(
+              onTap: (){
+                var data = orderlist[i];
+                //Navigator.push(context, MaterialPageRoute(builder: (context) => DeliveryDelivery()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => DeliveryPick(widget.bloc,data : data,serial : serial)));
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  child: Column(
                     children: [
                       Stack(
                         children: [
@@ -55,25 +106,25 @@ class MyListView extends StatelessWidget {
                               children: [
                                 Container(
                                   child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(40,0,5,0),
-                                    child: Text('배달비 3,800원',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
-                                    ),
+                                    padding: const EdgeInsets.fromLTRB(70,0,5,0),
+                                    child: Text('배달비 ${orderlist[i]['rider_delivery_price']}원',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
+                                  ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.fromLTRB(0,0,8,0),
-                                  child: Text('PM 11:52',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
+                                  child: Text('${orderlist[i]['registered_date'].substring(10,16)}',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
                                 ),
                               ],
                             ),
                           ),
                           Container(
                             alignment: Alignment.center,
-                            height: 24, width: 36,
+                            height: 24, width: 66,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
                                 border: Border.all(color: const Color(0xff62FF2B), width: 1),
                                 color: const Color(0xff62FF2B)),
-                            child: Text('카드',style: TextStyle(fontSize: 16, fontFamily: 'cafe24'),),
+                            child: Text('${paytype}',style: TextStyle(fontSize: 16, fontFamily: 'cafe24'),),
                           ),
                         ],
                       ),
@@ -88,15 +139,15 @@ class MyListView extends StatelessWidget {
                               children: [
                                 Container(
                                     alignment: Alignment.centerLeft,
-                                    child: Text('대독장',style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,color: const Color(0xffEBFF00)),)
+                                    child: Text('${orderlist[i]['company_name']}',style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,color: const Color(0xffEBFF00)),)
                                 ),
-                                Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 20,color: Colors.white)),
+                                Text('${orderlist[i]['company_address']}',style: TextStyle(fontSize: 20,color: Colors.white)),
                                 Image.asset('images/arrow1.png',width: 18,),
                                 Container(
                                     alignment: Alignment.centerLeft,
-                                    child: Text('01012341234',style: TextStyle(fontSize: 24,color: const Color(0xffEBFF00)))
+                                    child: Text('${orderlist[i]['user_phone']}',style: TextStyle(fontSize: 24,color: const Color(0xffEBFF00)))
                                 ),
-                                Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 20,color: Colors.white))
+                                Text('${orderlist[i]['user_address']}',style: TextStyle(fontSize: 20,color: Colors.white))
                               ],
                             ),
                           ),
@@ -104,11 +155,13 @@ class MyListView extends StatelessWidget {
                       )
                     ],
                   ),
-            ),
-          ),
+                ),
+              ),
+            );
+          },
         );
       },
-      itemCount: 3,
     );
   }
+
 }

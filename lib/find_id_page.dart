@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ibagudelivery_rider/ui/color.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FindIdPage extends StatefulWidget {
   @override
@@ -8,6 +9,21 @@ class FindIdPage extends StatefulWidget {
 
 class _FindIdPageState extends State<FindIdPage> {
   String idtext = 'a';
+  SharedPreferences prefs;
+  bool _isloadind = true;
+
+  @override
+  void initState() {
+    getCounterFromSharedPrefs();
+  }
+
+  getCounterFromSharedPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      idtext = prefs.getString('findid');
+      _isloadind = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +47,12 @@ class _FindIdPageState extends State<FindIdPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 18, 0),
-                  child: Text(
-                      "가입하신 아이디는\n${idtext}\n입니다.",
-                      style: TextStyle(fontSize: 18, color: Colors.white),textAlign: TextAlign.center,),
+                  child: !_isloadind ? Text(
+                      "가입하신 아이디는\    \n입니다.",
+                      style: TextStyle(fontSize: 18, color: Colors.white),textAlign: TextAlign.center,)
+                  :Text(
+                    "가입하신 아이디는\n${idtext}\n입니다.",
+                    style: TextStyle(fontSize: 18, color: Colors.white),textAlign: TextAlign.center,),
                 )
               ],
             ),
@@ -49,7 +68,10 @@ class _FindIdPageState extends State<FindIdPage> {
                     width: 344,
                     height: 56,
                     child: RaisedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
                         child: Text("로그인하러가기",
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold)),

@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:ibagudelivery_rider/password_change_page.dart';
 import 'package:ibagudelivery_rider/ui/color.dart';
+import 'package:toast/toast.dart';
+
+import 'bloc/bloc.dart';
 
 class FindPassword extends StatefulWidget {
+  Bloc bloc;
+
+  FindPassword(this.bloc);
+
   @override
   _FindPasswordState createState() => _FindPasswordState();
 }
 
 class _FindPasswordState extends State<FindPassword> {
+  TextEditingController id = TextEditingController();
+  TextEditingController phone = TextEditingController();
+  TextEditingController authcode = TextEditingController();
+  bool isAuth = false;
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,6 +54,7 @@ class _FindPasswordState extends State<FindPassword> {
                             child: SizedBox(
                               height: 48,
                               child: TextField(
+                                controller: id,
                                 cursorColor: Colors.white,
                                 style: TextStyle(color: Colors.white),
                                 onChanged: (text) {},
@@ -66,6 +80,7 @@ class _FindPasswordState extends State<FindPassword> {
                             child: SizedBox(
                               height: 48,
                               child: TextField(
+                                controller: phone,
                                 keyboardType: TextInputType.number,
                                 cursorColor: Colors.white,
                                 style: TextStyle(color: Colors.white),
@@ -93,6 +108,13 @@ class _FindPasswordState extends State<FindPassword> {
                                   style: TextStyle(fontSize: 18)),
                               color: Colors.white,
                               onPressed: () {
+                                widget.bloc.getfindSms(num: phone.text).then((res) {
+                                  if (res.success) {
+                                    Toast.show('인증코드가 발송되었습니다.', context);
+                                  } else {
+                                    Toast.show(res.errorMsg, context);
+                                  }
+                                });
                               },
                             ),
                           )
@@ -115,6 +137,7 @@ class _FindPasswordState extends State<FindPassword> {
                             child: SizedBox(
                               height: 48,
                               child: TextField(
+                                controller: authcode,
                                 cursorColor: Colors.white,
                                 style: TextStyle(color: Colors.white),
                                 onChanged: (text) {},
@@ -140,7 +163,16 @@ class _FindPasswordState extends State<FindPassword> {
                             child: Text("인증코드 확인",
                                 style: TextStyle(fontSize: 18, color: Colors.white)),
                             onPressed: () {
-
+                              widget.bloc.findcheckauthcodePw(authcode: authcode.text, phone: phone.text).then((res) {
+                                if (res.success) {
+                                  Toast.show('인증 되었습니다.', context);
+                                  setState(() {
+                                    isAuth = true;
+                                  });
+                                } else {
+                                  Toast.show(res.errorMsg, context);
+                                }
+                              });
                             },
                           ),
                         )
@@ -155,18 +187,30 @@ class _FindPasswordState extends State<FindPassword> {
               child: SizedBox(
                 width: 344,
                 height: 56,
-                child: OutlineButton(
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => PasswordChange()));
+                child:isAuth?RaisedButton(
+                  onPressed: () async {
+                    //Navigator.push(context, MaterialPageRoute(builder: (context) => PasswordChange()));
+                    widget.bloc.findcheckIdAuth(phone: phone.text,id: id.text).then((res) {
+                      if (res.success) {
+                        Toast.show('인증 되었습니다.', context);
+                        setState(() {
+                          isAuth = true;
+                        });
+                        var data = res.data;
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => PasswordChange(widget.bloc,data: data,)));
+                      } else {
+                        Toast.show(res.errorMsg, context);
+                      }
+                    });
                   },
+                  child: Text("다음",style:TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   color: AppColor.yellow,
-                  child: Text("다음",
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: AppColor.yellow)),
+                ):OutlineButton(
+                  onPressed: () {},
+                  color: AppColor.yellow,
+                  child: Text("다음",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: AppColor.yellow)),
                   borderSide: BorderSide(color: AppColor.yellow),
-                ),
+                )
               ),
             ),
           ],

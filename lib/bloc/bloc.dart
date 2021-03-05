@@ -24,9 +24,15 @@ class Bloc with ChangeNotifier {
   String place;
   SharedPreferences pref;
   Notice notice = Notice();
+  bool isdev = true;
 
 
   Bloc() {
+    if (isdev){
+      baseURL = 'http://13.125.11.129:8080/busan_donggu_web/api/rider';
+    } else{
+      baseURL = 'http://ibagudelivery.com/api/rider';
+    }
     fcm.getToken().then((value) {
       this.token = value;
       print(token);
@@ -153,7 +159,7 @@ class Bloc with ChangeNotifier {
     print(id);
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL2 + "/id_check"), body: params);
+        Uri.encodeFull(baseURL + "/id_check"), body: params);
     isLoading = false;
     print(response.body);
     if (response.statusCode == 200) {
@@ -340,6 +346,34 @@ class Bloc with ChangeNotifier {
     return res;
   }
 
+  // Future<ResponseData> updateLocation({String serial, String lat, String long}) async {
+  //   ResponseData res = ResponseData();
+  //   Map<String, dynamic> params = Map<String, String>();
+  //   params["serial"] = serial;
+  //   params["latitude"] = lat;
+  //   params["longitude"] = long;
+  //
+  //   isLoading = true;
+  //   var response = await http.post(
+  //       Uri.encodeFull(baseURL + "/onLocation"), body: params);
+  //   isLoading = false;
+  //   print(response.body);
+  //   if (response.statusCode == 200) {
+  //     dynamic jsonObj = json.decode(response.body);
+  //     String code = jsonObj['code'];
+  //     if (code == "S01") {
+  //       res.success = true;
+  //     } else {
+  //       res.success = false;
+  //       res.errorMsg = jsonObj['message'];
+  //     }
+  //   } else {
+  //     res.success = false;
+  //     res.errorMsg = "http response code=${response.statusCode}";
+  //   }
+  //   return res;
+  // }
+
   Future<ResponseData> updateLocation({String serial, String lat, String long}) async {
     ResponseData res = ResponseData();
     Map<String, dynamic> params = Map<String, String>();
@@ -507,7 +541,316 @@ class Bloc with ChangeNotifier {
     return res;
   }
 
+  Future<ResponseData> getfindSms({var num}) async {
+    ResponseData res = ResponseData();
+    Map<String, dynamic> params = Map<String, String>();
+    params["phone"] = num;
+    isLoading = true;
+    var response = await http.post(
+        Uri.encodeFull(baseURL + "/find/sendauthcode"), body: params);
+    isLoading = false;
+    print(response.body);
+    if (response.statusCode == 200) {
+      dynamic jsonObj = json.decode(response.body);
+      String code = jsonObj['code'];
+      if (code == "S01") {
+        res.success = true;
+      } else {
+        res.success = false;
+        res.errorMsg = jsonObj['message'];
+      }
+    } else {
+      res.success = false;
+      res.errorMsg = "http response code=${response.statusCode}";
+    }
+    return res;
+  }
 
+  Future<ResponseData> findcheckauthcode({String phone, String authcode}) async {
+    ResponseData res = ResponseData();
+    Map<String, dynamic> params = Map<String, String>();
+    params["phone"] = phone;
+    params["authcode"] = authcode;
+
+    isLoading = true;
+    var response = await http.post(
+        Uri.encodeFull(baseURL + "/find/checkauthcode"), body: params);
+    isLoading = false;
+    print(response.body);
+    if (response.statusCode == 200) {
+      dynamic jsonObj = json.decode(response.body);
+      String code = jsonObj['code'];
+      if (code == "S01") {
+        res.success = true;
+        pref.setString("findid", jsonObj['data']);
+      } else {
+        res.success = false;
+        res.errorMsg = jsonObj['message'];
+        print(res.errorMsg);
+      }
+    } else {
+      res.success = false;
+      res.errorMsg = "http response code=${response.statusCode}";
+    }
+    return res;
+  }
+
+  Future<ResponseData> findcheckIdAuth({String phone,String id}) async {
+    ResponseData res = ResponseData();
+    Map<String, dynamic> params = Map<String, String>();
+    params["phone"] = phone;
+    params["id"] = id;
+
+    isLoading = true;
+    var response = await http.post(
+        Uri.encodeFull(baseURL + "/find/checkIdAuth"), body: params);
+    isLoading = false;
+    print(response.body);
+    if (response.statusCode == 200) {
+      dynamic jsonObj = json.decode(response.body);
+      String code = jsonObj['code'];
+      if (code == "S01") {
+        res.success = true;
+        res.data = jsonObj['data'];
+      } else {
+        res.success = false;
+        res.errorMsg = jsonObj['message'];
+      }
+    } else {
+      res.success = false;
+      res.errorMsg = "http response code=${response.statusCode}";
+    }
+    return res;
+  }
+
+  Future<ResponseData> findcheckauthcodePw({var phone,var authcode}) async {
+    ResponseData res = ResponseData();
+    Map<String, dynamic> params = Map<String, String>();
+    params["phone"] = phone;
+    params["authcode"] = authcode;
+
+    isLoading = true;
+    var response = await http.post(
+        Uri.encodeFull(baseURL + "/find/checkauthcodePw"), body: params);
+    isLoading = false;
+    print(response.body);
+    if (response.statusCode == 200) {
+      dynamic jsonObj = json.decode(response.body);
+      String code = jsonObj['code'];
+      if (code == "S01") {
+        res.success = true;
+      } else {
+        res.success = false;
+        res.errorMsg = jsonObj['message'];
+      }
+    } else {
+      res.success = false;
+      res.errorMsg = "http response code=${response.statusCode}";
+    }
+    return res;
+  }
+
+  Future<ResponseData> findchangePw({String pw,String serial}) async {
+    ResponseData res = ResponseData();
+    Map<String, dynamic> params = Map<String, String>();
+    params["pw"] = pw;
+    params["serial"] = serial;
+
+    print('aa');
+    print(pw);
+    print(serial);
+    print('aa');
+
+    isLoading = true;
+    var response = await http.post(
+        Uri.encodeFull(baseURL + "/find/changePw"), body: params);
+    isLoading = false;
+    print(response.body);
+    if (response.statusCode == 200) {
+      dynamic jsonObj = json.decode(response.body);
+      String code = jsonObj['code'];
+      if (code == "S01") {
+        res.success = true;
+      } else {
+        res.success = false;
+        res.errorMsg = jsonObj['message'];
+      }
+    } else {
+      res.success = false;
+      res.errorMsg = "http response code=${response.statusCode}";
+    }
+    return res;
+  }
+
+  Future<List> orderlist({String serial}) async {
+    List orderlist = [];
+    ResponseData res = ResponseData();
+    Map<String, dynamic> params = Map<String, String>();
+    params["serial"] = serial;
+
+    isLoading = true;
+    var response = await http.post(
+        Uri.encodeFull(baseURL + "/order_list"), body: params);
+    isLoading = false;
+    print(response.body);
+    if (response.statusCode == 200) {
+      dynamic jsonObj = json.decode(response.body);
+      String code = jsonObj['code'];
+      if (code == "S01") {
+        res.success = true;
+        orderlist = jsonObj['data'];
+      } else {
+        res.success = false;
+        res.errorMsg = jsonObj['message'];
+      }
+    } else {
+      res.success = false;
+      res.errorMsg = "http response code=${response.statusCode}";
+    }
+    return orderlist;
+  }
+
+  Future<Map> orderdetail({String serial,String request_serial}) async {
+    Map orderdetail = {};
+    ResponseData res = ResponseData();
+    Map<String, dynamic> params = Map<String, String>();
+    params["serial"] = serial;
+    params["request_serial"] = request_serial;
+
+    isLoading = true;
+    var response = await http.post(
+        Uri.encodeFull(baseURL + "/order_detail"), body: params);
+    isLoading = false;
+    print(response.body);
+    if (response.statusCode == 200) {
+      dynamic jsonObj = json.decode(response.body);
+      String code = jsonObj['code'];
+      if (code == "S01") {
+        res.success = true;
+        orderdetail = jsonObj['data'];
+      } else {
+        res.success = false;
+        res.errorMsg = jsonObj['message'];
+      }
+    } else {
+      res.success = false;
+      res.errorMsg = "http response code=${response.statusCode}";
+    }
+    return orderdetail;
+  }
+
+  Future<ResponseData> acceptorder({String requestserial,String orderserial,String serial}) async {
+    ResponseData res = ResponseData();
+    Map<String, dynamic> params = Map<String, String>();
+
+    params["request_serial"] = requestserial;
+    params["order_serial"] = orderserial;
+    params["serial"] = serial;
+
+    isLoading = true;
+    var response = await http.post(
+        Uri.encodeFull(baseURL + "/accept_order"), body: params);
+    isLoading = false;
+    print(response.body);
+    if (response.statusCode == 200) {
+      dynamic jsonObj = json.decode(response.body);
+      String code = jsonObj['code'];
+      if (code == "S01") {
+        res.success = true;
+      } else {
+        res.success = false;
+        res.errorMsg = jsonObj['message'];
+      }
+    } else {
+      res.success = false;
+      res.errorMsg = "http response code=${response.statusCode}";
+    }
+    return res;
+  }
+
+  Future<ResponseData> pickUp({String requestserial,String serial}) async {
+    ResponseData res = ResponseData();
+    Map<String, dynamic> params = Map<String, String>();
+
+    params["request_serial"] = requestserial;
+    params["serial"] = serial;
+
+    isLoading = true;
+    var response = await http.post(
+        Uri.encodeFull(baseURL + "/pickUp"), body: params);
+    isLoading = false;
+    print(response.body);
+    if (response.statusCode == 200) {
+      dynamic jsonObj = json.decode(response.body);
+      String code = jsonObj['code'];
+      if (code == "S01") {
+        res.success = true;
+      } else {
+        res.success = false;
+        res.errorMsg = jsonObj['message'];
+      }
+    } else {
+      res.success = false;
+      res.errorMsg = "http response code=${response.statusCode}";
+    }
+    return res;
+  }
+
+  Future<ResponseData> finishdelivery({String requestserial,String serial}) async {
+    ResponseData res = ResponseData();
+    Map<String, dynamic> params = Map<String, String>();
+
+    params["request_serial"] = requestserial;
+    params["serial"] = serial;
+
+    isLoading = true;
+    var response = await http.post(
+        Uri.encodeFull(baseURL + "/finish_delivery"), body: params);
+    isLoading = false;
+    print(response.body);
+    if (response.statusCode == 200) {
+      dynamic jsonObj = json.decode(response.body);
+      String code = jsonObj['code'];
+      if (code == "S01") {
+        res.success = true;
+      } else {
+        res.success = false;
+        res.errorMsg = jsonObj['message'];
+      }
+    } else {
+      res.success = false;
+      res.errorMsg = "http response code=${response.statusCode}";
+    }
+    return res;
+  }
+
+  Future<ResponseData> sendmessage({String phone,String rider_message}) async {
+    ResponseData res = ResponseData();
+    Map<String, dynamic> params = Map<String, String>();
+
+    params["phone"] = phone;
+    params["rider_message"] = rider_message;
+
+    isLoading = true;
+    var response = await http.post(
+        Uri.encodeFull(baseURL + "/send_message"), body: params);
+    isLoading = false;
+    print(response.body);
+    if (response.statusCode == 200) {
+      dynamic jsonObj = json.decode(response.body);
+      String code = jsonObj['code'];
+      if (code == "S01") {
+        res.success = true;
+      } else {
+        res.success = false;
+        res.errorMsg = jsonObj['message'];
+      }
+    } else {
+      res.success = false;
+      res.errorMsg = "http response code=${response.statusCode}";
+    }
+    return res;
+  }
 
 
 }

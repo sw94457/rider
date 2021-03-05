@@ -151,8 +151,16 @@ class _PersonalInformationState extends State<PersonalInformation> {
                                     child: Container(
                                           width: 92,height: 48,
                                           child: RaisedButton(
-                                            onPressed: () {
-                                              Navigator.push(context, MaterialPageRoute(builder: (context) => PhoneUpdate(widget.bloc)));
+                                            onPressed: () async {
+                                              final result = await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => PhoneUpdate(widget.bloc)),
+                                              );
+                                              print(result);
+                                              setState(() {
+                                                phone.text = result;
+                                              });
+
                                             },
                                             child: Text('변경하기',
                                               style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,letterSpacing: -2),
@@ -165,56 +173,6 @@ class _PersonalInformationState extends State<PersonalInformation> {
                             ],
                           ),
                         ),
-                        Container(
-                          width: 312,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 18, 0, 8),
-                                child: Text("면허증번호",
-                                    style: TextStyle(fontSize: 18, color: Colors.white)),
-                              ),
-                              Row(
-                                children: [
-                                  Container(
-                                    height: 48,
-                                    width: 208,
-                                    child: TextField(
-                                      keyboardType: TextInputType.number,
-                                      cursorColor: Colors.white,
-                                      decoration: InputDecoration(
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.white, width: 2.0),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.white, width: 2.0),
-                                        ),
-                                      ),
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                    const EdgeInsets.fromLTRB(12, 0, 0, 0),
-                                    child: Container(
-                                        width: 92,height: 48,
-                                        child: RaisedButton(
-                                          onPressed: () {
-                                          },
-                                          child: Text('변경하기',
-                                            style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,letterSpacing: -2),
-                                          ),
-                                          color: Colors.white,
-                                        )),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                        )
                       ],
                     ),
                   ),

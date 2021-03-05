@@ -157,7 +157,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
               child: Container(width: 344,height: 56,
                   child:isAuth?RaisedButton(
                     onPressed: () {
-
+                      Navigator.pop(context, phone.text);
                     },
                     child: Text("수정하기",style:TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                     color: AppColor.yellow,

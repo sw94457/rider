@@ -398,7 +398,7 @@ class _SettingState extends State<Setting>  {
                       ),
                       Container(
                           alignment: Alignment.centerLeft,
-                          child: Text('${textcounter}/80 byte',style: TextStyle(fontSize: 20,color: _textcolor),)
+                          child: Text('${textcounter}/40 byte',style: TextStyle(fontSize: 20,color: _textcolor),)
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0,8,0,0),
@@ -409,11 +409,11 @@ class _SettingState extends State<Setting>  {
                           child: TextField(
                             maxLines: 4,minLines: 1,
                             style: TextStyle(color: Colors.white),
-                            controller: myController, maxLength: 80,
+                            controller: myController, maxLength: 40,
                             onChanged: (text){
                               setState(() {
                                 textcounter = text.length;
-                                if (text.length >= 80){
+                                if (text.length >= 40){
                                   _visibletext = true;
                                   _textcolor = const Color(0xffFFE600);
                                 } else {

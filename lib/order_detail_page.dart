@@ -1,14 +1,87 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ibagudelivery_rider/bloc/bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toast/toast.dart';
 
 class OrderDetail extends StatefulWidget {
+  Bloc bloc;
+  var data;
+
+  OrderDetail(this.bloc, {Key key,this.data}) : super(key: key);
+
   @override
   _OrderDetailState createState() => _OrderDetailState();
 }
 
 class _OrderDetailState extends State<OrderDetail> {
+  Map detaillist = {};
+  bool _isloadind = true;
+  SharedPreferences prefs;
+  var serial;
+  var memo='';
+  var paytype;
+
+  orderdetailcall() async {
+
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      serial = prefs.getString('serial');
+    });
+
+    await widget.bloc.orderdetail(serial: serial,request_serial: widget.data.toString()).then((res){
+      detaillist = res;
+    });
+
+    setState(() {
+      _isloadind = false;
+
+    });
+
+    if (detaillist['rider_memo'] != ''){
+      setState(() {
+        memo = detaillist['rider_memo'];
+      });
+    }
+    print(detaillist);
+
+    switch(detaillist['pay_type']) {
+      case 'A':
+        paytype = '카드결제';
+        break;
+      case 'B':
+        paytype = '카드결제';
+        break;
+      case 'C':
+        paytype = '카드결제';
+        break;
+      default:
+        break;
+    }
+
+  }
+
+  acceptorder(){
+    widget.bloc.acceptorder(serial: serial,orderserial: detaillist['order_serial'],requestserial: detaillist['serial']).then((res){
+      if (res.success) {
+        Toast.show('수락 되었습니다.', context);
+      } else {
+        Toast.show(res.errorMsg, context);
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    orderdetailcall();
+
+  }
+
   @override
   Widget build(BuildContext context) {
+    var screen = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: const Color(0xff20283E),
       appBar: AppBar(
@@ -18,7 +91,7 @@ class _OrderDetailState extends State<OrderDetail> {
         ),
       ),
       body: SingleChildScrollView(
-        child: Container(
+        child: _isloadind ? Center(child: CircularProgressIndicator()) : Container(
           alignment: Alignment.center,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -26,167 +99,190 @@ class _OrderDetailState extends State<OrderDetail> {
               Container(
                 child: Column(
                   children: [
-                    Container(
-                      width: 344,
-                      child: Stack(
-                        children: [
-                          Container(
-                            height: 24,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                border: Border.all(color: const Color(0xffFF2098), width: 1),
-                                color: const Color(0xffFF2098)),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  child: Row(
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8,0,8,0),
+                      child: Container(
+                        child: Stack(
+                          children: [
+                            Container(
+                              height: 24,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(color: const Color(0xffFF2020), width: 1),
+                                  color: const Color(0xffFF2020)),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(70,0,5,0),
+                                          child: Text('${detaillist['final_price']}원',style: TextStyle(fontSize: 16,)),
+                                        ),
+                                        Text('배달비 ${detaillist['rider_delivery_price']}원',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.white)),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(0,0,8,0),
+                                    child: Text('7분전',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              alignment: Alignment.center,
+                              height: 24, width: 66,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(color: const Color(0xff62FF2B), width: 1),
+                                  color: const Color(0xff62FF2B)),
+                              child: Text('${paytype}',style: TextStyle(fontSize: 16, fontFamily: 'cafe24'),),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8,0,8,0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(color: const Color(0xff9C9C9C), width: 1)),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Container(
+                                            width: 45, height: 20, alignment: Alignment.bottomCenter,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(10),
+                                                border: Border.all(color: const Color(0xffC4C4C4), width: 1),color: const Color(0xffC4C4C4)),
+                                            child: Text('출발지',style: TextStyle(fontSize: 14, fontFamily: 'cafe24'),textAlign: TextAlign.center,)
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(5,0,0,0),
+                                          child: Text('290M',style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: const Color(0xffEBFF00))),
+                                        ),
+                                      ],
+                                    ),
+                                    Text('${detaillist['company_name']}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: const Color(0xffEBFF00)),),
+                                    Container()
+                                  ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text('${detaillist['company_address']}',style: TextStyle(fontSize: 18,color: Colors.white))
+                              ),
+                            )
+                        ],
+                      ),
+                  ),
+                    ),
+                    Image.asset('images/arrow.png',width: 24,),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8,0,8,0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(color: const Color(0xff9C9C9C), width: 1)),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                                     children: [
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(40,0,5,0),
-                                        child: Text('29,800원',style: TextStyle(fontSize: 16,)),
+                                      Container(
+                                          width: 45, height: 20, alignment: Alignment.bottomCenter,
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(10),
+                                              border: Border.all(color: const Color(0xffC4C4C4), width: 1),color: const Color(0xffC4C4C4)),
+                                          child: Text('도착지',style: TextStyle(fontSize: 14, fontFamily: 'cafe24'),textAlign: TextAlign.center,)
                                       ),
-                                      Text('배달비 3,800원',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(5,0,0,0),
+                                        child: Text('300M',style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: const Color(0xff62FF2B))),
+                                      ),
                                     ],
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(0,0,8,0),
-                                  child: Text('7분전',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
-                                ),
-                              ],
+                                  Text('${detaillist['user_phone']}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: const Color(0xffEBFF00)),),
+                                  Container()
+                                ],
+                              ),
                             ),
-                          ),
-                          Container(
-                            alignment: Alignment.center,
-                            height: 24, width: 36,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                border: Border.all(color: const Color(0xff62FF2B), width: 1),
-                                color: const Color(0xff62FF2B)),
-                            child: Text('카드',style: TextStyle(fontSize: 16, fontFamily: 'cafe24'),),
-                          ),
-                        ],
+                            Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Container(
+                                alignment: Alignment.centerLeft,
+                                  child: Text('${detaillist['user_address']}',style: TextStyle(fontSize: 18,color: Colors.white))
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(color: const Color(0xff9C9C9C), width: 1)),
-                      width: 344, height: 106,
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(15,12,0,5),
-                            child: Row(
-                              children: [
-                                Image.asset('images/Group 7.png'),
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(5,0,45,0),
-                                  child: Text('290M',style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: const Color(0xffEBFF00)),),
-                                  ),
-                                Text('대독장',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: const Color(0xffEBFF00)),)
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            width: 312,
-                            child: Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 18,color: Colors.white))
-                          )
-                      ],
-                    ),
-                  ),
-                    Image.asset('images/arrow.png',width: 24,),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(color: const Color(0xff9C9C9C), width: 1)),
-                      width: 344, height: 106,
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(15,12,0,5),
-                            child: Row(
-                              children: [
-                                Image.asset('images/Group 8.png'),
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(5,0,45,0),
-                                  child: Text('300M',style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: const Color(0xff62FF2B)),),
-                                ),
-                                Text('01012341234',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: const Color(0xffEBFF00)),)
-                            ],
-                      ),
-                    ),
-                           SizedBox(
-                      width: 312,
-                      child: Text('부산시 부산진구 동천로116 한신밴오피스텔 1018호',style: TextStyle(fontSize: 18,color: Colors.white))
-                    )
-                  ],
-                ),
-              ),
-                    Container(
-                width: 324,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text('요청사항 메세지',style: TextStyle(fontSize: 18,color: const Color(0xffFFE600)),),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(2,0,0,0),
-                            child: Image.asset('images/mail.png',width: 16, height: 16,),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Container(width: 8,),
-                          Text('초인종 누르지 말아주세요',style: TextStyle(fontSize: 18,color: Colors.white),),
-                        ],
-                      )
-                    ],
-                  )
-              ),
-                    Container( height:1.0,
-                width:344,
-                color: const Color(0xffDBDBDB),),
-                    Container(
-                width: 344,
-                child: Row(
-                  children: [
-                    Text('접수번호',style: TextStyle(fontSize: 18,color: const Color(0xffFFE600)),),
-                    Container(width: 34,),
-                    Text('#1211',style: TextStyle(fontSize: 18,color: Colors.white),),
-                  ],
-                ),
-              ),
-                    Container( height:1.0,
-                width:344,
-                color: const Color(0xffDBDBDB),),
-                    Container(
-                child: Column(
-                  children: [
-                    SizedBox(
-                    width: 344 ,
-                        child: Text('지도보기',style: TextStyle(fontSize: 18,color: const Color(0xffFFE600)),)),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
-                        width: 338, height: 338,
-                        color: Colors.orange,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                                children: [
+                                  Text('요청사항 메세지',style: TextStyle(fontSize: 20,color: const Color(0xffFFE600)),),
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(2,0,0,0),
+                                    child: Image.asset('images/mail.png',width: 16, height: 16,),
+                                  ),
+                                ],
+                              ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(10,0,0,0),
+                              child: Text('${memo}',style: TextStyle(fontSize: 20,color: Colors.white)),
+                            ),
+                            Container( height:1.0,color: const Color(0xffDBDBDB)),
+                            Row(
+                              children: [
+                                Text('접수번호',style: TextStyle(fontSize: 18,color: const Color(0xffFFE600)),),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(26,0,0,0),
+                                  child: Text('#${detaillist['order_serial']}',style: TextStyle(fontSize: 20,color: Colors.white),),
+                                ),
+                              ],
+                            ),
+                            Container( height:1.0,color: const Color(0xffDBDBDB)),
+                            Text('지도보기',style: TextStyle(fontSize: 20,color: const Color(0xffFFE600)),)
+                          ],
+                       )
                       ),
                     ),
-
-                  ],
-                ),
-              )
+                   Padding(
+                     padding: const EdgeInsets.all(8.0),
+                     child: Container(
+                       height: 338,color: Colors.orange,
+                     ),
+                   ),
                   ],
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
-                  width: 344, height: 56,
+                  width: screen-16, height: 56,
                   child: RaisedButton(onPressed: (){
                     _showDialog1();
                   },
@@ -200,6 +296,7 @@ class _OrderDetailState extends State<OrderDetail> {
       ),
     );
   }
+
   void _showDialog1() {
     showDialog(
       context: context,
@@ -208,7 +305,7 @@ class _OrderDetailState extends State<OrderDetail> {
         return AlertDialog(
             backgroundColor: const Color(0xff3B4255),
             content: Container(
-              width: 328, height: 140,
+              height: 140,
               child: Column(
                 children: [
                   Padding(
@@ -233,9 +330,9 @@ class _OrderDetailState extends State<OrderDetail> {
 
                       Container(
                         width: 110, height: 48,
-                        child: RaisedButton(onPressed: (){
+                        child: RaisedButton(onPressed: () async {
+                          await acceptorder();
                           Navigator.pop(context);
-
                         },
                           child: Text('확인',style: TextStyle(fontSize: 24),),
                           color: const Color(0xffFFE600),
@@ -250,4 +347,6 @@ class _OrderDetailState extends State<OrderDetail> {
       },
     );
   }
+
+
 }

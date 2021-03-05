@@ -2,6 +2,7 @@ class ResponseData{
   bool success;
   String errorMsg;
   String code;
+  dynamic data;
 }
 
 class ResponseData2 {

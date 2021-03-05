@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:ibagudelivery_rider/bloc/bloc.dart';
 import 'package:ibagudelivery_rider/find_id.dart';
 import 'package:ibagudelivery_rider/find_password.dart';
 import 'package:ibagudelivery_rider/ui/color.dart';
 
 class FindTab extends StatefulWidget {
+  Bloc bloc;
+
+  FindTab(this.bloc);
+
   @override
   _FindTabState createState() => _FindTabState();
 }
@@ -40,8 +45,8 @@ class _FindTabState extends State<FindTab> {
   // ignore: must_call_super
   void initState() {
     _pages = [
-      FindId(),
-      FindPassword(),
+      FindId(widget.bloc),
+      FindPassword(widget.bloc),
     ];
 
   }

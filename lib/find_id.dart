@@ -1,13 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:ibagudelivery_rider/find_id_page.dart';
+import 'package:ibagudelivery_rider/find_tab_page.dart';
 import 'package:ibagudelivery_rider/ui/color.dart';
+import 'package:toast/toast.dart';
+
+import 'bloc/bloc.dart';
 
 class FindId extends StatefulWidget {
+  Bloc bloc;
+
+  FindId(this.bloc);
+
   @override
   _FindIdState createState() => _FindIdState();
 }
 
 class _FindIdState extends State<FindId> {
+  TextEditingController phone = TextEditingController();
+  TextEditingController authcode = TextEditingController();
+  bool isAuth = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,6 +54,7 @@ class _FindIdState extends State<FindId> {
                             child: SizedBox(
                               height: 48,
                               child: TextField(
+                                controller: phone,
                                 keyboardType: TextInputType.number,
                                 cursorColor: Colors.white,
                                 style: TextStyle(color: Colors.white),
@@ -69,6 +82,13 @@ class _FindIdState extends State<FindId> {
                                   style: TextStyle(fontSize: 18)),
                               color: Colors.white,
                               onPressed: () {
+                                widget.bloc.getfindSms(num: phone.text).then((res) {
+                                  if (res.success) {
+                                    Toast.show('인증코드가 발송되었습니다.', context);
+                                  } else {
+                                    Toast.show(res.errorMsg, context);
+                                  }
+                                });
                               },
                             ),
                           )
@@ -91,6 +111,7 @@ class _FindIdState extends State<FindId> {
                             child: SizedBox(
                               height: 48,
                               child: TextField(
+                                controller: authcode,
                                 cursorColor: Colors.white,
                                 style: TextStyle(color: Colors.white),
                                 onChanged: (text) {},
@@ -116,7 +137,16 @@ class _FindIdState extends State<FindId> {
                             child: Text("인증코드 확인",
                                 style: TextStyle(fontSize: 18, color: Colors.white)),
                             onPressed: () {
-
+                              widget.bloc.findcheckauthcode(phone : phone.text, authcode : authcode.text).then((res) {
+                                if (res.success) {
+                                  Toast.show('인증 되었습니다.', context);
+                                  setState(() {
+                                    isAuth = true;
+                                  });
+                                } else {
+                                  Toast.show(res.errorMsg, context);
+                                }
+                              });
                             },
                           ),
                         )
@@ -131,16 +161,16 @@ class _FindIdState extends State<FindId> {
               child: SizedBox(
                 width: 344,
                 height: 56,
-                child: OutlineButton(
-                  onPressed: () {
+                child: isAuth?RaisedButton(
+                  onPressed: () async {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => FindIdPage()));
                   },
+                  child: Text("다음",style:TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   color: AppColor.yellow,
-                  child: Text("다음",
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: AppColor.yellow)),
+                ):OutlineButton(
+                  onPressed: () {},
+                  color: AppColor.yellow,
+                  child: Text("다음",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: AppColor.yellow)),
                   borderSide: BorderSide(color: AppColor.yellow),
                 ),
               ),

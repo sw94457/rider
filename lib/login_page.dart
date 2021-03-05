@@ -152,7 +152,7 @@ class _LoginpageState extends State<Loginpage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextButton(onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => FindTab()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => FindTab(widget.bloc)));
                   },
                       child: Text('아이디/비밀번호 찾기',style: TextStyle(fontSize: 18,color: Colors.white,decoration:
                   TextDecoration.underline),)),

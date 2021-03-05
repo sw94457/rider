@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:ibagudelivery_rider/bloc/bloc.dart';
 import 'package:ibagudelivery_rider/find_password_page.dart';
 import 'package:ibagudelivery_rider/ui/color.dart';
+import 'package:toast/toast.dart';
 
 class PasswordChange extends StatefulWidget {
+  Bloc bloc;
+  var data;
+  PasswordChange(this.bloc, {Key key,this.data}) : super(key: key);
+
   @override
   _PasswordChangeState createState() => _PasswordChangeState();
 }
@@ -10,6 +16,11 @@ class PasswordChange extends StatefulWidget {
 class _PasswordChangeState extends State<PasswordChange> {
   TextEditingController pw = TextEditingController();
   TextEditingController pw2 = TextEditingController();
+
+
+  @override
+  void initState() {
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,8 +129,15 @@ class _PasswordChangeState extends State<PasswordChange> {
                     height: 56,
                     child: OutlineButton(
                       onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => FindPasswordPage()));
+                        widget.bloc.findchangePw(pw: pw.text,serial : widget.data.toString()).then((res) {
+                          if (res.success) {
+                            Toast.show('변경 되었습니다.', context);
+                            Navigator.pop(context);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => FindPasswordPage()));
+                          } else {
+                            Toast.show(res.errorMsg, context);
+                          }
+                        });
                       },
                       color: AppColor.yellow,
                       child: Text("다음",
