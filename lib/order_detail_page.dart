@@ -38,7 +38,7 @@ class _OrderDetailState extends State<OrderDetail> {
 
     });
 
-    if (detaillist['rider_memo'] != ''){
+    if (detaillist['rider_memo'] != '' && detaillist['rider_memo'] != null){
       setState(() {
         memo = detaillist['rider_memo'];
       });

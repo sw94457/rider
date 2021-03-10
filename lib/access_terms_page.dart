@@ -150,7 +150,7 @@ class _AaccessTermsState extends State<AaccessTerms> {
               Padding(
                 padding: EdgeInsets.fromLTRB(0, 0, 0, 8),
                 child: SizedBox(
-                  width: 344,
+                  width: screen.width-16,
                   height: 56,
                   child: (_checkbox1 && _checkbox2 && _checkbox3)?
                   RaisedButton(

@@ -1,11 +1,12 @@
 import 'dart:ui';
-
+import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ibagudelivery_rider/order_detail_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'bloc/bloc.dart';
+final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
 class NewOrderList extends StatefulWidget {
   Bloc bloc;
@@ -37,9 +38,11 @@ class _NewOrderListState extends State<NewOrderList> {
      serial = pref.getString('serial');
     });
 
-    await widget.bloc.orderlist(serial: serial).then((res){
+    await widget.bloc.orderlist(serial: serial).then((res) async {
       orderlist = res;
       _itemCount = orderlist.length;
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setInt('orderlistcount', _itemCount);
     });
 
     setState(() {
@@ -47,6 +50,37 @@ class _NewOrderListState extends State<NewOrderList> {
     });
 
   }
+
+  void firebaseCloudMessaging_Listeners() {
+    if (Platform.isIOS) iOS_Permission();
+
+    _firebaseMessaging.getToken().then((token) {
+      print('token:' + token);
+    });
+
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print('on message $message');
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print('on resume $message');
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print('on launch $message');
+      },
+    );
+  }
+
+  void iOS_Permission() {
+    _firebaseMessaging.requestNotificationPermissions(
+        IosNotificationSettings(sound: true, badge: true, alert: true));
+    _firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {
+      print("Settings registered: $settings");
+    });
+  }
+
+
 
   @override
   Widget build(BuildContext context) {

@@ -21,6 +21,7 @@ class _PhoneAuthentState extends State<PhoneAuthent> {
 
   @override
   Widget build(BuildContext context) {
+    Size screen = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: const Color(0xff20283E),
       appBar: AppBar(
@@ -48,7 +49,7 @@ class _PhoneAuthentState extends State<PhoneAuthent> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 36, 0, 0),
                     child: SizedBox(
-                      width: 312,
+                      width: screen.width-48,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -81,7 +82,7 @@ class _PhoneAuthentState extends State<PhoneAuthent> {
                             ),
                           ),
                           SizedBox(
-                            width: 312,
+                            width: screen.width-48,
                             height: 48,
                             child: RaisedButton(
                               child: Text("인증코드 받기",
@@ -111,7 +112,7 @@ class _PhoneAuthentState extends State<PhoneAuthent> {
                             style:
                                 TextStyle(fontSize: 16, color: Colors.white)),
                         SizedBox(
-                          width: 312,
+                          width: screen.width-48,
                           child: Padding(
                             padding: EdgeInsets.fromLTRB(0, 17, 0, 16),
                             child: SizedBox(
@@ -136,7 +137,7 @@ class _PhoneAuthentState extends State<PhoneAuthent> {
                           ),
                         ),
                         SizedBox(
-                          width: 312,
+                          width: screen.width-48,
                           height: 48,
                           child: RaisedButton(
                             color: Colors.black.withOpacity(0.25),
@@ -165,9 +166,9 @@ class _PhoneAuthentState extends State<PhoneAuthent> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+              padding: const EdgeInsets.fromLTRB(8, 0, 0, 8),
               child: SizedBox(
-                width: 344,
+                width: screen.width-16,
                 height: 56,
                 child: isAuth?RaisedButton(
                   onPressed: () {

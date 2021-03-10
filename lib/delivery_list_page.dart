@@ -141,13 +141,19 @@ class _DeliveryListState extends State<DeliveryList> {
                                     alignment: Alignment.centerLeft,
                                     child: Text('${orderlist[i]['company_name']}',style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,color: const Color(0xffEBFF00)),)
                                 ),
-                                Text('${orderlist[i]['company_address']}',style: TextStyle(fontSize: 20,color: Colors.white)),
+                                Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text('${orderlist[i]['company_address']}',style: TextStyle(fontSize: 20,color: Colors.white))
+                                ),
                                 Image.asset('images/arrow1.png',width: 18,),
                                 Container(
                                     alignment: Alignment.centerLeft,
                                     child: Text('${orderlist[i]['user_phone']}',style: TextStyle(fontSize: 24,color: const Color(0xffEBFF00)))
                                 ),
-                                Text('${orderlist[i]['user_address']}',style: TextStyle(fontSize: 20,color: Colors.white))
+                                Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text('${orderlist[i]['user_address']}',style: TextStyle(fontSize: 20,color: Colors.white))
+                                )
                               ],
                             ),
                           ),

@@ -132,6 +132,7 @@ class _LoginpageState extends State<Loginpage> {
                       idtext = id.text;
                       widget.bloc.login(id: id.text, pw: pw.text).then((res) {
                         if(res.success){
+                          Navigator.pop(context);
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) => TabPage(widget.bloc)));
                         }else{

@@ -27,7 +27,7 @@ class _DeliveryDeliveryState extends State<DeliveryDelivery> {
   @override
   void initState() {
     getCounterFromSharedPrefs();
-    if (widget.data['rider_memo'] != ''){
+    if (widget.data['rider_memo'] != '' && widget.data['rider_memo'] != null){
       setState(() {
         memo = widget.data['rider_memo'];
       });
@@ -100,7 +100,7 @@ class _DeliveryDeliveryState extends State<DeliveryDelivery> {
                             alignment: Alignment.center,
                             height: 24, width: 66,
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5), //모서리를 둥글게
+                                borderRadius: BorderRadius.circular(5),
                                 border: Border.all(color: const Color(0xff62FF2B), width: 1),
                                 color: const Color(0xff62FF2B)),
                             child: Text('현장결제',style: TextStyle(fontSize: 16, fontFamily: 'cafe24'),),
@@ -160,7 +160,10 @@ class _DeliveryDeliveryState extends State<DeliveryDelivery> {
                                 alignment: Alignment.centerLeft,
                                 child: Text('${widget.data['company_name']}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: const Color(0xff9C9C9C)))
                             ),
-                            Text('${widget.data['company_address']}',style: TextStyle(fontSize: 18,color: const Color(0xff9C9C9C)))
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text('${widget.data['company_address']}',style: TextStyle(fontSize: 18,color: const Color(0xff9C9C9C)))
+                            )
                           ],
                         ),
                       ),
@@ -226,7 +229,10 @@ class _DeliveryDeliveryState extends State<DeliveryDelivery> {
                                 alignment: Alignment.centerLeft,
                                 child: Text('${widget.data['user_phone']}',style: TextStyle(fontSize: 20,color: const Color(0xff62FF2B)))
                             ),
-                            Text('${widget.data['user_address']}',style: TextStyle(fontSize: 18,color: const Color(0xff62FF2B)))
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text('${widget.data['user_address']}',style: TextStyle(fontSize: 18,color: const Color(0xff62FF2B)))
+                            )
                           ],
                         ),
                       ),

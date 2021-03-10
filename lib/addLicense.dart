@@ -52,7 +52,7 @@ class _AddLicensePageState extends State<AddLicensePage> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Container(width: 344,height: 56,
+                                Container(width: screen.width-16,height: 56,
                                   color: const Color(0xffFFE600),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -68,7 +68,7 @@ class _AddLicensePageState extends State<AddLicensePage> {
                                     ],
                                   ),
                                 ),
-                                Container(width: 344,height: 56,
+                                Container(width: screen.width-16,height: 56,
                                   child: RaisedButton(
                                     color: const Color(0xffFFE600),
                                     onPressed: () {
@@ -84,7 +84,7 @@ class _AddLicensePageState extends State<AddLicensePage> {
                                     ),
                                   ),
                                 ),
-                                Container(width: 344,height: 56,
+                                Container(width: screen.width-16,height: 56,
                                   child: RaisedButton(
                                     color: const Color(0xffFFE600),
                                     onPressed: () {
@@ -121,16 +121,28 @@ class _AddLicensePageState extends State<AddLicensePage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
                 child: SizedBox(
-                    width: 344,
+                    width: screen.width-16,
                     height: 56,
-                    child: RaisedButton(
+                    child: isFile ? RaisedButton(
                       onPressed: () {
+                        if (isFile) {
+                          widget.bloc.user.joinImage2 = _image2.path;
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => JoinCreate(widget.bloc)));
+                        }
                       },
                       child: Text("다음",
                           style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                       color: AppColor.yellow,
-                    )
+                    ):OutlineButton(
+                      onPressed: () {},
+                      color: AppColor.yellow,
+                      child: Text("다음", style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: AppColor.yellow)),
+                      borderSide: BorderSide(color: AppColor.yellow),
+                      )
                 ),
               ),
             ],

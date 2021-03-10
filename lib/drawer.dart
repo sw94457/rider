@@ -42,19 +42,14 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
     return position;
   }
 
-
   start(){
-    print('출근');
-
-    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
-      widget.bloc.riderOn(serial: serial).then((res){
+    widget.bloc.riderOn(serial: serial).then((res){
         if(res.success){
           print('출근1');
           getCurrentLocation();
-          // _timer = Timer.periodic(Duration(seconds: 10), (timer) {
-          //   getCurrentLocation();
-          // });
-
+          _timer = Timer.periodic(Duration(seconds: 10), (timer) {
+            getCurrentLocation();
+          });
         }else{
           print('출근2');
         }
@@ -62,14 +57,9 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
       setState(() {
         workState = true;
       });
-
-    });
-
-
   }
 
   stop(){
-    print('퇴근');
     widget.bloc.riderOff(serial: serial).then((res){
       if(res.success){
         print('퇴근1');
@@ -88,10 +78,8 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-
     getCounterFromSharedPrefs();
     WidgetsBinding.instance.removeObserver(this);
-
   }
 
   @override

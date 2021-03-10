@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:isolate';
 
 import 'package:http/http.dart' as http;
-import 'package:date_format/date_format.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:ibagudelivery_rider/bloc/bloc.dart';
@@ -54,19 +51,16 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   String chid;
   SharedPreferences prefs;
   bool isLogin = false;
-  Timer _timer;
   var serial;
-  var a=0;
   var lat;
   var long;
-  Position position;
+
 
   @override
   void initState() {
     super.initState();
     getCounterFromSharedPrefs();
     firebaseCloudMessaging_Listeners();
-    WidgetsBinding.instance.addObserver(this);
   }
 
   getCounterFromSharedPrefs() async {
@@ -87,6 +81,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print('on message $message');
+        print('on message');
       },
       onResume: (Map<String, dynamic> message) async {
         print('on resume $message');
@@ -111,67 +106,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     return Builder(builder: (BuildContext context) {
       return Loginpage(widget.bloc);
     });
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.resumed:
-        print("resumed");
-        break;
-      case AppLifecycleState.inactive:
-        print("inactive");
-        break;
-      case AppLifecycleState.paused:
-        print("paused");
-         //callLocation();
-        break;
-      case AppLifecycleState.detached:
-        print("detached");
-        break;
-    }
-  }
-
-  callLocation() async {
-
-    _timer = Timer.periodic(Duration(seconds: 3), (timer) async {
-      print(a);
-      a++;
-      await updateLocation(serial: serial,lat: lat,long: long);
-    });
-
-  }
-
-
-  Future<Position> getCurrentLocation() async {
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    var lat = position.latitude.toString();
-    var long = position.longitude.toString();
-    serial = prefs.getString('serial');
-
-    // updateLocation(serial: serial, lat: lat, long: long).then((res){
-    //   if(res.success){
-    //     print('위치 보냄1');
-    //     print(formatDate(DateTime.now(), [hh, ':', nn, ':', ss, ' ', am]));
-    //   }else{
-    //     print('위치 못보냄');
-    //   }
-    // });
-
-    return position;
-  }
-
-  getCurrentLocation2() async {
-    position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    lat = position.latitude.toString();
-    long = position.longitude.toString();
-    serial = 'LfQJ7+bsbor0ZLCGok4T/g==';
-
-    print(lat);
-    print(long);
-    print(a);
-    print(serial);
-
   }
 
   updateLocation({String serial, String lat, String long}) async {
