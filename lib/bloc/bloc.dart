@@ -4,16 +4,19 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_udid/flutter_udid.dart';
-import 'package:ibagudelivery_rider/data/notice.dart';
-import 'package:ibagudelivery_rider/data/response_data.dart';
 import 'package:http/http.dart' as http;
-import 'package:ibagudelivery_rider/data/user.dart';
+import 'package:logger/logger.dart';
+import 'package:rider_app/data/notice.dart';
+import 'package:rider_app/data/order.dart';
+import 'package:rider_app/data/response_data.dart';
+import 'package:rider_app/data/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Bloc with ChangeNotifier {
-  String baseURL = 'http://ibagudelivery.com/api/rider';//운영서버
-  String baseURL2 = 'http://13.125.11.129:8080/busan_donggu_web/api/rider';//개발서버
+  String baseURL = 'https://ibagudelivery.com/api/rider';//운영서버
+  String baseURL2 = 'https://13.125.11.129:8080/busan_donggu_web/api/rider';//개발서버
 
+  Logger logger = Logger();
   FirebaseMessaging fcm = FirebaseMessaging();
   bool isLoading;
   String uuid;
@@ -23,22 +26,25 @@ class Bloc with ChangeNotifier {
   //MyLocation currentLocation;
   String place;
   SharedPreferences pref;
-  Notice notice = Notice();
-  bool isdev = true;
+  bool isdev = false;
 
 
   Bloc() {
     if (isdev){
-      baseURL = 'http://13.125.11.129:8080/busan_donggu_web/api/rider';
+      baseURL = 'https://13.125.11.129:8080/busan_donggu_web/api/rider';
+      Logger.level = Level.debug;
     } else{
       baseURL = 'http://ibagudelivery.com/api/rider';
+      //Logger.level = Level.error;
+      Logger.level = Level.debug;
     }
     fcm.getToken().then((value) {
-      this.token = value;
-      print(token);
+      token = value;
+      logger.d('token:'+token);
     });
     FlutterUdid.consistentUdid.then((udid) {
       uuid = udid;
+      logger.d('udid:'+uuid);
     });
     SharedPreferences.getInstance().then((_prefs) {
       pref = _prefs;
@@ -58,7 +64,7 @@ class Bloc with ChangeNotifier {
     //       currentLocation = MyLocation(onValue.latitude, onValue.longitude,
     //           address: "", short: "");
     //     }
-    //     print(currentLocation.latitude.toString() + ',' +
+    //     logger.d(currentLocation.latitude.toString() + ',' +
     //         currentLocation.longitude.toString());
     //   }
     //
@@ -80,7 +86,7 @@ class Bloc with ChangeNotifier {
     var response = await http.post(
         Uri.encodeFull(baseURL + "/sendauthcode"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
@@ -106,7 +112,7 @@ class Bloc with ChangeNotifier {
     var response = await http.post(
         Uri.encodeFull(baseURL + "/user/sendloginsms"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
@@ -133,7 +139,7 @@ class Bloc with ChangeNotifier {
     var response = await http.post(
         Uri.encodeFull(baseURL + "/checkauthcode"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
@@ -143,7 +149,7 @@ class Bloc with ChangeNotifier {
       } else {
         res.success = false;
         res.errorMsg = jsonObj['message'];
-        print(res.errorMsg);
+        logger.d(res.errorMsg);
       }
     } else {
       res.success = false;
@@ -156,12 +162,12 @@ class Bloc with ChangeNotifier {
     ResponseData res = ResponseData();
     Map<String, dynamic> params = Map<String, String>();
     params["id"] = id;
-    print(id);
+    logger.d(id);
     isLoading = true;
     var response = await http.post(
         Uri.encodeFull(baseURL + "/id_check"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
@@ -171,7 +177,7 @@ class Bloc with ChangeNotifier {
       } else {
         res.success = false;
         res.errorMsg = jsonObj['message'];
-        print(res.errorMsg);
+        logger.d(res.errorMsg);
       }
     } else {
       res.success = false;
@@ -183,15 +189,15 @@ class Bloc with ChangeNotifier {
   Future<ResponseData> getJoin({String id, String pw, String name, String phone,
     String image='', String image2=''}) async {
     ResponseData res = ResponseData();
-    print(id);
-    print(pw);
-    print(name);
-    print(phone);
-    print(image);
-    print(image2);
-    print(Platform.isAndroid ? 'and' : 'ios');
-    print(uuid);
-    print(token);
+    logger.d(id);
+    logger.d(pw);
+    logger.d(name);
+    logger.d(phone);
+    logger.d(image);
+    logger.d(image2);
+    logger.d(Platform.isAndroid ? 'and' : 'ios');
+    logger.d(uuid);
+    logger.d(token);
 
     isLoading = true;
     var uri = Uri.parse(baseURL+"/register");
@@ -219,7 +225,7 @@ class Bloc with ChangeNotifier {
 
     var streamedResponse = await request.send();
     var response = await http.Response.fromStream(streamedResponse);
-    print(response.body);
+    logger.d(response.body);
     isLoading = false;
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
@@ -251,7 +257,7 @@ class Bloc with ChangeNotifier {
     var response = await http.post(
         Uri.encodeFull(baseURL + "/login"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
@@ -259,15 +265,12 @@ class Bloc with ChangeNotifier {
         res.success = true;
         if (jsonObj['data'] != null) {
           user = User.fromJson(jsonObj['data']);
-          print(user.serial);
+          logger.d(user.serial);
           pref.setString('serial',user.serial);
           pref.setString('username',user.name);
           pref.setString('userphone',user.phone);
           pref.setString('userfaceImage',user.faceImage);
-          print(pref.getString('serial'));
-          print(pref.getString('username'));
-          print(pref.getString('userphone'));
-          print(pref.getString('userfaceImage'));
+          logger.d(pref.getString('serial'));
         }
       } else {
         res.success = false;
@@ -295,7 +298,7 @@ class Bloc with ChangeNotifier {
   //   var response = await http.post(
   //       Uri.encodeFull(baseURL + "/user/loginwithauth"), body: params);
   //   isLoading = false;
-  //   print(response.body);
+  //   logger.d(response.body);
   //   if (response.statusCode == 200) {
   //     dynamic jsonObj = json.decode(response.body);
   //     String code = jsonObj['code'];
@@ -326,7 +329,7 @@ class Bloc with ChangeNotifier {
     var response = await http.post(
         Uri.encodeFull(baseURL + "/autologin"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
@@ -357,7 +360,7 @@ class Bloc with ChangeNotifier {
   //   var response = await http.post(
   //       Uri.encodeFull(baseURL + "/onLocation"), body: params);
   //   isLoading = false;
-  //   print(response.body);
+  //   logger.d(response.body);
   //   if (response.statusCode == 200) {
   //     dynamic jsonObj = json.decode(response.body);
   //     String code = jsonObj['code'];
@@ -385,7 +388,7 @@ class Bloc with ChangeNotifier {
     var response = await http.post(
         Uri.encodeFull(baseURL + "/onLocation"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
@@ -412,7 +415,7 @@ class Bloc with ChangeNotifier {
     var response = await http.post(
         Uri.encodeFull(baseURL + "/riderOn"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
@@ -438,7 +441,7 @@ class Bloc with ChangeNotifier {
     var response = await http.post(
         Uri.encodeFull(baseURL + "/riderOff"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
@@ -455,38 +458,32 @@ class Bloc with ChangeNotifier {
     return res;
   }
 
-  Future<List> noticeget() async {
-    List noticelist = [];
-    ResponseData res = ResponseData();
-
+  Future<List<Notice>> getNotice() async {
+    List<Notice> noticeList = [];
     isLoading = true;
     var response = await http.post(
         Uri.encodeFull(baseURL + "/notice/get"));
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
       if (code == "S01") {
-        res.success = true;
         if (jsonObj['data'] != null) {
-          noticelist = jsonObj['data'];
+          jsonObj['data'].forEach((v) {
+            noticeList.add(new Notice.fromJson(v));
+          });
         }
       } else {
-        res.success = false;
-        res.errorMsg = jsonObj['message'];
-        if (code == "E02") {
-          res.code = "E02";
-        }
+        logger.d(jsonObj['message']);
       }
     } else {
-      res.success = false;
-      res.errorMsg = "http response code=${response.statusCode}";
+      logger.d("http response code=${response.statusCode}");
     }
-    return noticelist;
+    return noticeList;
   }
 
-  Future<ResponseData> getupdateSms({var num}) async {
+  Future<ResponseData> getUpdateSms({var num}) async {
     ResponseData res = ResponseData();
     Map<String, dynamic> params = Map<String, String>();
     params["phone"] = num;
@@ -494,7 +491,7 @@ class Bloc with ChangeNotifier {
     var response = await http.post(
         Uri.encodeFull(baseURL + "/updateauthcode"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
@@ -511,7 +508,7 @@ class Bloc with ChangeNotifier {
     return res;
   }
 
-  Future<ResponseData> registeraccount({String serial, String account_name, String account_num,String account_bank}) async {
+  Future<ResponseData> registerAccount({String serial, String account_name, String account_num,String account_bank}) async {
     ResponseData res = ResponseData();
     Map<String, dynamic> params = Map<String, String>();
     params["serial"] = pref.getString('serial');
@@ -523,7 +520,7 @@ class Bloc with ChangeNotifier {
     var response = await http.post(
         Uri.encodeFull(baseURL + "/register_account"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
@@ -532,7 +529,7 @@ class Bloc with ChangeNotifier {
       } else {
         res.success = false;
         res.errorMsg = jsonObj['message'];
-        print(res.errorMsg);
+        logger.d(res.errorMsg);
       }
     } else {
       res.success = false;
@@ -549,7 +546,7 @@ class Bloc with ChangeNotifier {
     var response = await http.post(
         Uri.encodeFull(baseURL + "/find/sendauthcode"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
@@ -576,7 +573,7 @@ class Bloc with ChangeNotifier {
     var response = await http.post(
         Uri.encodeFull(baseURL + "/find/checkauthcode"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
@@ -586,7 +583,7 @@ class Bloc with ChangeNotifier {
       } else {
         res.success = false;
         res.errorMsg = jsonObj['message'];
-        print(res.errorMsg);
+        logger.d(res.errorMsg);
       }
     } else {
       res.success = false;
@@ -605,7 +602,7 @@ class Bloc with ChangeNotifier {
     var response = await http.post(
         Uri.encodeFull(baseURL + "/find/checkIdAuth"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
@@ -633,7 +630,7 @@ class Bloc with ChangeNotifier {
     var response = await http.post(
         Uri.encodeFull(baseURL + "/find/checkauthcodePw"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
@@ -656,16 +653,16 @@ class Bloc with ChangeNotifier {
     params["pw"] = pw;
     params["serial"] = serial;
 
-    print('aa');
-    print(pw);
-    print(serial);
-    print('aa');
+    logger.d('aa');
+    logger.d(pw);
+    logger.d(serial);
+    logger.d('aa');
 
     isLoading = true;
     var response = await http.post(
         Uri.encodeFull(baseURL + "/find/changePw"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
@@ -682,61 +679,60 @@ class Bloc with ChangeNotifier {
     return res;
   }
 
-  Future<List> orderlist({String serial}) async {
-    List orderlist = [];
-    ResponseData res = ResponseData();
-    Map<String, dynamic> params = Map<String, String>();
-    params["serial"] = serial;
-
+  Future<List<Order>> getOrderList() async {
+    List<Order> orderList = [];
     isLoading = true;
+    Map<String, dynamic> params = Map<String, String>();
+    params["serial"] = pref.getString('serial');
+    logger.d(pref.getString('serial'));
+
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/order_list"), body: params);
+        Uri.encodeFull(baseURL2 + "/order_list"));
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
       if (code == "S01") {
-        res.success = true;
-        orderlist = jsonObj['data'];
+        if (jsonObj['data'] != null) {
+          jsonObj['data'].forEach((v) {
+            orderList.add(new Order.fromJson(v));
+          });
+        }
       } else {
-        res.success = false;
-        res.errorMsg = jsonObj['message'];
+        logger.d(jsonObj['message']);
       }
     } else {
-      res.success = false;
-      res.errorMsg = "http response code=${response.statusCode}";
+      logger.d("http response code=${response.statusCode}");
     }
-    return orderlist;
+    return orderList;
   }
 
-  Future<Map> orderdetail({String serial,String request_serial}) async {
-    Map orderdetail = {};
-    ResponseData res = ResponseData();
+  Future<Order> getOrderDetail({String request_serial}) async {
+    Order order = Order();
     Map<String, dynamic> params = Map<String, String>();
-    params["serial"] = serial;
+    params["serial"] = pref.getString('serial');
     params["request_serial"] = request_serial;
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/order_detail"), body: params);
+        Uri.encodeFull(baseURL2 + "/order_detail"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
       if (code == "S01") {
-        res.success = true;
-        orderdetail = jsonObj['data'];
+        if(jsonObj['data'] != null){
+          order = Order.fromJson(jsonObj['data']);
+        }
       } else {
-        res.success = false;
-        res.errorMsg = jsonObj['message'];
+        logger.e(jsonObj['message']);
       }
     } else {
-      res.success = false;
-      res.errorMsg = "http response code=${response.statusCode}";
+       logger.e("http response code=${response.statusCode}");
     }
-    return orderdetail;
+    return order;
   }
 
   Future<ResponseData> acceptorder({String requestserial,String orderserial,String serial}) async {
@@ -751,7 +747,7 @@ class Bloc with ChangeNotifier {
     var response = await http.post(
         Uri.encodeFull(baseURL + "/accept_order"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
@@ -779,7 +775,7 @@ class Bloc with ChangeNotifier {
     var response = await http.post(
         Uri.encodeFull(baseURL + "/pickUp"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
@@ -807,7 +803,7 @@ class Bloc with ChangeNotifier {
     var response = await http.post(
         Uri.encodeFull(baseURL + "/finish_delivery"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
@@ -835,7 +831,7 @@ class Bloc with ChangeNotifier {
     var response = await http.post(
         Uri.encodeFull(baseURL + "/send_message"), body: params);
     isLoading = false;
-    print(response.body);
+    logger.d(response.body);
     if (response.statusCode == 200) {
       dynamic jsonObj = json.decode(response.body);
       String code = jsonObj['code'];
@@ -851,6 +847,8 @@ class Bloc with ChangeNotifier {
     }
     return res;
   }
+
+
 
 
 }

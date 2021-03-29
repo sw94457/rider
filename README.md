@@ -1,4 +1,4 @@
-# ibagudelivery_rider
+# rider_app
 
 A new Flutter application.
 
