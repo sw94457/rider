@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:rider_app/data/kakao_geo.dart';
 import 'package:rider_app/data/notice.dart';
+import 'package:rider_app/data/location.dart';
 import 'package:rider_app/data/order.dart';
 import 'package:rider_app/data/response_data.dart';
 import 'package:rider_app/data/user.dart';
@@ -21,8 +22,6 @@ class Bloc with ChangeNotifier {
   FirebaseMessaging fcm = FirebaseMessaging();
   Map<String, String> header = {"Authorization": "KakaoAK a7b2324e5526da03326a0684c37e37ff"};
   bool isLoading;
-  String uuid;
-  String token;
   User user = User();
   //MyLocation currentLocation;
   String place;
@@ -33,7 +32,7 @@ class Bloc with ChangeNotifier {
   Bloc() {
     if (isdev){
       //개발서버
-      baseURL = 'https://13.125.11.129:8080/busan_donggu_web/api/rider';
+      baseURL = 'http://api.busandelivery.com';
       Logger.level = Level.debug;
     } else{
       //운영서버
@@ -41,14 +40,7 @@ class Bloc with ChangeNotifier {
       //Logger.level = Level.error;
       Logger.level = Level.debug;
     }
-    fcm.getToken().then((value) {
-      token = value;
-      logger.d('token:'+token);
-    });
-    FlutterUdid.consistentUdid.then((udid) {
-      uuid = udid;
-      logger.d('udid:'+uuid);
-    });
+
     SharedPreferences.getInstance().then((_prefs) {
       pref = _prefs;
     });
@@ -131,6 +123,32 @@ class Bloc with ChangeNotifier {
       logger.d(response.body);
     }
     return _shortAddress2;
+  }
+
+  Future<List<Location>> getLocation() async {
+    List<Location> list = [];
+    ResponseData res = ResponseData();
+    Map<String, dynamic> params = Map<String, String>();
+    isLoading = true;
+    var response = await http.post(
+        Uri.encodeFull(baseURL + "/getlocation"), body: params);
+    isLoading = false;
+    logger.d(response.body);
+    if (response.statusCode == 200) {
+      dynamic jsonObj = json.decode(response.body);
+      String code = jsonObj['code'];
+      if (code == "S01") {
+        if (jsonObj['data'] != null) {
+          jsonObj['data'].forEach((v) {
+            list.add(new Location.fromJson(v));
+          });
+        }
+      }
+    } else {
+      res.success = false;
+      res.errorMsg = "http response code=${response.statusCode}";
+    }
+    return list;
   }
 
   Future<ResponseData> getJoinSms({var num}) async {
@@ -242,7 +260,7 @@ class Bloc with ChangeNotifier {
   }
 
   Future<ResponseData> getJoin({String id, String pw, String name, String phone,
-    String image='', String image2=''}) async {
+    String image='', String image2='', String account_name, String account_num, String account_bank}) async {
     ResponseData res = ResponseData();
     logger.d(id);
     logger.d(pw);
@@ -251,8 +269,7 @@ class Bloc with ChangeNotifier {
     logger.d(image);
     logger.d(image2);
     logger.d(Platform.isAndroid ? 'and' : 'ios');
-    logger.d(uuid);
-    logger.d(token);
+
 
     isLoading = true;
     var uri = Uri.parse(baseURL+"/register");
@@ -260,18 +277,14 @@ class Bloc with ChangeNotifier {
 
     request = http.MultipartRequest('POST', uri)
       ..fields['app_platform'] = Platform.isAndroid ? 'and' : 'ios'
-      ..fields["udid"] = uuid
-      ..fields["push_token"] = token
-
+      ..fields["udid"] = await FlutterUdid.consistentUdid
+      ..fields["push_token"] = await fcm.getToken()
       ..fields["phone"] = phone
-      ..fields["id"] = id
-      ..fields["pw"] = pw
       ..fields["name"] = name
-      ..fields["phone"] = phone
       // ..fields["expire_license_date"] = license_date
-      // ..fields["account_name"] = account_name
-      // ..fields["account_num"] = account_num
-      // ..fields["account_bank"] = account_bank
+      ..fields["account_name"] = account_name
+      ..fields["account_num"] = account_num
+      ..fields["account_bank"] = account_bank
 
       ..files.add(await http.MultipartFile.fromPath(
           'join_image', image, filename: image.split('/').last))
@@ -300,17 +313,17 @@ class Bloc with ChangeNotifier {
     return res;
   }
 
-  Future<ResponseData> login({String id, String pw}) async {
+  Future<ResponseData> login({String phone}) async {
     ResponseData res = ResponseData();
     Map<String, dynamic> params = Map<String, String>();
-    params["id"] = id;
-    params["pw"] = pw;
-    params["udid"] = uuid;
-    params["push_token"] = token;
+    params["phone"] = phone;
+    params["udid"] = await FlutterUdid.consistentUdid;
+    params["push_token"] = 'asdfasdfaa';
+    // params["push_token"] = await fcm.getToken();
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/login"), body: params);
+        Uri.encodeFull(baseURL + "/relogin"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -341,44 +354,44 @@ class Bloc with ChangeNotifier {
     return res;
   }
 
-  // Future<ResponseData> loginWithAuth({String authcode, String phone}) async {
-  //   ResponseData res = ResponseData();
-  //   Map<String, dynamic> params = Map<String, String>();
-  //   params["authcode"] = authcode;
-  //   params["phone"] = phone;
-  //   params["udid"] = uuid;
-  //   params["push_token"] = token;
-  //
-  //   isLoading = true;
-  //   var response = await http.post(
-  //       Uri.encodeFull(baseURL + "/user/loginwithauth"), body: params);
-  //   isLoading = false;
-  //   logger.d(response.body);
-  //   if (response.statusCode == 200) {
-  //     dynamic jsonObj = json.decode(response.body);
-  //     String code = jsonObj['code'];
-  //     if (code == "S01") {
-  //       res.success = true;
-  //       if (jsonObj['data'] != null) {
-  //         user = User.fromJson(jsonObj['data']);
-  //       }
-  //     } else {
-  //       res.success = false;
-  //       res.errorMsg = jsonObj['message'];
-  //     }
-  //   } else {
-  //     res.success = false;
-  //     res.errorMsg = "http response code=${response.statusCode}";
-  //   }
-  //   return res;
-  // }
-  //
+  Future<ResponseData> loginWithAuth({String authcode, String phone}) async {
+    ResponseData res = ResponseData();
+    Map<String, dynamic> params = Map<String, String>();
+    params["authcode"] = authcode;
+    params["phone"] = phone;
+    params["udid"] = await FlutterUdid.consistentUdid;
+    params["push_token"] = fcm.getToken();
+
+    isLoading = true;
+    var response = await http.post(
+        Uri.encodeFull(baseURL + "/user/loginwithauth"), body: params);
+    isLoading = false;
+    logger.d(response.body);
+    if (response.statusCode == 200) {
+      dynamic jsonObj = json.decode(response.body);
+      String code = jsonObj['code'];
+      if (code == "S01") {
+        res.success = true;
+        if (jsonObj['data'] != null) {
+          user = User.fromJson(jsonObj['data']);
+        }
+      } else {
+        res.success = false;
+        res.errorMsg = jsonObj['message'];
+      }
+    } else {
+      res.success = false;
+      res.errorMsg = "http response code=${response.statusCode}";
+    }
+    return res;
+  }
+
   Future<ResponseData> autoLogin({String serial}) async {
     ResponseData res = ResponseData();
     Map<String, dynamic> params = Map<String, String>();
     params["serial"] = serial;
-    params["udid"] = uuid;
-    params["push_token"] = token;
+    params["udid"] = FlutterUdid.consistentUdid;
+    params["push_token"] = fcm.getToken();
 
     isLoading = true;
     var response = await http.post(

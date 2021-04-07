@@ -21,7 +21,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController id_ctrl = TextEditingController();
   TextEditingController phone_ctrl = TextEditingController();
 
   String id_text;
@@ -87,6 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: MyTextField(
                     controller: phone_ctrl,
                     hintText: '휴대폰 번호를 입력해주세요',
+                    inputType: TextInputType.number,
                     hintStyle: TextStyle(fontSize: 16, color: Colors.grey[400]),
                   ),
               ),
@@ -97,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () async {
                   // id_ctrl.text = 'una123@naver.com';
                   // phone_ctrl.text = 'asdf1234';
-                  widget.bloc.login(id: id_ctrl.text, pw: phone_ctrl.text).then((res) {
+                  widget.bloc.login(phone: phone_ctrl.text).then((res) {
                     if (res.success) {
                       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
                           builder: (BuildContext context) =>
@@ -116,24 +116,6 @@ class _LoginPageState extends State<LoginPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-              InkWell(
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: Text(
-                    '아이디/비밀번호 찾기',
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white,
-                        decoration: TextDecoration.underline),
-                  ),
-                ),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => FindPage(widget.bloc)));
-                },
               ),
               Container(
                 padding: EdgeInsets.only(top: 40),
