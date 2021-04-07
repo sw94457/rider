@@ -15,8 +15,7 @@ import 'package:rider_app/data/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Bloc with ChangeNotifier {
-  String baseURL = 'https://ibagudelivery.com/api/rider';//운영서버
-  String baseURL2 = 'https://13.125.11.129:8080/busan_donggu_web/api/rider';//개발서버
+  String baseURL;//개발서버
 
   Logger logger = Logger();
   FirebaseMessaging fcm = FirebaseMessaging();
@@ -33,10 +32,12 @@ class Bloc with ChangeNotifier {
 
   Bloc() {
     if (isdev){
+      //개발서버
       baseURL = 'https://13.125.11.129:8080/busan_donggu_web/api/rider';
       Logger.level = Level.debug;
     } else{
-      baseURL = 'http://ibagudelivery.com/api/rider';
+      //운영서버
+      baseURL = 'http://api.busandelivery.com';
       //Logger.level = Level.error;
       Logger.level = Level.debug;
     }
@@ -741,7 +742,7 @@ class Bloc with ChangeNotifier {
     logger.d(pref.getString('serial'));
 
     var response = await http.post(
-        Uri.encodeFull(baseURL2 + "/order_list"));
+        Uri.encodeFull(baseURL + "/order_list"));
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -770,7 +771,7 @@ class Bloc with ChangeNotifier {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL2 + "/order_detail"), body: params);
+        Uri.encodeFull(baseURL + "/order_detail"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {

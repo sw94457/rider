@@ -88,14 +88,15 @@ class _LoginPageState extends State<LoginPage> {
                     controller: phone_ctrl,
                     hintText: '휴대폰 번호를 입력해주세요',
                     hintStyle: TextStyle(fontSize: 16, color: Colors.grey[400]),
-                  )),
+                  ),
+              ),
               MyButton(
                 //margin: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 height: 50,
                 width: screenSize.width-40,
                 onPressed: () async {
-                  id_ctrl.text = 'una123@naver.com';
-                  phone_ctrl.text = 'asdf1234';
+                  // id_ctrl.text = 'una123@naver.com';
+                  // phone_ctrl.text = 'asdf1234';
                   widget.bloc.login(id: id_ctrl.text, pw: phone_ctrl.text).then((res) {
                     if (res.success) {
                       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(

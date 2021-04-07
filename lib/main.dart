@@ -5,6 +5,8 @@ import 'package:rider_app/page/home_page.dart';
 import 'package:rider_app/page/login/login_page.dart';
 import 'package:rider_app/ui/color.dart';
 
+import 'page/login/login_page.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -19,7 +21,7 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: '부산동구배달앱',
             theme: ThemeData(primarySwatch: AppColor.main_navy),
-            home: HomePage(bloc),
+            home: LoginPage(bloc),
             // home: TabRootPage(bloc),
           );
         },
