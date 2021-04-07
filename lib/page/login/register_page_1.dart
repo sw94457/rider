@@ -196,7 +196,7 @@ class _RegisterPage1State extends State<RegisterPage1> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        RegisterPage3(widget.bloc)));
+                                        RegisterPage2(widget.bloc)));
                           },
                         )
                       : MyLineButton(
