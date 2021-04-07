@@ -2,9 +2,11 @@
     package="com.ibagudelivery.rider_app">
     <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="rider_app"
+        android:label="라이더 앱"
        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
+       <meta-data android:name="com.google.android.geo.API_KEY"
+           android:value="AIzaSyBEL0jX27fd1Z3SNex-s7znKo3NM-kAU7k"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

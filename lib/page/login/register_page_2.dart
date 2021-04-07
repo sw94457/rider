@@ -28,17 +28,22 @@ class _RegisterPage2State extends State<RegisterPage2> {
     return Scaffold(
       backgroundColor: AppColor.navy,
       appBar: AppBar(
+        brightness: Brightness.dark,
         iconTheme: IconThemeData(color: AppColor.yellow),
         title: Text('휴대폰 인증',
             style: TextStyle(fontSize: 20, color: AppColor.yellow)),
         centerTitle: true,
+        elevation: 0,
       ),
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
+        child: SingleChildScrollView(
+          padding: EdgeInsets.only(right: 20,left:20, top: 10, bottom: 20),
+          child: Container(
+            height: screen.height - (110),
+            child: Column(
               children: [
                 Center(
                   child: Text(
@@ -51,20 +56,19 @@ class _RegisterPage2State extends State<RegisterPage2> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.fromLTRB(0, 36, 0, 0),
-                  width: screen.width-48,
+                  padding: EdgeInsets.fromLTRB(0, 35, 0, 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text("핸드폰 번호 입력",
-                        style: TextStyle(fontSize: 16, color: Colors.white),
+                        style: TextStyle(fontSize: 14, color: Colors.white),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(vertical: 15),
+                        padding: EdgeInsets.symmetric(vertical: 5),
                         child: SizedBox(
                           height: 68,
                           child: MyTextField(
-                            textEditingController: phone_ctrl,
+                            controller: phone_ctrl,
                             inputType: TextInputType.number,
                             color: Colors.white,
                             hintText: '숫자만 입력해주세요',
@@ -80,6 +84,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
                             style: TextStyle(fontSize: 18)),
                         color: Colors.white,
                         onPressed: () {
+                          FocusScope.of(context).requestFocus(new FocusNode());
                           widget.bloc.getJoinSms(num: phone_ctrl.text).then((res) {
                             if (res.success) {
                               Toast.show('인증코드가 발송되었습니다.', context);
@@ -93,24 +98,21 @@ class _RegisterPage2State extends State<RegisterPage2> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 36, 0, 0),
+                  padding: const EdgeInsets.fromLTRB(0, 35, 0, 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text("인증코드 입력",
                           style:
-                              TextStyle(fontSize: 16, color: Colors.white)),
-                      SizedBox(
-                        width: screen.width-48,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 15),
-                          child: SizedBox(
-                            height: 68,
-                            child: MyTextField(
-                              textEditingController: authcode,
-                              color: Colors.white,
-                              onChanged: (text) {},
-                            ),
+                              TextStyle(fontSize: 14, color: Colors.white)),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        child: SizedBox(
+                          height: 68,
+                          child: MyTextField(
+                            controller: authcode,
+                            color: Colors.white,
+                            onChanged: (text) {},
                           ),
                         ),
                       ),
@@ -138,40 +140,39 @@ class _RegisterPage2State extends State<RegisterPage2> {
                     ],
                   ),
                 ),
+               Expanded(child: Container()),
+                SizedBox(
+                  width: screen.width-16,
+                  height: 56,
+                  child: isAuth?RaisedButton(
+                    onPressed: () {
+                      if (isAuth) {
+                        widget.bloc.user.phone = phone_ctrl.text;
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RegisterPage3(widget.bloc)));
+                      }
+                    },
+                    child: Text("다음",
+                        style:
+                            TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    color: AppColor.yellow,
+                  ):MyLineButton(
+                          onPressed: () {
+                            Toast.show('휴대폰 번호 인증이 필요합니다.',context, duration:2);
+                          },
+                          color: AppColor.yellow,
+                          child: Text("다음",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColor.yellow)),
+                        ),
+                ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 0, 0, 8),
-              child: SizedBox(
-                width: screen.width-16,
-                height: 56,
-                child: isAuth?RaisedButton(
-                  onPressed: () {
-                    if (isAuth) {
-                      widget.bloc.user.phone = phone_ctrl.text;
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => RegisterPage3(widget.bloc)));
-                    }
-                  },
-                  child: Text("다음",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  color: AppColor.yellow,
-                ):OutlineButton(
-                        onPressed: () {},
-                        color: AppColor.yellow,
-                        child: Text("다음",
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: AppColor.yellow)),
-                        borderSide: BorderSide(color: AppColor.yellow),
-                      ),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

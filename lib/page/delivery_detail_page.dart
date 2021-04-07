@@ -46,6 +46,7 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
     return Scaffold(
       backgroundColor: AppColor.navy,
       appBar: AppBar(
+        brightness: Brightness.dark,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: AppColor.yellow),
           onPressed: () {

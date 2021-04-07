@@ -40,6 +40,8 @@ dependencies:
   flutter_widget_from_html: ^0.5.2+1
   image_picker: ^0.6.7+22
   logger: ^1.0.0
+  adaptive_dialog: ^0.10.0+5
+  google_maps_flutter: ^1.2.0
 
 dev_dependencies:
   flutter_test:

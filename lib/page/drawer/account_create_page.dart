@@ -92,7 +92,7 @@ class _AccountCreatePageState extends State<AccountCreatePage> {
                         style: TextStyle(fontSize: 20, color: Colors.white),
                       ),
                       MyTextField(
-                        textEditingController: name_ctrl,
+                        controller: name_ctrl,
                         backgroundColor: AppColor.navy,
                       )
                     ],
@@ -126,7 +126,7 @@ class _AccountCreatePageState extends State<AccountCreatePage> {
                           style: TextStyle(color: Colors.white),
                           dropdownColor: const Color(0xff20283E),
                           icon: Image.asset(
-                            'images/Union_b.png',
+                            'assets/images/ic_call_b.png',
                             width: 10,
                           ),
                         ),
@@ -145,7 +145,7 @@ class _AccountCreatePageState extends State<AccountCreatePage> {
                         style: TextStyle(fontSize: 20, color: Colors.white),
                       ),
                       MyTextField(
-                          textEditingController: num_ctrl,
+                          controller: num_ctrl,
                           backgroundColor: AppColor.navy,
                           inputType: TextInputType.number)
                     ],

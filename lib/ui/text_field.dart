@@ -7,7 +7,7 @@ import 'package:rider_app/ui/color.dart';
  */
 
 class MyTextField extends StatelessWidget {
-  TextEditingController textEditingController;
+  TextEditingController controller;
   Function onChanged;
   String hintText;
   double width;
@@ -27,7 +27,7 @@ class MyTextField extends StatelessWidget {
   var contentPadding;
 
   MyTextField(
-      {@required this.textEditingController,
+      {@required this.controller,
         this.onChanged,
         this.width,
         this.height = 48,
@@ -54,7 +54,7 @@ class MyTextField extends StatelessWidget {
       margin: margin,
       padding: padding,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          borderRadius: BorderRadius.all(Radius.circular(5.0)),
           color: this.backgroundColor),
       child: TextFormField(
         cursorColor: color == Colors.white70 ? AppColor.yellow : color,
@@ -68,23 +68,23 @@ class MyTextField extends StatelessWidget {
           border: OutlineInputBorder(
             borderSide: BorderSide(color: color, width: 1.0),
             borderRadius: BorderRadius.all(
-              Radius.circular(10.0),
+              Radius.circular(5.0),
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: color, width: 1.0),
             borderRadius: BorderRadius.all(
-              Radius.circular(10.0),
+              Radius.circular(5.0),
             ),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: color, width: 1.0),
             borderRadius: BorderRadius.all(
-              Radius.circular(10.0),
+              Radius.circular(05.0),
             ),
           ),
         ),
-        controller: textEditingController,
+        controller: controller,
         onChanged: onChanged,
         keyboardType: inputType,
         maxLength: maxLength,

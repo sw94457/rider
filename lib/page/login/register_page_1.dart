@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:rider_app/bloc/bloc.dart';
 import 'package:rider_app/page/login/register_page_2.dart';
+import 'package:rider_app/page/login/register_page_3.dart';
+import 'package:rider_app/ui/button.dart';
 import 'package:rider_app/ui/color.dart';
+import 'package:toast/toast.dart';
 
 /*약관 동의*/
 
@@ -27,14 +30,18 @@ class _RegisterPage1State extends State<RegisterPage1> {
     return Scaffold(
       backgroundColor: AppColor.navy,
       appBar: AppBar(
+        brightness: Brightness.dark,
         iconTheme: IconThemeData(color: AppColor.yellow),
         title: Text('이용약관', style: TextStyle(color: AppColor.yellow)),
         centerTitle: true,
         backgroundColor: AppColor.navy,
+        elevation: 0,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
+        physics: NeverScrollableScrollPhysics(),
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        child: Center(
+        child: Container(
+          height: screen.height - (110),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -49,27 +56,30 @@ class _RegisterPage1State extends State<RegisterPage1> {
                       ),
                     ),
                     width: screen.width,
-                    height: 65,
+                    height: 55,
                     child: Row(
                       children: [
-                        Checkbox(
-                          value: _checkboxa,
-                          //contentPadding: EdgeInsets.zero,
-                          onChanged: (value) {
-                            setState(() {
-                              _checkboxa = value;
-                              _checkbox1 = value;
-                              _checkbox2 = value;
-                              _checkbox3 = value;
-                              //_checkbox4 = value;
-                            });
-                          },
-                          activeColor: AppColor.yellow,
+                        Theme(
+                          data: ThemeData(unselectedWidgetColor: Colors.white60),
+                          child: Checkbox(
+                            value: _checkboxa,
+                            //contentPadding: EdgeInsets.zero,
+                            onChanged: (value) {
+                              setState(() {
+                                _checkboxa = value;
+                                _checkbox1 = value;
+                                _checkbox2 = value;
+                                _checkbox3 = value;
+                                //_checkbox4 = value;
+                              });
+                            },
+                            activeColor: AppColor.yellow,
+                          ),
                         ),
                         Text(
                           "약관에 모두 동의",
                           style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.white60),
                         ),
@@ -82,62 +92,71 @@ class _RegisterPage1State extends State<RegisterPage1> {
                         Container(
                             margin: EdgeInsets.only(top: 20),
                             width: screen.width,
-                            height: 50,
+                            height: 40,
                             child: Row(
                               children: [
-                                Checkbox(
-                                  value: _checkbox1,
-                                  //contentPadding: EdgeInsets.zero,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _checkbox1 = value;
-                                    });
-                                  },
-                                  activeColor: AppColor.yellow,
+                                Theme(
+                                  data: ThemeData(unselectedWidgetColor: Colors.white60),
+                                  child: Checkbox(
+                                    value: _checkbox1,
+                                    //contentPadding: EdgeInsets.zero,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _checkbox1 = value;
+                                      });
+                                    },
+                                    activeColor: AppColor.yellow,
+                                  ),
                                 ),
                                 Text("(필수) 개인정보 수집 및 이용안내",
                                     style: TextStyle(
-                                        fontSize: 18, color: Colors.white)),
+                                        fontSize: 14, color: Colors.white)),
                               ],
                             )),
                         Container(
                             width: screen.width,
-                            height: 50,
+                            height: 40,
                             child: Row(
                               children: [
-                                Checkbox(
-                                  value: _checkbox2,
-                                  //contentPadding: EdgeInsets.zero,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _checkbox2 = value;
-                                    });
-                                  },
-                                  activeColor: AppColor.yellow,
+                                Theme(
+                                  data: ThemeData(unselectedWidgetColor: Colors.white60),
+                                  child: Checkbox(
+                                    value: _checkbox2,
+                                    //contentPadding: EdgeInsets.zero,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _checkbox2 = value;
+                                      });
+                                    },
+                                    activeColor: AppColor.yellow,
+                                  ),
                                 ),
                                 Text("(필수) 제 3자 제공 동의",
                                     style: TextStyle(
-                                        fontSize: 18, color: Colors.white)),
+                                        fontSize: 14, color: Colors.white)),
                               ],
                             )),
                         Container(
                             width: screen.width,
-                            height: 50,
+                            height: 40,
                             child: Row(
                               children: [
-                                Checkbox(
-                                  value: _checkbox3,
-                                  //contentPadding: EdgeInsets.zero,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _checkbox3 = value;
-                                    });
-                                  },
-                                  activeColor: AppColor.yellow,
+                                Theme(
+                                  data: ThemeData(unselectedWidgetColor: Colors.white60),
+                                  child: Checkbox(
+                                    value: _checkbox3,
+                                    //contentPadding: EdgeInsets.zero,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _checkbox3 = value;
+                                      });
+                                    },
+                                    activeColor: AppColor.yellow,
+                                  ),
                                 ),
                                 Text("(필수) 위치기반 서비스 이용약관 동의",
                                     style: TextStyle(
-                                        fontSize: 18, color: Colors.white)),
+                                        fontSize: 14, color: Colors.white)),
                               ],
                             )),
                         // Padding(
@@ -177,18 +196,19 @@ class _RegisterPage1State extends State<RegisterPage1> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        RegisterPage2(widget.bloc)));
+                                        RegisterPage3(widget.bloc)));
                           },
                         )
-                      : OutlineButton(
-                          onPressed: () {},
+                      : MyLineButton(
+                          onPressed: () {
+                            Toast.show('약관에 동의가 필요합니다.',context, duration:2);
+                          },
                           color: AppColor.yellow,
                           child: Text("다음",
                               style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: AppColor.yellow)),
-                          borderSide: BorderSide(color: AppColor.yellow),
                         ),
                 ),
               ),

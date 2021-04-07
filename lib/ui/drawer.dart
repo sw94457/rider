@@ -10,6 +10,7 @@ import 'package:rider_app/page/drawer/calculate_page.dart';
 import 'package:rider_app/page/drawer/notice_page.dart';
 import 'package:rider_app/page/drawer/personal_info_page.dart';
 import 'package:rider_app/page/drawer/setting_page.dart';
+import 'package:rider_app/page/login/login_page.dart';
 import 'package:rider_app/ui/color.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,7 +31,9 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     lat = position.latitude.toString();
     long = position.longitude.toString();
-
+    widget.bloc.reverseGeo(lat: double.parse(lat), lon: double.parse(long)).then((value) {
+      print(value);
+    });
     widget.bloc.updateLocation(serial: serial, lat: lat, long: long).then((res){
       if(res.success) {
         print('위치 보냄');
@@ -92,7 +95,8 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
           padding: EdgeInsets.zero,
           children: [
             SizedBox(
-              height: 250,
+              //height: 250,
+              height: 210,
               child: DrawerHeader(
                 child: Column(
                   children: [
@@ -120,21 +124,22 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
                         ),
                       ],
                     ),
-                    SizedBox(
-                      width: 280,
-                      child: Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Image.asset("assets/images/ic_edit.png",width: 12,),
-                              TextButton(onPressed: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalInfoPage(widget.bloc)));
-                              }, child: Text("개인정보수정",
-                                  style: TextStyle(fontSize: 14, color: AppColor.yellow),textAlign: TextAlign.end))
-                            ],
-                          )
-                      ),
-                    ),
+                    SizedBox(height: 10),
+                    // SizedBox(
+                    //   width: 280,
+                    //   child: Container(
+                    //       child: Row(
+                    //         mainAxisAlignment: MainAxisAlignment.end,
+                    //         children: [
+                    //           Image.asset("assets/images/ic_edit.png",width: 12,),
+                    //           TextButton(onPressed: (){
+                    //             Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalInfoPage(widget.bloc)));
+                    //           }, child: Text("개인정보수정",
+                    //               style: TextStyle(fontSize: 14, color: AppColor.yellow),textAlign: TextAlign.end))
+                    //         ],
+                    //       )
+                    //   ),
+                    // ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -184,19 +189,19 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
               },
             ),
             Container( height:0.5,color:Colors.white60),
-            ListTile(
-              title: Row(
-                children: [
-                  Image.asset("assets/images/ic_dollar.png", width: 22,),
-                  SizedBox(width: 10),
-                  Text('출금 계좌 관리', style: TextStyle(fontSize: 17, color: Colors.white)),
-                ],
-              ),
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AccountCreatePage(widget.bloc)));
-              },
-            ),
-            Container( height:0.5,color:Colors.white60),
+            // ListTile(
+            //   title: Row(
+            //     children: [
+            //       Image.asset("assets/images/ic_dollar.png", width: 22,),
+            //       SizedBox(width: 10),
+            //       Text('출금 계좌 관리', style: TextStyle(fontSize: 17, color: Colors.white)),
+            //     ],
+            //   ),
+            //   onTap: (){
+            //     Navigator.push(context, MaterialPageRoute(builder: (context) => AccountCreatePage(widget.bloc)));
+            //   },
+            // ),
+            // Container( height:0.5,color:Colors.white60),
             ListTile(
               title: Row(
                 children: [
@@ -213,13 +218,13 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
             ListTile(
               title: Row(
                 children: [
-                  Image.asset("assets/images/ic_setting.png", width: 22,),
+                  Image.asset("assets/images/ic_edit.png", width: 22,),
                   SizedBox(width: 10),
-                  Text('환경설정', style: TextStyle(fontSize: 17,color: Colors.white)),
+                  Text('고객정보수정', style: TextStyle(fontSize: 17,color: Colors.white)),
                 ],
               ),
               onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => SettingPage(widget.bloc)));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalInfoPage(widget.bloc)));
               },
             ),
             Container(height:0.5,color:Colors.white60),
@@ -234,6 +239,24 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
               onTap: (){},
             ),
             Container( height:0.5,color:Colors.white60),
+            ListTile(
+              title: Row(
+                children: [
+                  Image.asset("assets/images/ic_logout.png", width: 22,),
+                  SizedBox(width: 10),
+                  Text('로그아웃', style: TextStyle(fontSize: 17,color: Colors.white)),
+                ],
+              ),
+              onTap: () async {
+                SharedPreferences prefs =
+                await SharedPreferences.getInstance();
+                prefs.remove('uid');
+                Navigator.pop(context);
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        LoginPage(widget.bloc)), (route) => false);
+              },
+            ),
           ],
         ),
       ),

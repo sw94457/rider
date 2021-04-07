@@ -4,8 +4,10 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_udid/flutter_udid.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
+import 'package:rider_app/data/kakao_geo.dart';
 import 'package:rider_app/data/notice.dart';
 import 'package:rider_app/data/order.dart';
 import 'package:rider_app/data/response_data.dart';
@@ -18,16 +20,16 @@ class Bloc with ChangeNotifier {
 
   Logger logger = Logger();
   FirebaseMessaging fcm = FirebaseMessaging();
+  Map<String, String> header = {"Authorization": "KakaoAK a7b2324e5526da03326a0684c37e37ff"};
   bool isLoading;
   String uuid;
   String token;
-  Map<String, String> header;
   User user = User();
   //MyLocation currentLocation;
   String place;
   SharedPreferences pref;
   bool isdev = false;
-
+  Position position;
 
   Bloc() {
     if (isdev){
@@ -49,9 +51,22 @@ class Bloc with ChangeNotifier {
     SharedPreferences.getInstance().then((_prefs) {
       pref = _prefs;
     });
+    Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high).then((value) {
+      position = value;
+      var lat = position.latitude;
+      var long = position.longitude;
 
-    // Location location = new Location();
-    // header = {"Authorization": "KakaoAK dae06dfd15c0d4a6bbf865a8efc7538a"};
+      if(position.latitude<0){
+        lat = (-1)*position.latitude;
+      }
+      if(position.longitude<0){
+        long = (-1)*position.longitude;
+      }
+      reverseGeo(lat: lat, lon: long).then((value) {
+        print('kakao location : '+value);
+      });
+    });
+    //Location location = new Location();
     // currentLocation =
     //     MyLocation(37.547598, 126.979931, address: "서울특별시", short: "서울특별시");
     //
@@ -77,6 +92,45 @@ class Bloc with ChangeNotifier {
     // });
   }
 
+  Future<String> reverseGeo({double lat, double lon}) async {
+    String _chagnedAddress = "";
+    String _shortAddress = "";
+    String _shortAddress2 = "";
+    List<Documents> resultList;
+
+    if (lat == 0 || lon == 0) return '';
+    var response = await http.get(
+        Uri.encodeFull(
+            "https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${lon}&y=${lat}"),
+        headers: header);
+    if (response.statusCode == 200) {
+      logger.d('[kakao]' + response.body);
+      dynamic jsonObj = json.decode(response.body);
+      if (jsonObj['documents'] != null) {
+        resultList = new List<Documents>();
+        jsonObj['documents'].forEach((dynamic v) {
+          resultList.add(new Documents.fromJson(v));
+        });
+        if (resultList.length > 0) {
+          for (int i = 0; i < resultList.length; i++) {
+            if (resultList[i].regionType == 'H') {
+              _shortAddress = resultList[i].addressName;
+              _shortAddress2 = resultList[i].region2depthName + " " +
+                  resultList[i].region3depthName + " " +
+                  resultList[i].region4depthName;
+              _chagnedAddress = resultList[i].addressName;
+              print(_shortAddress2);
+            }
+          }
+        }
+      } else {
+        logger.d('{}' + response.body);
+      }
+    } else {
+      logger.d(response.body);
+    }
+    return _shortAddress2;
+  }
 
   Future<ResponseData> getJoinSms({var num}) async {
     ResponseData res = ResponseData();

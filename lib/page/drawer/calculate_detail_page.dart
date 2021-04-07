@@ -16,11 +16,8 @@ class _CalculateDetailPageState extends State<CalculateDetailPage> {
       key: _scaffoldkey,
       backgroundColor: AppColor.navy,
       appBar: AppBar(
-        title: Text('상세내역',
-            style: TextStyle(
-                // fontSize: 24,
-                // fontWeight: FontWeight.bold,
-                color: AppColor.yellow)),
+        brightness: Brightness.dark,
+        title: Text('상세내역', style: TextStyle(color: AppColor.yellow)),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: AppColor.yellow),
@@ -38,7 +35,7 @@ class _CalculateDetailPageState extends State<CalculateDetailPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  width:screenSize.width/4,
+                  width: screenSize.width / 4,
                   alignment: Alignment.center,
                   child: Text(
                     '날짜',
@@ -50,7 +47,7 @@ class _CalculateDetailPageState extends State<CalculateDetailPage> {
                 ),
                 Container(
                   //color: Colors.blue,
-                  width:screenSize.width/5,
+                  width: screenSize.width / 5,
                   alignment: Alignment.center,
                   child: Text(
                     '배달비',
@@ -61,10 +58,11 @@ class _CalculateDetailPageState extends State<CalculateDetailPage> {
                   ),
                 ),
                 Container(
-                 // color: Colors.red,
-                  width:screenSize.width/3.5,
+                  // color: Colors.red,
+                  width: screenSize.width / 3.5,
                   alignment: Alignment.center,
-                  child: Text('금액',
+                  child: Text(
+                    '금액',
                     style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.bold,
@@ -73,9 +71,10 @@ class _CalculateDetailPageState extends State<CalculateDetailPage> {
                 ),
                 Container(
                   //color: Colors.blue,
-                  width:screenSize.width/4,
+                  width: screenSize.width / 4,
                   alignment: Alignment.center,
-                  child: Text('업체명',
+                  child: Text(
+                    '업체명',
                     style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.bold,
@@ -87,63 +86,64 @@ class _CalculateDetailPageState extends State<CalculateDetailPage> {
           ),
           Expanded(
             child: ListView(
-              children: List.generate(10, (index) {
-                return Container(
-                  height: 50,
-                  decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(color: Colors.grey))
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width:screenSize.width/4,
-                        alignment: Alignment.center,
-                        child: Text('2020.01.13\n11:12:31',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 14,
-                              //fontWeight: FontWeight.bold,
-                              color: Colors.white),
-
-                        ),
+                children: List.generate(10, (index) {
+              return Container(
+                height: 50,
+                decoration: BoxDecoration(
+                    border: Border(bottom: BorderSide(color: Colors.grey))),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: screenSize.width / 4,
+                      alignment: Alignment.center,
+                      child: Text(
+                        '2020.01.13\n11:12:31',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 14,
+                            //fontWeight: FontWeight.bold,
+                            color: Colors.white),
                       ),
-                      Container(
-                        width:screenSize.width/5,
-                        alignment: Alignment.center,
-                        child: Text('2900원',
-                          style: TextStyle(
-                              fontSize: 16,
-                              //fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
+                    ),
+                    Container(
+                      width: screenSize.width / 5,
+                      alignment: Alignment.center,
+                      child: Text(
+                        '2900원',
+                        style: TextStyle(
+                            fontSize: 16,
+                            //fontWeight: FontWeight.bold,
+                            color: Colors.white),
                       ),
-                      Container(
-                        width:screenSize.width/3.5,
-                        alignment: Alignment.center,
-                        child: Text('26,900원',
-                          style: TextStyle(
-                              fontSize: 16,
-                              //fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
+                    ),
+                    Container(
+                      width: screenSize.width / 3.5,
+                      alignment: Alignment.center,
+                      child: Text(
+                        '26,900원',
+                        style: TextStyle(
+                            fontSize: 16,
+                            //fontWeight: FontWeight.bold,
+                            color: Colors.white),
                       ),
-                      Container(
-                        width:screenSize.width/4,
-                        alignment: Alignment.center,
-                        child: Text('대독장',
-                          style: TextStyle(
-                              fontSize: 16,
-                              //fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                    ),
+                    Container(
+                      width: screenSize.width / 4,
+                      alignment: Alignment.center,
+                      child: Text(
+                        '대독장',
+                        style: TextStyle(
+                            fontSize: 16,
+                            //fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ],
-                  ),
-                );
-              })
-            ),
+                    ),
+                  ],
+                ),
+              );
+            })),
           ),
         ],
       ),

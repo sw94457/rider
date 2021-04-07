@@ -39,6 +39,7 @@ class _HomePageState extends State<HomePage>
     return Scaffold(
       drawer: MyDrawer(widget.bloc),
       appBar: AppBar(
+        brightness: Brightness.dark,
         iconTheme: IconThemeData(color: AppColor.yellow),
         bottom: TabBar(
           controller: tab_ctrl,

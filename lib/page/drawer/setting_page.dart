@@ -76,230 +76,230 @@ class _SettingPageState extends State<SettingPage> {
                   Container(
                     child: Column(
                       children: [
-                        InkWell(
-                          child: Container(
-                            width: screenSize.width,
-                            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 13),
-                            decoration: BoxDecoration(
-                                border: Border(bottom: BorderSide(color: Colors.grey))
-                            ),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      '간편메세지 설정',
-                                      style: TextStyle(
-                                          fontSize: 20, color: Colors.white),
-                                    ),
-                                    SizedBox(
-                                      width: 25,
-                                      child: isClick?
-                                          Image.asset('assets/images/arrow_bottom.png'):
-                                          Image.asset('assets/images/arrow_top.png'),
-                                    )
-                                  ],
-                                ),
-                                !isClick?
-                                Container(
-                                  width: screenSize.width-40,
-                                  height: 70,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      MyTextField(
-                                        width: screenSize.width-120,
-                                        height: 50,
-                                        color: Colors.white,
-                                        backgroundColor: AppColor.navy,
-                                        textEditingController: message1_ctrl,
-                                      ),
-                                      SizedBox(
-                                        width: 70,
-                                        height: 50,
-                                        child: ElevatedButton(
-                                          style: ButtonStyle(
-                                            shape: MaterialStateProperty.all(
-                                                    RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(10))),
-                                                  backgroundColor:
-                                              MaterialStateProperty.all<Color>(Colors.white),
-                                              overlayColor: MaterialStateProperty.all<Color>(
-                                                  Colors.black.withOpacity(0.5)),
-                                          ),
-                                          child: Text('수정',style: TextStyle(color: AppColor.navy,
-                                              fontSize: 17),
-                                          ),
-                                          onPressed: () {
-
-                                            },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ):SizedBox(),
-                                !isClick?
-                                Container(
-                                  width: screenSize.width-40,
-                                  height: 70,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      MyTextField(
-                                        width: screenSize.width-120,
-                                        height: 50,
-                                        color: Colors.white,
-                                        backgroundColor: AppColor.navy,
-                                        textEditingController: message2_ctrl,
-                                      ),
-                                      SizedBox(
-                                        width: 70,
-                                        height: 50,
-                                        child: ElevatedButton(
-                                          style: ButtonStyle(
-                                            shape: MaterialStateProperty.all(
-                                                RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(10))),
-                                            backgroundColor:
-                                            MaterialStateProperty.all<Color>(Colors.white),
-                                            overlayColor: MaterialStateProperty.all<Color>(
-                                                Colors.black.withOpacity(0.5)),
-                                          ),
-                                          child: Text('수정',style: TextStyle(color: AppColor.navy,
-                                              fontSize: 17),
-                                          ),
-                                          onPressed: () {
-
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ):SizedBox(),
-                                !isClick?
-                                Container(
-                                  width: screenSize.width-40,
-                                  height: 70,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      MyTextField(
-                                        width: screenSize.width-120,
-                                        height: 50,
-                                        color: Colors.white,
-                                        backgroundColor: AppColor.navy,
-                                        textEditingController: message3_ctrl,
-                                      ),
-                                      SizedBox(
-                                        width: 70,
-                                        height: 50,
-                                        child: ElevatedButton(
-                                          style: ButtonStyle(
-                                            shape: MaterialStateProperty.all(
-                                                RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(10))),
-                                            backgroundColor:
-                                            MaterialStateProperty.all<Color>(Colors.white),
-                                            overlayColor: MaterialStateProperty.all<Color>(
-                                                Colors.black.withOpacity(0.5)),
-                                          ),
-                                          child: Text('수정',style: TextStyle(color: AppColor.navy,
-                                              fontSize: 17),
-                                          ),
-                                          onPressed: () {
-
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ):SizedBox(),
-                                !isClick?
-                                Container(
-                                  width: screenSize.width-40,
-                                  height: 70,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      MyTextField(
-                                        width: screenSize.width-120,
-                                        height: 50,
-                                        color: Colors.white,
-                                        backgroundColor: AppColor.navy,
-                                        textEditingController: message4_ctrl,
-                                      ),
-                                      SizedBox(
-                                        width: 70,
-                                        height: 50,
-                                        child: ElevatedButton(
-                                          style: ButtonStyle(
-                                            shape: MaterialStateProperty.all(
-                                                RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(10))),
-                                            backgroundColor:
-                                            MaterialStateProperty.all<Color>(Colors.white),
-                                            overlayColor: MaterialStateProperty.all<Color>(
-                                                Colors.black.withOpacity(0.5)),
-                                          ),
-                                          child: Text('수정',style: TextStyle(color: AppColor.navy,
-                                              fontSize: 17),
-                                          ),
-                                          onPressed: () {
-
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ):SizedBox(),
-                                !isClick?
-                                Container(
-                                  width: screenSize.width-40,
-                                  height: 70,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      MyTextField(
-                                        width: screenSize.width-120,
-                                        height: 50,
-                                        color: Colors.white,
-                                        backgroundColor: AppColor.navy,
-                                        textEditingController: message5_ctrl,
-                                      ),
-                                      SizedBox(
-                                        width: 70,
-                                        height: 50,
-                                        child: ElevatedButton(
-                                          style: ButtonStyle(
-                                            shape: MaterialStateProperty.all(
-                                                RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(10))),
-                                            backgroundColor:
-                                            MaterialStateProperty.all<Color>(Colors.white),
-                                            overlayColor: MaterialStateProperty.all<Color>(
-                                                Colors.black.withOpacity(0.5)),
-                                          ),
-                                          child: Text('수정',style: TextStyle(color: AppColor.navy,
-                                              fontSize: 17),
-                                          ),
-                                          onPressed: () {
-
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ):SizedBox(),
-                              ],
-                            ),
-                          ),
-                          onTap: (){
-                            setState(() {
-                              isClick = !isClick;
-                            });
-                          },
-                        ),
+                        // InkWell(
+                        //   child: Container(
+                        //     width: screenSize.width,
+                        //     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 13),
+                        //     decoration: BoxDecoration(
+                        //         border: Border(bottom: BorderSide(color: Colors.grey))
+                        //     ),
+                        //     child: Column(
+                        //       children: [
+                        //         Row(
+                        //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //           children: [
+                        //             Text(
+                        //               '간편메세지 설정',
+                        //               style: TextStyle(
+                        //                   fontSize: 20, color: Colors.white),
+                        //             ),
+                        //             SizedBox(
+                        //               width: 25,
+                        //               child: isClick?
+                        //                   Image.asset('assets/images/arrow_bottom.png'):
+                        //                   Image.asset('assets/images/arrow_top.png'),
+                        //             )
+                        //           ],
+                        //         ),
+                        //         !isClick?
+                        //         Container(
+                        //           width: screenSize.width-40,
+                        //           height: 70,
+                        //           child: Row(
+                        //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //             children: [
+                        //               MyTextField(
+                        //                 width: screenSize.width-120,
+                        //                 height: 50,
+                        //                 color: Colors.white,
+                        //                 backgroundColor: AppColor.navy,
+                        //                 controller: message1_ctrl,
+                        //               ),
+                        //               SizedBox(
+                        //                 width: 70,
+                        //                 height: 50,
+                        //                 child: ElevatedButton(
+                        //                   style: ButtonStyle(
+                        //                     shape: MaterialStateProperty.all(
+                        //                             RoundedRectangleBorder(
+                        //                               borderRadius: BorderRadius.circular(10))),
+                        //                           backgroundColor:
+                        //                       MaterialStateProperty.all<Color>(Colors.white),
+                        //                       overlayColor: MaterialStateProperty.all<Color>(
+                        //                           Colors.black.withOpacity(0.5)),
+                        //                   ),
+                        //                   child: Text('수정',style: TextStyle(color: AppColor.navy,
+                        //                       fontSize: 17),
+                        //                   ),
+                        //                   onPressed: () {
+                        //
+                        //                     },
+                        //                 ),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ):SizedBox(),
+                        //         !isClick?
+                        //         Container(
+                        //           width: screenSize.width-40,
+                        //           height: 70,
+                        //           child: Row(
+                        //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //             children: [
+                        //               MyTextField(
+                        //                 width: screenSize.width-120,
+                        //                 height: 50,
+                        //                 color: Colors.white,
+                        //                 backgroundColor: AppColor.navy,
+                        //                 controller: message2_ctrl,
+                        //               ),
+                        //               SizedBox(
+                        //                 width: 70,
+                        //                 height: 50,
+                        //                 child: ElevatedButton(
+                        //                   style: ButtonStyle(
+                        //                     shape: MaterialStateProperty.all(
+                        //                         RoundedRectangleBorder(
+                        //                             borderRadius: BorderRadius.circular(10))),
+                        //                     backgroundColor:
+                        //                     MaterialStateProperty.all<Color>(Colors.white),
+                        //                     overlayColor: MaterialStateProperty.all<Color>(
+                        //                         Colors.black.withOpacity(0.5)),
+                        //                   ),
+                        //                   child: Text('수정',style: TextStyle(color: AppColor.navy,
+                        //                       fontSize: 17),
+                        //                   ),
+                        //                   onPressed: () {
+                        //
+                        //                   },
+                        //                 ),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ):SizedBox(),
+                        //         !isClick?
+                        //         Container(
+                        //           width: screenSize.width-40,
+                        //           height: 70,
+                        //           child: Row(
+                        //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //             children: [
+                        //               MyTextField(
+                        //                 width: screenSize.width-120,
+                        //                 height: 50,
+                        //                 color: Colors.white,
+                        //                 backgroundColor: AppColor.navy,
+                        //                 controller: message3_ctrl,
+                        //               ),
+                        //               SizedBox(
+                        //                 width: 70,
+                        //                 height: 50,
+                        //                 child: ElevatedButton(
+                        //                   style: ButtonStyle(
+                        //                     shape: MaterialStateProperty.all(
+                        //                         RoundedRectangleBorder(
+                        //                             borderRadius: BorderRadius.circular(10))),
+                        //                     backgroundColor:
+                        //                     MaterialStateProperty.all<Color>(Colors.white),
+                        //                     overlayColor: MaterialStateProperty.all<Color>(
+                        //                         Colors.black.withOpacity(0.5)),
+                        //                   ),
+                        //                   child: Text('수정',style: TextStyle(color: AppColor.navy,
+                        //                       fontSize: 17),
+                        //                   ),
+                        //                   onPressed: () {
+                        //
+                        //                   },
+                        //                 ),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ):SizedBox(),
+                        //         !isClick?
+                        //         Container(
+                        //           width: screenSize.width-40,
+                        //           height: 70,
+                        //           child: Row(
+                        //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //             children: [
+                        //               MyTextField(
+                        //                 width: screenSize.width-120,
+                        //                 height: 50,
+                        //                 color: Colors.white,
+                        //                 backgroundColor: AppColor.navy,
+                        //                 controller: message4_ctrl,
+                        //               ),
+                        //               SizedBox(
+                        //                 width: 70,
+                        //                 height: 50,
+                        //                 child: ElevatedButton(
+                        //                   style: ButtonStyle(
+                        //                     shape: MaterialStateProperty.all(
+                        //                         RoundedRectangleBorder(
+                        //                             borderRadius: BorderRadius.circular(10))),
+                        //                     backgroundColor:
+                        //                     MaterialStateProperty.all<Color>(Colors.white),
+                        //                     overlayColor: MaterialStateProperty.all<Color>(
+                        //                         Colors.black.withOpacity(0.5)),
+                        //                   ),
+                        //                   child: Text('수정',style: TextStyle(color: AppColor.navy,
+                        //                       fontSize: 17),
+                        //                   ),
+                        //                   onPressed: () {
+                        //
+                        //                   },
+                        //                 ),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ):SizedBox(),
+                        //         !isClick?
+                        //         Container(
+                        //           width: screenSize.width-40,
+                        //           height: 70,
+                        //           child: Row(
+                        //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //             children: [
+                        //               MyTextField(
+                        //                 width: screenSize.width-120,
+                        //                 height: 50,
+                        //                 color: Colors.white,
+                        //                 backgroundColor: AppColor.navy,
+                        //                 controller: message5_ctrl,
+                        //               ),
+                        //               SizedBox(
+                        //                 width: 70,
+                        //                 height: 50,
+                        //                 child: ElevatedButton(
+                        //                   style: ButtonStyle(
+                        //                     shape: MaterialStateProperty.all(
+                        //                         RoundedRectangleBorder(
+                        //                             borderRadius: BorderRadius.circular(10))),
+                        //                     backgroundColor:
+                        //                     MaterialStateProperty.all<Color>(Colors.white),
+                        //                     overlayColor: MaterialStateProperty.all<Color>(
+                        //                         Colors.black.withOpacity(0.5)),
+                        //                   ),
+                        //                   child: Text('수정',style: TextStyle(color: AppColor.navy,
+                        //                       fontSize: 17),
+                        //                   ),
+                        //                   onPressed: () {
+                        //
+                        //                   },
+                        //                 ),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ):SizedBox(),
+                        //       ],
+                        //     ),
+                        //   ),
+                        //   onTap: (){
+                        //     setState(() {
+                        //       isClick = !isClick;
+                        //     });
+                        //   },
+                        // ),
                         InkWell(
                           child: Container(
                             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 13),
