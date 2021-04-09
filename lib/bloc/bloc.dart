@@ -43,7 +43,9 @@ class Bloc with ChangeNotifier {
 
     SharedPreferences.getInstance().then((_prefs) {
       pref = _prefs;
+      pref.setBool("workState", false);
     });
+
     Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high).then((value) {
       position = value;
       var lat = position.latitude;
@@ -183,7 +185,7 @@ class Bloc with ChangeNotifier {
     params["phone"] = num;
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/sendloginsms"), body: params);
+        Uri.encodeFull(baseURL + "/sendloginauthcode"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -324,6 +326,7 @@ class Bloc with ChangeNotifier {
   Future<ResponseData> login({String phone}) async {
     ResponseData res = ResponseData();
     Map<String, dynamic> params = Map<String, String>();
+    logger.d(phone);
     params["phone"] = phone;
     params["udid"] = await FlutterUdid.consistentUdid;
     params["push_token"] = 'asdfasdfaa';
@@ -373,7 +376,7 @@ class Bloc with ChangeNotifier {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/user/loginwithauth"), body: params);
+        Uri.encodeFull(baseURL + "/loginwithauth"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {

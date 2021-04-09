@@ -1,10 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.ibagudelivery.rider_app">
     <uses-permission android:name="android.permission.INTERNET" />
    <application
         android:label="라이더 앱"
+       tools:replace="android:label"
        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
+       <service android:name="com.transistorsoft.locationmanager.service.TrackingService" android:foregroundServiceType="location" />
+       <service android:name="com.transistorsoft.locationmanager.service.LocationRequestService" android:foregroundServiceType="location" />
+<!--       <meta-data android:name = "com.transistorsoft.locationmanager.license"-->
+<!--           android:value = "YOUR_LICENCE_KEY_HERE"/>-->
        <meta-data android:name="com.google.android.geo.API_KEY"
            android:value="AIzaSyBEL0jX27fd1Z3SNex-s7znKo3NM-kAU7k"/>
         <activity

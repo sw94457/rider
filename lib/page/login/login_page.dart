@@ -106,6 +106,11 @@ class _LoginPageState extends State<LoginPage> {
                             builder: (BuildContext context) =>
                                 HomePage(widget.bloc)), (route) => false);
                       } else {
+                        if(res.code == 'E02'){
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  ReLoginPage(widget.bloc)));
+                        }
                         Toast.show(res.errorMsg, context, duration: 2);
                       }
                     });
