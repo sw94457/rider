@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:rider_app/bloc/bloc.dart';
+import 'package:rider_app/page/login/login_page.dart';
 import 'package:rider_app/ui/color.dart';
 
 class RegisterFinalPage extends StatefulWidget {
+  Bloc bloc;
+
+  RegisterFinalPage(this.bloc);
+
   @override
   _RegisterFinalPageState createState() => _RegisterFinalPageState();
 }
@@ -20,7 +26,7 @@ class _RegisterFinalPageState extends State<RegisterFinalPage> {
           elevation: 0,
           backgroundColor: AppColor.navy),
       body: Container(
-        height: screen.height,
+        height: screen.height-100,
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -46,11 +52,13 @@ class _RegisterFinalPageState extends State<RegisterFinalPage> {
               width: screen.width,
               height: 56,
               child: RaisedButton(
-                child: Text("다음",
+                child: Text("완료",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 color: AppColor.yellow,
                 onPressed: () {
-                  //Navigator.
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          LoginPage(widget.bloc)), (route) => false);
                 },
               ),
             ),

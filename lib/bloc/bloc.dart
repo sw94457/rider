@@ -183,7 +183,7 @@ class Bloc with ChangeNotifier {
     params["phone"] = num;
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/user/sendloginsms"), body: params);
+        Uri.encodeFull(baseURL + "/sendloginsms"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -259,17 +259,22 @@ class Bloc with ChangeNotifier {
     return res;
   }
 
-  Future<ResponseData> getJoin({String id, String pw, String name, String phone,
+  Future<ResponseData> getJoin({String name, String phone,
+    String location_serial='', String term='',
     String image='', String image2='', String account_name, String account_num, String account_bank}) async {
     ResponseData res = ResponseData();
-    logger.d(id);
-    logger.d(pw);
+    logger.d(Platform.isAndroid ? 'and' : 'ios');
+    logger.d(FlutterUdid.consistentUdid);
+    logger.d(fcm.getToken());
     logger.d(name);
     logger.d(phone);
+    logger.d(location_serial);
+    logger.d(term);
+    logger.d(account_name);
+    logger.d(account_num);
+    logger.d(account_bank);
     logger.d(image);
     logger.d(image2);
-    logger.d(Platform.isAndroid ? 'and' : 'ios');
-
 
     isLoading = true;
     var uri = Uri.parse(baseURL+"/register");
@@ -278,9 +283,12 @@ class Bloc with ChangeNotifier {
     request = http.MultipartRequest('POST', uri)
       ..fields['app_platform'] = Platform.isAndroid ? 'and' : 'ios'
       ..fields["udid"] = await FlutterUdid.consistentUdid
-      ..fields["push_token"] = await fcm.getToken()
+      //..fields["push_token"] = await fcm.getToken()
+      ..fields["push_token"] = 'aaaaa'
       ..fields["phone"] = phone
       ..fields["name"] = name
+      ..fields["location_serial"] = location_serial
+      ..fields["calculate_cycle"] = term
       // ..fields["expire_license_date"] = license_date
       ..fields["account_name"] = account_name
       ..fields["account_num"] = account_num
@@ -360,7 +368,8 @@ class Bloc with ChangeNotifier {
     params["authcode"] = authcode;
     params["phone"] = phone;
     params["udid"] = await FlutterUdid.consistentUdid;
-    params["push_token"] = fcm.getToken();
+   // params["push_token"] = fcm.getToken();
+    params["push_token"] = 'aaaaa';
 
     isLoading = true;
     var response = await http.post(

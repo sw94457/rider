@@ -40,8 +40,8 @@ class _RegisterPage2State extends State<RegisterPage2> {
           FocusScope.of(context).requestFocus(new FocusNode());
         },
         child: SingleChildScrollView(
-          padding: EdgeInsets.only(right: 20,left:20, top: 10, bottom: 20),
           child: Container(
+            padding: EdgeInsets.only(right: 20,left:20, top: 10, bottom: 20),
             height: screen.height - (110),
             child: Column(
               children: [
@@ -112,6 +112,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
                           child: MyTextField(
                             controller: authcode,
                             color: Colors.white,
+                            inputType: TextInputType.number,
                             onChanged: (text) {},
                           ),
                         ),

@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:logger/logger.dart';
 import 'package:rider_app/bloc/bloc.dart';
 import 'package:rider_app/page/login/register_page_3.dart';
 import 'package:rider_app/page/login/register_page_final.dart';
 import 'package:rider_app/ui/color.dart';
+import 'package:toast/toast.dart';
 
 /* 면허증 등록 */
 
@@ -19,6 +21,7 @@ class RegisterPage4 extends StatefulWidget {
 }
 
 class _RegisterPage4State extends State<RegisterPage4> {
+  Logger logger = Logger();
   File _image2;
   bool isFile = false;
   final ImagePicker imagePicker = ImagePicker();
@@ -145,12 +148,30 @@ class _RegisterPage4State extends State<RegisterPage4> {
                       ? RaisedButton(
                           onPressed: () {
                             if (isFile) {
-                              widget.bloc.user.joinImage2 = _image2.path;
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          RegisterFinalPage()));
+                              widget.bloc.user.licenseImage = _image2.path;
+                              widget.bloc.getJoin(
+                                phone: widget.bloc.user.phone,
+                                name: widget.bloc.user.name,
+                                account_name: widget.bloc.user.accountName,
+                                account_bank: widget.bloc.user.accountBank,
+                                account_num: widget.bloc.user.accountNum,
+                                location_serial: widget.bloc.user.location_serial,
+                                term: widget.bloc.user.term,
+                                image: widget.bloc.user.faceImage,
+                                image2: widget.bloc.user.licenseImage
+                              ).then((res) {
+                                logger.d(res.success);
+                                if(res.success){
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              RegisterFinalPage(widget.bloc)));
+                                }else{
+                                  logger.d(res.errorMsg);
+                                  Toast.show(res.errorMsg+'',context);
+                                }
+                              });
                             }
                           },
                           child: Text("다음",

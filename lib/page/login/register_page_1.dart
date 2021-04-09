@@ -39,9 +39,9 @@ class _RegisterPage1State extends State<RegisterPage1> {
       ),
       body: SingleChildScrollView(
         physics: NeverScrollableScrollPhysics(),
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Container(
           height: screen.height - (110),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

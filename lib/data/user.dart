@@ -4,6 +4,9 @@ class User {
   String id;
   String pw;
   String name;
+  String location_serial;
+  String location2;
+  String term;
   String faceImage;
   String expireLicenseDate;
   String accountName;
@@ -23,6 +26,9 @@ class User {
         this.id,
         this.pw,
         this.name,
+        this.location_serial,
+        this.location2,
+        this.term,
         this.faceImage,
         this.expireLicenseDate,
         this.accountName,
@@ -41,7 +47,10 @@ class User {
     flag = json['flag'];
     id = json['id'];
     pw = json['pw'];
+    term = json['calculate_cycle'];
     name = json['name'];
+    location_serial = json['location_serial'];
+    location2 = json['location2'];
     faceImage = json['face_image'];
     expireLicenseDate = json['expire_license_date'];
     accountName = json['account_name'];
@@ -62,7 +71,10 @@ class User {
     data['flag'] = this.flag;
     data['id'] = this.id;
     data['pw'] = this.pw;
+    data['calculate_cycle'] = this.term;
     data['name'] = this.name;
+    data['location_serial'] = this.location_serial;
+    data['location2'] = this.location2;
     data['face_image'] = this.faceImage;
     data['expire_license_date'] = this.expireLicenseDate;
     data['account_name'] = this.accountName;
