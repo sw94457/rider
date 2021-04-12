@@ -9,8 +9,9 @@ import 'package:rider_app/ui/color.dart';
 
 class OrderDetailPage extends StatefulWidget {
   Bloc bloc;
+  Order order;
 
-  OrderDetailPage({this.bloc});
+  OrderDetailPage({this.bloc, this.order});
 
   @override
   _OrderDetailPageState createState() => _OrderDetailPageState();
@@ -28,7 +29,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   @override
   void initState() {
     super.initState();
-    widget.bloc.getOrderDetail().then((value) {
+    widget.bloc.getOrderDetail(request_serial: widget.order.serial).then((value) {
       order = value;
     });
     try{

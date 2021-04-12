@@ -23,6 +23,7 @@ class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   TabController tab_ctrl;
   List<Order> orderList = [];
+
   @override
   void initState() {
     super.initState();
@@ -47,46 +48,50 @@ class _HomePageState extends State<HomePage>
           labelColor: AppColor.yellow,
           unselectedLabelColor: AppColor.grey,
           tabs: [
-            Tab(child: Text('신규',style: TextStyle(fontSize: 20,
-                fontWeight: FontWeight.bold))),
-            Tab(child: Text('배달',style: TextStyle(fontSize: 20,
-                fontWeight: FontWeight.bold))),
+            Tab(
+              child: Text('신규(${orderList.length})',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            ),
+            Tab(
+              child: Text('배달(${orderList.length})',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            ),
           ],
         ),
       ),
       backgroundColor: AppColor.navy,
       body: TabBarView(
         controller: tab_ctrl,
-        children: [
-          newOrder(),
-          delivery()
-        ],
+        children: [newOrder(), delivery()],
       ),
     );
   }
-  newOrder(){
+
+  newOrder() {
     return ListView(
-      children: List.generate(3, (index) {
+      children: List.generate(orderList.length, (index) {
         return Padding(
           padding: EdgeInsets.all(10),
           child: OrderItem(
-            //item:orderList[index],
+            item: orderList[index],
             isNew: true,
             onTap: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => OrderDetailPage(bloc: widget.bloc,
-                      )));
+                      builder: (context) => OrderDetailPage(
+                            bloc: widget.bloc,
+                            order:orderList[index])));
             },
           ),
         );
       }),
     );
   }
-  delivery(){
+
+  delivery() {
     return ListView(
-      children: List.generate(13, (index) {
+      children: List.generate(orderList.length, (index) {
         Random random = Random();
         int randomNumber = random.nextInt(2);
 
@@ -94,14 +99,15 @@ class _HomePageState extends State<HomePage>
           padding: EdgeInsets.all(10),
           child: OrderItem(
             isNew: false,
-            state:randomNumber,
+            item: orderList[index],
+            state: randomNumber,
             onTap: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => DeliveryDetailPage(
-                        state: randomNumber,
-                      )));
+                            state: randomNumber,
+                          )));
             },
           ),
         );

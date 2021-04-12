@@ -25,6 +25,7 @@ class MyDrawer extends StatefulWidget {
 
 class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
   SharedPreferences prefs;
+  Logger logger = Logger();
   var serial;
   var userfaceImage;
   String _uid;
@@ -35,27 +36,13 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
   bool isload = false;
   bool isLoading = false;
   var a=0;
-  Logger logger = Logger();
+
 
   @override
   void initState() {
     super.initState();
     getCounterFromSharedPrefs();
     WidgetsBinding.instance.removeObserver(this);
-
-    bg.BackgroundGeolocation.ready(bg.Config(
-        desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
-        distanceFilter: 10.0,
-        stopOnTerminate: false,
-        startOnBoot: true,
-        debug: true,
-        logLevel: bg.Config.LOG_LEVEL_VERBOSE
-    )).then((bg.State state) {
-      if (!state.enabled) {
-        print('start background');
-        bg.BackgroundGeolocation.start();
-      }
-    });
   }
 
   @override
@@ -118,7 +105,7 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
                       children: [
                         SizedBox(
                             width: 124, height: 56,
-                            child: workState ? RaisedButton(onPressed: (){
+                            child: (workState) ? RaisedButton(onPressed: (){
                             },child: Text("출근하기",
                                 style: TextStyle(fontSize: 17, color: Colors.white)),
                               color: Colors.white12,
@@ -300,6 +287,19 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
     widget.bloc.riderOn(serial: serial).then((res){
       if(res.success){
         print('출근1');
+        bg.BackgroundGeolocation.ready(bg.Config(
+            desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
+            distanceFilter: 10.0,
+            stopOnTerminate: false,
+            startOnBoot: true,
+            debug: true,
+            logLevel: bg.Config.LOG_LEVEL_VERBOSE
+        )).then((bg.State state) {
+          if (!state.enabled) {
+            print('start background');
+            bg.BackgroundGeolocation.start();
+          }
+        });
         getCurrentLocation();
         _timer = Timer.periodic(Duration(seconds: 10), (timer) {
           getCurrentLocation();

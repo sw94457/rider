@@ -386,6 +386,7 @@ class Bloc with ChangeNotifier {
         res.success = true;
         if (jsonObj['data'] != null) {
           user = User.fromJson(jsonObj['data']);
+          pref.setString('serial', user.serial);
         }
       } else {
         res.success = false;
@@ -400,10 +401,13 @@ class Bloc with ChangeNotifier {
 
   Future<ResponseData> autoLogin({String serial}) async {
     ResponseData res = ResponseData();
+    var udid = await FlutterUdid.consistentUdid;
+    logger.d(udid);
     Map<String, dynamic> params = Map<String, String>();
     params["serial"] = serial;
-    params["udid"] = FlutterUdid.consistentUdid;
-    params["push_token"] = fcm.getToken();
+    params["udid"] = udid;
+    //params["push_token"] = fcm.getToken();
+    params["push_token"] = 'aaaaa';
 
     isLoading = true;
     var response = await http.post(
@@ -767,7 +771,7 @@ class Bloc with ChangeNotifier {
     logger.d(pref.getString('serial'));
 
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/order_list"));
+        Uri.encodeFull(baseURL + "/order_list"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -815,12 +819,12 @@ class Bloc with ChangeNotifier {
     return order;
   }
 
-  Future<ResponseData> acceptorder({String requestserial,String orderserial,String serial}) async {
+  Future<ResponseData> acceptOrder({String request_serial,String order_serial,String serial}) async {
     ResponseData res = ResponseData();
     Map<String, dynamic> params = Map<String, String>();
 
-    params["request_serial"] = requestserial;
-    params["order_serial"] = orderserial;
+    params["request_serial"] = request_serial;
+    params["order_serial"] = order_serial;
     params["serial"] = serial;
 
     isLoading = true;
@@ -872,7 +876,7 @@ class Bloc with ChangeNotifier {
     return res;
   }
 
-  Future<ResponseData> finishdelivery({String requestserial,String serial}) async {
+  Future<ResponseData> finishDelivery({String requestserial,String serial}) async {
     ResponseData res = ResponseData();
     Map<String, dynamic> params = Map<String, String>();
 

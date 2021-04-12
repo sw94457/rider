@@ -124,7 +124,6 @@ class _ReLoginPageState extends State<ReLoginPage> {
                         hintText: '인증 코드를 입력해주세요',
                         hintStyle: TextStyle(fontSize: 15, color: Colors.grey),
                         onChanged: (str) {
-                          logger.d(code_ctrl);
                           setState(() {});
                         },
                       ),

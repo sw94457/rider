@@ -35,6 +35,7 @@ class _LoginPageState extends State<LoginPage> {
   getCounterFromSharedPrefs() async {
     SharedPreferences.getInstance().then((pref) {
       if (pref.getString('serial') != null && pref.getString('serial') != '') {
+        print(pref.getString('serial'));
         widget.bloc.autoLogin(serial: pref.getString('serial')).then((res) {
           if (res.success) {
             Navigator.pushReplacement(context,
