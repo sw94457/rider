@@ -349,11 +349,12 @@ class Bloc with ChangeNotifier {
           logger.d(user.serial);
           pref.setString('serial', user.serial);
           pref.setString('uid', user.name);
-          // await pref.setString('serial',user.serial);
-          // await pref.setString('username',user.name);
-          // await pref.setString('userphone',user.phone);
-          // await pref.setString('userfaceImage',user.faceImage);
-          //logger.d(pref.getString('serial'));
+          if(user.flagOnoff == 'Y'){
+            pref.setBool('workState', true);
+          }else{
+            pref.setBool('workState', false);
+          }
+
         }
       } else {
         res.success = false;

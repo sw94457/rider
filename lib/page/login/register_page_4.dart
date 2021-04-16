@@ -155,7 +155,7 @@ class _RegisterPage4State extends State<RegisterPage4> {
                                 account_name: widget.bloc.user.accountName,
                                 account_bank: widget.bloc.user.accountBank,
                                 account_num: widget.bloc.user.accountNum,
-                                location_serial: widget.bloc.user.location_serial,
+                                location_serial: widget.bloc.user.locationSerial,
                                 term: widget.bloc.user.term,
                                 image: widget.bloc.user.faceImage,
                                 image2: widget.bloc.user.licenseImage

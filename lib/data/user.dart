@@ -1,12 +1,12 @@
 class User {
   String serial;
   String flag;
-  String id;
-  String pw;
-  String name;
-  String location_serial;
+  String locationSerial;
   String location2;
-  String term;
+  String locationName;
+  String groupSerial;
+  String groupName;
+  String name;
   String faceImage;
   String expireLicenseDate;
   String accountName;
@@ -19,16 +19,22 @@ class User {
   String pushToken;
   String appPlatform;
   String udid;
+  String term;
+  String flagOnoff;
+  String latitude;
+  String longitude;
+  var distance;
+  String calculateCycle;
 
   User(
       {this.serial,
         this.flag,
-        this.id,
-        this.pw,
-        this.name,
-        this.location_serial,
+        this.locationSerial,
         this.location2,
-        this.term,
+        this.locationName,
+        this.groupSerial,
+        this.groupName,
+        this.name,
         this.faceImage,
         this.expireLicenseDate,
         this.accountName,
@@ -38,19 +44,24 @@ class User {
         this.joinImage,
         this.joinImage2,
         this.phone,
+        this.term,
         this.pushToken,
         this.appPlatform,
-        this.udid});
+        this.udid,
+        this.flagOnoff,
+        this.latitude,
+        this.longitude,
+        this.distance,
+        this.calculateCycle});
 
   User.fromJson(Map<String, dynamic> json) {
     serial = json['serial'];
     flag = json['flag'];
-    id = json['id'];
-    pw = json['pw'];
-    term = json['calculate_cycle'];
+    locationSerial = json['location_serial'];
+    locationName = json['location_name'];
+    groupSerial = json['group_serial'];
+    groupName = json['group_name'];
     name = json['name'];
-    location_serial = json['location_serial'];
-    location2 = json['location2'];
     faceImage = json['face_image'];
     expireLicenseDate = json['expire_license_date'];
     accountName = json['account_name'];
@@ -63,18 +74,22 @@ class User {
     pushToken = json['push_token'];
     appPlatform = json['app_platform'];
     udid = json['udid'];
+    flagOnoff = json['flag_onoff'];
+    latitude = json['latitude'];
+    longitude = json['longitude'];
+    distance = json['distance'];
+    calculateCycle = json['calculate_cycle'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['serial'] = this.serial;
     data['flag'] = this.flag;
-    data['id'] = this.id;
-    data['pw'] = this.pw;
-    data['calculate_cycle'] = this.term;
+    data['location_serial'] = this.locationSerial;
+    data['location_name'] = this.locationName;
+    data['group_serial'] = this.groupSerial;
+    data['group_name'] = this.groupName;
     data['name'] = this.name;
-    data['location_serial'] = this.location_serial;
-    data['location2'] = this.location2;
     data['face_image'] = this.faceImage;
     data['expire_license_date'] = this.expireLicenseDate;
     data['account_name'] = this.accountName;
@@ -87,6 +102,11 @@ class User {
     data['push_token'] = this.pushToken;
     data['app_platform'] = this.appPlatform;
     data['udid'] = this.udid;
+    data['flag_onoff'] = this.flagOnoff;
+    data['latitude'] = this.latitude;
+    data['longitude'] = this.longitude;
+    data['distance'] = this.distance;
+    data['calculate_cycle'] = this.calculateCycle;
     return data;
   }
 }

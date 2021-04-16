@@ -400,7 +400,7 @@ class _RegisterPage3State extends State<RegisterPage3> {
                         return;
                       }
                       widget.bloc.user.name = name_ctrl.text;
-                      widget.bloc.user.location_serial = location_serial;
+                      widget.bloc.user.locationSerial = location_serial;
                       widget.bloc.user.location2 = choice_place2;
                       widget.bloc.user.faceImage = _image.path;
                       widget.bloc.user.accountName = name2_ctrl.text;
