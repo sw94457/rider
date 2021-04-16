@@ -41,6 +41,8 @@
 	<string>Used to Location's Info always for Using Beacon.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Used to Location's Info for Using Beacon when In Use.</string>
+	<key>NSMotionUsageDescription</key>
+    <string>Used to Location's Info for Using Beacon when In Use.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Need to upload image</string>
 	<key>NSPhotoLibraryUsageDescription</key>

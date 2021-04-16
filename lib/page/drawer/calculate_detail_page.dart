@@ -1,13 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:rider_app/bloc/bloc.dart';
+import 'package:rider_app/data/calculate.dart';
+import 'package:rider_app/data/order.dart';
 import 'package:rider_app/ui/color.dart';
+import 'package:rider_app/ui/progress.dart';
 
 class CalculateDetailPage extends StatefulWidget {
+  Calculate item;
+  Bloc bloc;
+
+  CalculateDetailPage({this.bloc, this.item});
+
   @override
   _CalculateDetailPageState createState() => _CalculateDetailPageState();
 }
 
 class _CalculateDetailPageState extends State<CalculateDetailPage> {
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
+  final formatter = new NumberFormat("#,###,###,###,###");
+  List<Order2> calculteList = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.bloc.getCalculateDetail(
+            startDate: widget.item.startDate, endDate: widget.item.endDate).then((value) {
+      calculteList = value;
+      isLoading = false;
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +50,9 @@ class _CalculateDetailPageState extends State<CalculateDetailPage> {
           },
         ),
       ),
-      body: Column(
+      body: isLoading?
+          ProgressPage(screenSize.width):
+      Column(
         children: [
           Container(
             color: AppColor.white_navy,
@@ -86,7 +112,7 @@ class _CalculateDetailPageState extends State<CalculateDetailPage> {
           ),
           Expanded(
             child: ListView(
-                children: List.generate(10, (index) {
+                children: List.generate(calculteList.length, (index) {
               return Container(
                 height: 50,
                 decoration: BoxDecoration(
@@ -98,7 +124,7 @@ class _CalculateDetailPageState extends State<CalculateDetailPage> {
                       width: screenSize.width / 4,
                       alignment: Alignment.center,
                       child: Text(
-                        '2020.01.13\n11:12:31',
+                        calculteList[index].registeredDate,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 14,
@@ -110,7 +136,7 @@ class _CalculateDetailPageState extends State<CalculateDetailPage> {
                       width: screenSize.width / 5,
                       alignment: Alignment.center,
                       child: Text(
-                        '2900원',
+                        '${formatter.format(int.parse(calculteList[index].riderDeliveryPrice))}원',
                         style: TextStyle(
                             fontSize: 16,
                             //fontWeight: FontWeight.bold,
@@ -121,7 +147,7 @@ class _CalculateDetailPageState extends State<CalculateDetailPage> {
                       width: screenSize.width / 3.5,
                       alignment: Alignment.center,
                       child: Text(
-                        '26,900원',
+                        '${formatter.format(int.parse(calculteList[index].finalPrice))}원',
                         style: TextStyle(
                             fontSize: 16,
                             //fontWeight: FontWeight.bold,
@@ -132,7 +158,7 @@ class _CalculateDetailPageState extends State<CalculateDetailPage> {
                       width: screenSize.width / 4,
                       alignment: Alignment.center,
                       child: Text(
-                        '대독장',
+                        calculteList[index].companyName,
                         style: TextStyle(
                             fontSize: 16,
                             //fontWeight: FontWeight.bold,

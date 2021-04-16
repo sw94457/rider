@@ -31,7 +31,7 @@ class _ReLoginPageState extends State<ReLoginPage> {
     return Scaffold(
       backgroundColor: AppColor.navy,
       appBar: AppBar(
-        brightness: Brightness.light,
+        brightness: Brightness.dark,
         centerTitle: true,
         elevation: 0.0,
         title: Text('재로그인', style: TextStyle(color: AppColor.yellow)),

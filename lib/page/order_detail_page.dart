@@ -2,24 +2,33 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rider_app/bloc/bloc.dart';
 import 'package:rider_app/data/order.dart';
 import 'package:rider_app/ui/color.dart';
+import 'package:rider_app/ui/progress.dart';
+import 'package:toast/toast.dart';
 
 class OrderDetailPage extends StatefulWidget {
   Bloc bloc;
-  Order order;
+  Order2 item;
 
-  OrderDetailPage({this.bloc, this.order});
+  OrderDetailPage({this.bloc, this.item});
 
   @override
   _OrderDetailPageState createState() => _OrderDetailPageState();
 }
 
 class _OrderDetailPageState extends State<OrderDetailPage> {
-  Order order;
+  Order2 order;
   Completer<GoogleMapController> _controller = Completer();
+  Set<Marker> markers = Set();
+  bool paid = false;
+  bool Loading = true;
+  var startDistance;
+  var endDistance;
+  String phone = '';
 
   static CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
@@ -29,23 +38,79 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   @override
   void initState() {
     super.initState();
-    widget.bloc.getOrderDetail(request_serial: widget.order.serial).then((value) {
+    widget.bloc.getOrderDetail(request_serial: widget.item.serial).then((value) {
       order = value;
-    });
-    try{
-      if(widget.bloc.position.latitude !=null &&widget.bloc.position.longitude !=null){
+      var companyLatLng = LatLng(double.parse(order.companyLatitude), double.parse(order.companyLongitude));
+      var userLatLng = LatLng(double.parse(order.userLatitude), double.parse(order.userLongitude));
+
+      try{
+        if(order.companyLatitude !=null && order.companyLongitude !=null){
+          _kGooglePlex = CameraPosition(
+            target: companyLatLng,
+            zoom: 14.4746);
+          markers.add(
+            Marker(
+              infoWindow: InfoWindow(title: '출발지', ),
+              //icon: getDustIcon(list[i]),
+              markerId: MarkerId(order.serial),
+              position: companyLatLng,
+            ),
+          );
+          markers.add(
+            Marker(
+              infoWindow: InfoWindow(title: '도착지', ),
+              //icon: getDustIcon(list[i]),
+              markerId: MarkerId(order.orderSerial),
+              position: userLatLng,
+            ),
+          );
+        }
+      }catch(e) {
         _kGooglePlex = CameraPosition(
-          target: LatLng(widget.bloc.position.latitude, widget.bloc.position.longitude),
+          target: LatLng(37.547598, 126.979931),
           zoom: 14.4746,
         );
       }
-    }catch(e) {
-      _kGooglePlex = CameraPosition(
-        target: LatLng(37.547598, 126.979931),
-        zoom: 14.4746,
-      );
-    }
+      if(order.userPhone.length==11){
+        try{
+          phone = order.userPhone.substring(0,3)+'-'+
+              order.userPhone.substring(3,7)+'-'+
+              order.userPhone.substring(7,11);
+        }catch(e){}
+      }else{
+        try{
+          phone = order.userPhone.substring(0,3)+'-'+
+              order.userPhone.substring(3,6)+'-'+
+              order.userPhone.substring(6,10);
+        }catch(e){}
+      }
+      if(order.paid =='Y') {
+        paid = true;
+      }else{
+        paid = false;
+      }
+      Loading = false;
+      startDistance = Geolocator.distanceBetween(
+          double.parse(order.companyLatitude),
+          double.parse(order.companyLongitude),
+          widget.bloc.position.latitude,
+          widget.bloc.position.longitude).floor();
+      endDistance = Geolocator.distanceBetween(
+          double.parse(order.userLatitude),
+          double.parse(order.userLongitude),
+          widget.bloc.position.latitude,
+          widget.bloc.position.longitude).floor();
+
+      if(startDistance>=1000.0){
+        startDistance = startDistance/1000;
+      }
+      if(endDistance>=1000.0){
+        endDistance = endDistance/1000;
+      }
+      setState(() {});
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +130,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         children: [
           Container(
             height: screenSize.height,
-            child: SingleChildScrollView(
+            child:
+            Loading?
+            ProgressPage(screenSize.width):
+            SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,7 +154,17 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                             children: [
                               Row(
                                 children: [
-                                  Image.asset('assets/images/cash.png'),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 4, vertical: 5),
+                                    decoration: BoxDecoration(
+                                      color: paid? AppColor.neon_yellow:AppColor.neon_green,
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: Text(paid?'선불':'현장결제',
+                                        style: TextStyle(
+                                            fontFamily: 'cafe24', fontSize: 20)),
+                                  ),
                                   SizedBox(width: 5),
                                   Text(
                                     '배달비 3,800원',
@@ -95,7 +173,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                   ),
                                 ],
                               ),
-                              Text('PM 12:08', style: TextStyle(fontSize: 20))
+                              Text(
+                                  widget.item.registeredDate!=null?
+                                  widget.item.registeredDate.substring(11,16):'',
+                              style: TextStyle(fontSize: 20))
                             ],
                           ),
                         ),
@@ -129,7 +210,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                                 fontSize: 20)),
                                       ),
                                       SizedBox(width: 5),
-                                      Text('300m',
+                                      Text(
+                                          startDistance<1000.0?
+                                      '${startDistance}m':
+                                      '${startDistance.toStringAsFixed(2)}km',
                                           style: TextStyle(
                                               fontSize: 20,
                                               color: AppColor.neon_yellow))
@@ -139,7 +223,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                               ),
                               SizedBox(height: 10),
                               Text(
-                                '대독장',
+                                order.companyName!=null?
+                                order.companyName:'',
                                 style: TextStyle(
                                     color: AppColor.neon_yellow,
                                     fontWeight: FontWeight.bold,
@@ -148,11 +233,12 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                               ),
                               SizedBox(height: 5),
                               Text(
-                                '부산시 부산진구 동천로116 한신벤오피스텔 1018호',
+                                order.companyAddress!=null?
+                                order.companyAddress:'',
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 24,
-                                    letterSpacing: 1.25),
+                                    letterSpacing: 0.85),
                               ),
                             ],
                           ),
@@ -190,14 +276,15 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                       fontFamily: 'cafe24', fontSize: 20)),
                             ),
                             SizedBox(width: 5),
-                            Text('300m',
+                            Text( endDistance<1000.0?
+                            '${endDistance.round()}m':
+                            '${endDistance.toStringAsFixed(2)}km',
                                 style: TextStyle(
                                     fontSize: 20, color: AppColor.neon_green))
                           ],
                         ),
                         SizedBox(height: 10),
-                        Text(
-                          '010-2211-1122',
+                        Text(phone,
                           style: TextStyle(
                               color: AppColor.neon_yellow,
                               fontWeight: FontWeight.bold,
@@ -206,11 +293,12 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                         ),
                         SizedBox(height: 5),
                         Text(
-                          '부산시 부산진구 동천로116 한신벤오피스텔 1018호',
+                          order.userAddress!=null?
+                          order.userAddress:'',
                           style: TextStyle(
                               color: AppColor.grey,
                               fontSize: 24,
-                              letterSpacing: 1.25),
+                              letterSpacing: 0.85),
                         ),
                       ],
                     ),
@@ -222,7 +310,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Text(
-                        '초인종을 누르지 말아주세요.초인종을 누르지 말아주세요.초인종을 누르지 말아주세요.초인종을 누르지 말아주세요.',
+                    order.riderMemo!=null?
+                    order.riderMemo:'',
                         style: TextStyle(fontSize: 24, color: Colors.white)),
                   ),
                   SizedBox(height: 5),
@@ -234,7 +323,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           style:
                               TextStyle(color: AppColor.yellow, fontSize: 24)),
                       SizedBox(width: 20),
-                      Text('#1211',
+                      Text('#${widget.item.orderSerial}',
                           style: TextStyle(fontSize: 24, color: Colors.white)),
                     ],
                   ),
@@ -250,6 +339,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                     child: GoogleMap(
                       mapType: MapType.normal,
                       initialCameraPosition: _kGooglePlex,
+                      markers: markers,
                       onMapCreated: (GoogleMapController controller) {
                         _controller.complete(controller);
                       },
@@ -269,14 +359,25 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               height: 88,
               child: TextButton(
                 child: Text('수락하기',
-                    style:
-                        TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
                 style: ButtonStyle(
                     backgroundColor:
                         MaterialStateProperty.all<Color>(AppColor.yellow),
                     overlayColor: MaterialStateProperty.all<Color>(
                         Colors.black.withOpacity(0.5))),
-                onPressed: () {},
+                onPressed: () {
+                  widget.bloc.acceptOrder(
+                    request_serial: order.serial,
+                    order_serial: order.serial,
+                    serial: widget.bloc.user.serial).then((res){
+                      if(res.success){
+                        Navigator.pop(context);
+                        Toast.show(res.errorMsg+'',context, duration: 2);
+                      }else{
+                        Toast.show(res.errorMsg+'',context, duration: 2);
+                      }
+                  });
+                },
               ),
             ),
           )

@@ -125,8 +125,6 @@ class _RegisterPage2State extends State<RegisterPage2> {
                             style: TextStyle(fontSize: 18, color: Colors.white)),
                         onPressed: () {
                           widget.bloc.checkAuthCode(num: phone_ctrl.text, code: authcode.text).then((res) {
-                            print(phone_ctrl.text);
-                            print(authcode.text);
                             if (res.success) {
                               Toast.show('인증 되었습니다.', context);
                               setState(() {

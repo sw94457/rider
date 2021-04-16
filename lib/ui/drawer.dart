@@ -13,6 +13,7 @@ import 'package:rider_app/ui/color.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
+import 'package:url_launcher/url_launcher.dart';
 
 class MyDrawer extends StatefulWidget {
   Bloc bloc;
@@ -62,14 +63,14 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
                   children: [
                     Row(
                       children: [
-                        SizedBox(
-                          width:45, height: 45,
-                          child: isload?CircleAvatar(
-                              backgroundImage: NetworkImage('${userfaceImage}')
-                          ):CircleAvatar(
-                              backgroundImage: AssetImage('assets/images/profile.png')
-                          ),
-                        ),
+                        // SizedBox(
+                        //   width:45, height: 45,
+                        //   child: isload?CircleAvatar(
+                        //       backgroundImage: NetworkImage('${userfaceImage}')
+                        //   ):CircleAvatar(
+                        //       backgroundImage: AssetImage('assets/images/profile.png')
+                        //   ),
+                        // ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
@@ -85,21 +86,6 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
                       ],
                     ),
                     SizedBox(height: 10),
-                    // SizedBox(
-                    //   width: 280,
-                    //   child: Container(
-                    //       child: Row(
-                    //         mainAxisAlignment: MainAxisAlignment.end,
-                    //         children: [
-                    //           Image.asset("assets/images/ic_edit.png",width: 12,),
-                    //           TextButton(onPressed: (){
-                    //             Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalInfoPage(widget.bloc)));
-                    //           }, child: Text("개인정보수정",
-                    //               style: TextStyle(fontSize: 14, color: AppColor.yellow),textAlign: TextAlign.end))
-                    //         ],
-                    //       )
-                    //   ),
-                    // ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -145,23 +131,10 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
                 ],
               ),
               onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => CalculatePage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CalculatePage(bloc:widget.bloc)));
               },
             ),
             Container( height:0.5,color:Colors.white60),
-            // ListTile(
-            //   title: Row(
-            //     children: [
-            //       Image.asset("assets/images/ic_dollar.png", width: 22,),
-            //       SizedBox(width: 10),
-            //       Text('출금 계좌 관리', style: TextStyle(fontSize: 17, color: Colors.white)),
-            //     ],
-            //   ),
-            //   onTap: (){
-            //     Navigator.push(context, MaterialPageRoute(builder: (context) => AccountCreatePage(widget.bloc)));
-            //   },
-            // ),
-            // Container( height:0.5,color:Colors.white60),
             ListTile(
               title: Row(
                 children: [
@@ -184,7 +157,10 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
                 ],
               ),
               onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalInfoPage(widget.bloc)));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalInfoPage(widget.bloc))).then((value) {
+                  getCounterFromSharedPrefs();
+                  setState(() {});
+                });
               },
             ),
             Container(height:0.5,color:Colors.white60),
@@ -196,7 +172,9 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
                   Text('고객센터', style: TextStyle(fontSize: 17,color: Colors.white)),
                 ],
               ),
-              onTap: (){},
+              onTap: (){
+                _launchInBrowser("https://pf.kakao.com/_SuxlJK");
+              },
             ),
             Container( height:0.5,color:Colors.white60),
             ListTile(
@@ -211,6 +189,8 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
                 SharedPreferences prefs =
                 await SharedPreferences.getInstance();
                 prefs.remove('uid');
+                prefs.remove('serial');
+                stop();
                 Navigator.pop(context);
                 Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
                     builder: (BuildContext context) =>
@@ -234,31 +214,30 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
     });
     print(workState);
     print(prefs.getBool('workState'));
+    if(prefs.getBool('workState') ==null){
+      workState = false;
+    }
   }
 
   Future<Position> getCurrentLocation() async {
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     lat = position.latitude.toString();
     long = position.longitude.toString();
-    // widget.bloc.reverseGeo(lat: double.parse(lat), lon: double.parse(long)).then((value) {
-    //   print(value);
-    // });
 
-    updateLocation(serial: serial, lat: lat, long: long).then((res){
+    updateLocation(serial: widget.bloc.user.serial, lat: lat, long: long).then((res){
       if(res.success) {
         print('위치 보냄');
       }else{
         print('위치 못보냄');
       }
     });
-
     return position;
   }
 
   Future<ResponseData> updateLocation({String serial, String lat, String long}) async {
     ResponseData res = ResponseData();
     Map<String, dynamic> params = Map<String, String>();
-    params["serial"] = serial;
+    params["serial"] = widget.bloc.user.serial;
     params["latitude"] = lat;
     params["longitude"] = long;
 
@@ -287,6 +266,10 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
     widget.bloc.riderOn(serial: serial).then((res){
       if(res.success){
         print('출근1');
+        setState(() {
+          workState = true;
+          prefs.setBool('workState', workState);
+        });
         bg.BackgroundGeolocation.ready(bg.Config(
             desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
             distanceFilter: 10.0,
@@ -308,10 +291,6 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
         print('출근2');
       }
     });
-    setState(() {
-      workState = true;
-      prefs.setBool('workState', workState);
-    });
   }
 
   stop(){
@@ -331,6 +310,18 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
 
   }
 
+  Future<void> _launchInBrowser(String url) async {
+    if (await canLaunch(url)) {
+      await launch(
+        url,
+        forceSafariVC: false,
+        forceWebView: false,
+        headers: <String, String>{'my_header_key': 'my_header_value'},
+      );
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 }
 
 

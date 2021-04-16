@@ -3,6 +3,7 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:rider_app/bloc/bloc.dart';
 import 'package:rider_app/data/notice.dart';
 import 'package:rider_app/ui/color.dart';
+import 'package:rider_app/ui/progress.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
@@ -23,20 +24,19 @@ class _NoticePageState extends State<NoticePage> {
   List<Notice> noticeList = [];
   List a = ['a', 'b', 'c', 'd'];
 
-  // @override
-  // void initState() {
-  //   SharedPreferences.getInstance().then((_prefs) {
-  //     pref = _prefs;
-  //   });
-  //   widget.bloc.getNotice().then((value) {
-  //     noticeList = value;
-  //     print(noticeList.length);
-  //     _itemCount = noticeList.length;
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //   });
-  // }
+  @override
+  void initState() {
+    SharedPreferences.getInstance().then((_prefs) {
+      pref = _prefs;
+    });
+    widget.bloc.getNotice().then((value) {
+      noticeList = value;
+      _itemCount = noticeList.length;
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,14 +62,25 @@ class _NoticePageState extends State<NoticePage> {
           IconButton(
             icon: Icon(
               Icons.notifications,
-              color: isAlarm?
-              AppColor.yellow : Colors.grey,
+              color: isAlarm ? AppColor.yellow : Colors.grey,
             ),
             onPressed: () {
-              if(isAlarm){
-                Toast.show('공지사항 알림 off', context, duration: 2);
-              }else{
-                Toast.show('공지사항 알림 on', context, duration: 2);
+              if (isAlarm) {
+                widget.bloc.settingAlarm(flag: 'N').then((res) {
+                  if(res.success){
+                    Toast.show('공지사항 알림 off', context, duration: 2);
+                  }else{
+                    Toast.show('공지사항 알림 설정에 실패했습니다.', context, duration: 2);
+                  }
+                });
+              } else {
+                widget.bloc.settingAlarm(flag: 'Y').then((res) {
+                  if(res.success){
+                    Toast.show('공지사항 알림 on', context, duration: 2);
+                  }else{
+                    Toast.show('공지사항 알림 설정에 실패했습니다.', context, duration: 2);
+                  }
+                });
               }
               isAlarm = !isAlarm;
               pref.setBool('notice_alarm', isAlarm);
@@ -80,10 +91,7 @@ class _NoticePageState extends State<NoticePage> {
       ),
       body: Container(
         height: screen.height,
-        child: // isLoading
-            //     ? Expanded(child: Center(child: CircularProgressIndicator()))
-            //    :
-            notice(),
+        child: isLoading ? ProgressPage(screen.width) : notice(),
       ),
     );
   }
@@ -91,7 +99,31 @@ class _NoticePageState extends State<NoticePage> {
   notice() {
     Size screenSize = MediaQuery.of(context).size;
     return ListView(
-      children: List.generate(a.length, (i) {
+      children: List.generate(noticeList.length, (i) {
+        var type_text='';
+        var type_color = AppColor.neon_green;
+        switch(noticeList[i].type){
+          case 'R':
+            type_text = '1:1';
+            type_color = AppColor.neon_green;
+            break;
+          case 'AR':
+            type_text = '전체';
+            type_color = AppColor.neon_yellow;
+            break;
+          case 'A':
+            type_text = '시스템공지';
+            type_color = AppColor.neon_yellow;
+            break;
+          case 'GR':
+            type_text = '그룹공지';
+            type_color = AppColor.neon_yellow;
+            break;
+          case 'LR':
+            type_text = '지역공지';
+            type_color = AppColor.neon_yellow;
+            break;
+        }
         return InkWell(
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 8),
@@ -109,20 +141,20 @@ class _NoticePageState extends State<NoticePage> {
                       children: [
                         Container(
                           decoration: BoxDecoration(
-                              color: AppColor.neon_yellow,
+                              color: type_color,
                               borderRadius: BorderRadius.circular(5)),
                           margin: EdgeInsets.only(right: 7),
                           padding:
                               EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                           child: Text(
-                            '전체',
+                            type_text,
                             style: TextStyle(fontFamily: 'cafe24'),
                           ),
                         ),
                         Container(
                           child: Text(
-                            //noticeList[i].title,
-                            'title',
+                            noticeList[i].title,
+                            //'title',
                             style: TextStyle(
                                 fontSize: 14,
                                 //fontWeight: FontWeight.bold,
@@ -132,8 +164,8 @@ class _NoticePageState extends State<NoticePage> {
                       ],
                     ),
                     Text(
-                      // noticeList[i].registeredDate.substring(0, 10),
-                      'register',
+                      noticeList[i].registeredDate.substring(0, 10),
+                      // 'register',
                       style: TextStyle(
                           fontSize: 13,
                           //fontWeight: FontWeight.bold,
@@ -145,14 +177,11 @@ class _NoticePageState extends State<NoticePage> {
             ),
           ),
           onTap: () async {
-            // Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //         builder: (context) => NoticeDetailPage(
-            //             title: noticeList[i].title,
-            //             image: noticeList[i].image,
-            //             description: noticeList[i].description,
-            //             date: noticeList[i].registeredDate.substring(0, 10))));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        NoticeDetailPage(notice: noticeList[i])));
           },
         );
       }),
@@ -161,18 +190,17 @@ class _NoticePageState extends State<NoticePage> {
 }
 
 class NoticeDetailPage extends StatelessWidget {
-  var title;
-  var image;
-  var description;
-  var date;
+  Notice notice;
 
-  NoticeDetailPage({this.title, this.image, this.description, this.date});
+  NoticeDetailPage({this.notice});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.navy,
       appBar: AppBar(
+        brightness: Brightness.dark,
+        elevation: 0,
         title: Text('공지사항',
             style: TextStyle(
                 //fontSize: 20,
@@ -200,7 +228,7 @@ class NoticeDetailPage extends StatelessWidget {
                     Container(),
                     Container(
                       child: Text(
-                        title,
+                        notice.title,
                         style: TextStyle(
                             fontSize: 17,
                             //fontWeight: FontWeight.bold,
@@ -210,7 +238,9 @@ class NoticeDetailPage extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  date,
+                  notice.registeredDate != null
+                      ? notice.registeredDate.substring(0, 10)
+                      : '',
                   style: TextStyle(
                       //fontWeight: FontWeight.bold,
                       fontSize: 17,
@@ -223,10 +253,10 @@ class NoticeDetailPage extends StatelessWidget {
             padding: EdgeInsets.all(15),
             child: Column(
               children: [
-                Image.network(image),
+                Image.network(notice.image),
                 HtmlWidget(
                   '''
-                  ${this.description}
+                  ${this.notice.description}
                   ''',
                   textStyle: TextStyle(fontSize: 14, color: Colors.white),
                   webView: true,

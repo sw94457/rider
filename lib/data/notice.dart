@@ -3,12 +3,16 @@ class Notice {
   int serial;
   int adminSerial;
   String type;
-  Null adminName;
+  String adminName;
   String title;
   String image;
   String description;
   String registeredDate;
-  Null joinImage;
+  String joinImage;
+  String locationSerial;
+  String groupSerial;
+  String riderSerial;
+  String companySerial;
 
   Notice(
       {this.flag,
@@ -20,7 +24,11 @@ class Notice {
         this.image,
         this.description,
         this.registeredDate,
-        this.joinImage});
+        this.joinImage,
+        this.locationSerial,
+        this.groupSerial,
+        this.riderSerial,
+        this.companySerial});
 
   Notice.fromJson(Map<String, dynamic> json) {
     flag = json['flag'];
@@ -33,6 +41,10 @@ class Notice {
     description = json['description'];
     registeredDate = json['registered_date'];
     joinImage = json['join_image'];
+    locationSerial = json['location_serial'];
+    groupSerial = json['group_serial'];
+    riderSerial = json['rider_serial'];
+    companySerial = json['company_serial'];
   }
 
   Map<String, dynamic> toJson() {
@@ -47,6 +59,11 @@ class Notice {
     data['description'] = this.description;
     data['registered_date'] = this.registeredDate;
     data['join_image'] = this.joinImage;
+    data['location_serial'] = this.locationSerial;
+    data['group_serial'] = this.groupSerial;
+    data['rider_serial'] = this.riderSerial;
+    data['company_serial'] = this.companySerial;
     return data;
   }
 }
+

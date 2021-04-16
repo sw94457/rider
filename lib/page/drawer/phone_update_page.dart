@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rider_app/bloc/bloc.dart';
+import 'package:rider_app/ui/button.dart';
 import 'package:rider_app/ui/color.dart';
+import 'package:rider_app/ui/text_field.dart';
 import 'package:toast/toast.dart';
 
 
@@ -14,164 +16,159 @@ class PhoneUpdatePage extends StatefulWidget {
 }
 
 class _PhoneUpdatePageState extends State<PhoneUpdatePage> {
-  bool isAuth = false;
-  bool numconter = false;
-  bool authconter = false;
+  TextEditingController phone_ctrl = TextEditingController();
   TextEditingController authcode = TextEditingController();
-  TextEditingController phone = TextEditingController();
+  bool isAuth = false;
 
   @override
   Widget build(BuildContext context) {
+    Size screen = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: const Color(0xff20283E),
+      backgroundColor: AppColor.navy,
       appBar: AppBar(
-        backgroundColor: const Color(0xff20283E),
-        title: Text('핸드폰번호수정',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: const Color(0xffFFE600))),
+        brightness: Brightness.dark,
+        iconTheme: IconThemeData(color: AppColor.yellow),
+        title: Text('휴대폰 인증',
+            style: TextStyle(fontSize: 20, color: AppColor.yellow)),
         centerTitle: true,
-        iconTheme: IconThemeData(color: Color(0xffFFE600)),
+        elevation: 0,
       ),
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Column(
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
+        child: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.only(right: 20,left:20, top: 10, bottom: 20),
+            height: screen.height - (110),
+            child: Column(
               children: [
+                Center(
+                  child: Text(
+                    "휴대폰으로 인증코드를 받아\n전송된 인증코드를 입력해주세요.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
                 Container(
-                  alignment: Alignment.center,
+                  padding: EdgeInsets.fromLTRB(0, 35, 0, 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('핸드폰 번호 입력',style: TextStyle(fontSize: 16, color: Colors.white),),
+                      Text("핸드폰 번호 입력",
+                        style: TextStyle(fontSize: 14, color: Colors.white),
+                      ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(0,17,0,16),
-                        child: Container(
-                          width: 312,height: 48,
-                          child: TextField(
-                            controller: phone,maxLength: 11,
-                            keyboardType: TextInputType.number,
-                            cursorColor: Colors.white,
-                            decoration: InputDecoration(
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white, width: 2.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white, width: 2.0),
-                              ),
-                              counterText:'',
-                            ),
-                            style: TextStyle(color: Colors.white),
-                            onChanged: (text){
-                              setState(() {
-                                if (text.length == 11){
-                                  numconter = true;
-                                } else {
-                                  numconter = false;
-                                }
-                              });
-                            },
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        child: SizedBox(
+                          height: 68,
+                          child: MyTextField(
+                            controller: phone_ctrl,
+                            inputType: TextInputType.number,
+                            color: Colors.white,
+                            hintText: '숫자만 입력해주세요',
+                            hintStyle: TextStyle(color: Colors.white),
+                            onChanged: (text) {},
                           ),
                         ),
                       ),
-                      Container(
-                          width: 312,height: 48,
-                          child: numconter?RaisedButton(
-                            onPressed: () {
-                              widget.bloc.getUpdateSms(num: phone.text).then((res) {
-                                if (res.success) {
-                                  Toast.show('인증코드가 발송되었습니다.', context);
-                                } else {
-                                  Toast.show(res.errorMsg, context);
-                                }
-                              });
-                            },
-                            child: Text('인증코드 받기',style: TextStyle(fontSize: 18, color: Colors.black),),
-                          ):RaisedButton(
-                            onPressed: () {}, color: Colors.white12,
-                            child: Text('인증코드 받기',style: TextStyle(fontSize: 18, color: Colors.black),),
-                          )
-
-                          ),
-                      Text('인증 코드 입력',style: TextStyle(fontSize: 16, color: Colors.white),),
-
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0,10,0,16),
-                        child: Container(
-                          width: 312,height: 48,
-                          child: TextField(
-                            controller: authcode,
-                            keyboardType: TextInputType.number,
-                            cursorColor: Colors.white,
-                            decoration: InputDecoration(
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white, width: 2.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white, width: 2.0),
-                              ),
-                            ),
-                            style: TextStyle(color: Colors.white),
-                            onChanged: (text){
-                              setState(() {
-                                if (text.length == 6){
-                                  authconter = true;
-                                } else {
-                                  authconter = false;
-                                }
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                      Container(
-                          width: 312,height: 48,
-                          child: authconter?RaisedButton(
-                          onPressed: () {
-                            widget.bloc.checkAuthCode(num: phone.text, code: authcode.text).then((res) {
-                              print(phone.text);
-                              print(authcode.text);
-                              if (res.success) {
-                                Toast.show('인증 되었습니다.', context);
-                              setState(() {
-                                isAuth = true;
-                              });
-                              } else {
-                                Toast.show(res.errorMsg, context);
-                                }
-                              });
-                            },
-                          child: Text('인증코드 확인',style: TextStyle(fontSize: 18, color: Colors.black))
-                          ):
-                          RaisedButton(
-                            color: Colors.white12,
-                            child: Text('인증코드 확인',style: TextStyle(fontSize: 18,color: Colors.black))
-                          )
+                      MyButton(
+                        width: screen.width,
+                        height: 48,
+                        child: Text("인증코드 받기",
+                            style: TextStyle(fontSize: 18)),
+                        color: Colors.white,
+                        onPressed: () {
+                          FocusScope.of(context).requestFocus(new FocusNode());
+                          widget.bloc.getJoinSms(num: phone_ctrl.text).then((res) {
+                            if (res.success) {
+                              Toast.show('인증코드가 발송되었습니다.', context);
+                            } else {
+                              Toast.show(res.errorMsg, context);
+                            }
+                          });
+                        },
                       )
                     ],
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 35, 0, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("인증코드 입력",
+                          style:
+                          TextStyle(fontSize: 14, color: Colors.white)),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        child: SizedBox(
+                          height: 68,
+                          child: MyTextField(
+                            controller: authcode,
+                            color: Colors.white,
+                            inputType: TextInputType.number,
+                            onChanged: (text) {},
+                          ),
+                        ),
+                      ),
+                      MyButton(
+                        width: screen.width,
+                        height: 48,
+                        color: Colors.white.withOpacity(0.1),
+                        child: Text("인증코드 확인",
+                            style: TextStyle(fontSize: 18, color: Colors.white)),
+                        onPressed: () {
+                          widget.bloc.checkAuthCode(num: phone_ctrl.text, code: authcode.text).then((res) {
+                            if (res.success) {
+                              Toast.show('인증 되었습니다.', context);
+                              setState(() {
+                                isAuth = true;
+                              });
+                            } else {
+                              Toast.show(res.errorMsg, context);
+                            }
+                          });
+                        },
+                      )
+                    ],
+                  ),
+                ),
+                Expanded(child: Container()),
+                SizedBox(
+                  width: screen.width-16,
+                  height: 56,
+                  child: isAuth?
+                  RaisedButton(
+                    color: AppColor.yellow,
+                    child: Text("수정하기",
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    onPressed: () {
+                      if (isAuth) {
+                        widget.bloc.user.phone = phone_ctrl.text;
+                        //
+                      }
+                    },
+                  ):MyLineButton(
+                    color: AppColor.yellow,
+                    child: Text("수정하기",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: AppColor.yellow)),
+                    onPressed: () {
+                      Toast.show('휴대폰 번호 인증이 필요합니다.',context, duration:2);
+                    },
+                  ),
+                ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(width: 344,height: 56,
-                  child:isAuth?RaisedButton(
-                    onPressed: () {
-                      Navigator.pop(context, phone.text);
-                    },
-                    child: Text("수정하기",style:TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    color: AppColor.yellow,
-                  ):OutlineButton(
-                    onPressed: () {},
-                    color: AppColor.yellow,
-                    child: Text("수정하기",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: AppColor.yellow)),
-                    borderSide: BorderSide(color: AppColor.yellow),
-                  )
-              ),
-            ),
-          ],
+          ),
         ),
-      )
+      ),
     );
   }
 }

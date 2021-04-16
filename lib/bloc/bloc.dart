@@ -7,6 +7,7 @@ import 'package:flutter_udid/flutter_udid.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
+import 'package:rider_app/data/calculate.dart';
 import 'package:rider_app/data/kakao_geo.dart';
 import 'package:rider_app/data/notice.dart';
 import 'package:rider_app/data/location.dart';
@@ -285,8 +286,7 @@ class Bloc with ChangeNotifier {
     request = http.MultipartRequest('POST', uri)
       ..fields['app_platform'] = Platform.isAndroid ? 'and' : 'ios'
       ..fields["udid"] = await FlutterUdid.consistentUdid
-      //..fields["push_token"] = await fcm.getToken()
-      ..fields["push_token"] = 'aaaaa'
+      ..fields["push_token"] = await fcm.getToken()
       ..fields["phone"] = phone
       ..fields["name"] = name
       ..fields["location_serial"] = location_serial
@@ -329,8 +329,10 @@ class Bloc with ChangeNotifier {
     logger.d(phone);
     params["phone"] = phone;
     params["udid"] = await FlutterUdid.consistentUdid;
-    params["push_token"] = 'asdfasdfaa';
-    // params["push_token"] = await fcm.getToken();
+    params["push_token"] = await fcm.getToken();
+    fcm.getToken().then((value) {
+      logger.d(value);
+    });
 
     isLoading = true;
     var response = await http.post(
@@ -345,11 +347,13 @@ class Bloc with ChangeNotifier {
         if (jsonObj['data'] != null) {
           user = User.fromJson(jsonObj['data']);
           logger.d(user.serial);
-          pref.setString('serial',user.serial);
-          pref.setString('username',user.name);
-          pref.setString('userphone',user.phone);
-          pref.setString('userfaceImage',user.faceImage);
-          logger.d(pref.getString('serial'));
+          pref.setString('serial', user.serial);
+          pref.setString('uid', user.name);
+          // await pref.setString('serial',user.serial);
+          // await pref.setString('username',user.name);
+          // await pref.setString('userphone',user.phone);
+          // await pref.setString('userfaceImage',user.faceImage);
+          //logger.d(pref.getString('serial'));
         }
       } else {
         res.success = false;
@@ -371,8 +375,7 @@ class Bloc with ChangeNotifier {
     params["authcode"] = authcode;
     params["phone"] = phone;
     params["udid"] = await FlutterUdid.consistentUdid;
-   // params["push_token"] = fcm.getToken();
-    params["push_token"] = 'aaaaa';
+    params["push_token"] = fcm.getToken();
 
     isLoading = true;
     var response = await http.post(
@@ -406,8 +409,7 @@ class Bloc with ChangeNotifier {
     Map<String, dynamic> params = Map<String, String>();
     params["serial"] = serial;
     params["udid"] = udid;
-    //params["push_token"] = fcm.getToken();
-    params["push_token"] = 'aaaaa';
+    params["push_token"] = fcm.getToken();
 
     isLoading = true;
     var response = await http.post(
@@ -421,6 +423,9 @@ class Bloc with ChangeNotifier {
         res.success = true;
         if (jsonObj['data'] != null) {
           user = User.fromJson(jsonObj['data']);
+          pref.setString('serial', user.serial);
+          pref.setString('uid', user.name);
+
         }
       } else {
         res.success = false;
@@ -489,11 +494,11 @@ class Bloc with ChangeNotifier {
     return res;
   }
 
-
   Future<ResponseData> riderOn({String serial}) async {
     ResponseData res = ResponseData();
     Map<String, dynamic> params = Map<String, String>();
-    params["serial"] = pref.getString('serial');
+    //params["serial"] = pref.getString('serial');
+    params["serial"] = user.serial;
 
     isLoading = true;
     var response = await http.post(
@@ -519,7 +524,8 @@ class Bloc with ChangeNotifier {
   Future<ResponseData> riderOff({String serial}) async {
     ResponseData res = ResponseData();
     Map<String, dynamic> params = Map<String, String>();
-    params["serial"] = pref.getString('serial');
+    //params["serial"] = pref.getString('serial');
+    params["serial"] = user.serial;
 
     isLoading = true;
     var response = await http.post(
@@ -763,12 +769,13 @@ class Bloc with ChangeNotifier {
     return res;
   }
 
-  Future<List<Order>> getOrderList() async {
-    List<Order> orderList = [];
+  Future<List<Order2>> getOrderList() async {
+    List<Order2> orderList = [];
     isLoading = true;
     Map<String, dynamic> params = Map<String, String>();
-    params["serial"] = pref.getString('serial');
-    logger.d(pref.getString('serial'));
+    //params["serial"] = pref.getString('serial');
+    params["serial"] = user.serial;
+    //logger.d(pref.getString('serial'));
 
     var response = await http.post(
         Uri.encodeFull(baseURL + "/order_list"), body: params);
@@ -780,7 +787,7 @@ class Bloc with ChangeNotifier {
       if (code == "S01") {
         if (jsonObj['data'] != null) {
           jsonObj['data'].forEach((v) {
-            orderList.add(new Order.fromJson(v));
+            orderList.add(new Order2.fromJson(v));
           });
         }
       } else {
@@ -792,10 +799,11 @@ class Bloc with ChangeNotifier {
     return orderList;
   }
 
-  Future<Order> getOrderDetail({String request_serial}) async {
-    Order order = Order();
+  Future<Order2> getOrderDetail({String request_serial}) async {
+    Order2 order = Order2();
     Map<String, dynamic> params = Map<String, String>();
-    params["serial"] = pref.getString('serial');
+   // params["serial"] = pref.getString('serial');
+    params["serial"] = user.serial;
     params["request_serial"] = request_serial;
 
     isLoading = true;
@@ -808,7 +816,7 @@ class Bloc with ChangeNotifier {
       String code = jsonObj['code'];
       if (code == "S01") {
         if(jsonObj['data'] != null){
-          order = Order.fromJson(jsonObj['data']);
+          order = Order2.fromJson(jsonObj['data']);
         }
       } else {
         logger.e(jsonObj['message']);
@@ -819,7 +827,7 @@ class Bloc with ChangeNotifier {
     return order;
   }
 
-  Future<ResponseData> acceptOrder({String request_serial,String order_serial,String serial}) async {
+  Future<ResponseData> acceptOrder({String request_serial, String order_serial, String serial}) async {
     ResponseData res = ResponseData();
     Map<String, dynamic> params = Map<String, String>();
 
@@ -837,6 +845,7 @@ class Bloc with ChangeNotifier {
       String code = jsonObj['code'];
       if (code == "S01") {
         res.success = true;
+        res.errorMsg = jsonObj['message'];
       } else {
         res.success = false;
         res.errorMsg = jsonObj['message'];
@@ -848,12 +857,12 @@ class Bloc with ChangeNotifier {
     return res;
   }
 
-  Future<ResponseData> pickUp({String requestserial,String serial}) async {
+  Future<ResponseData> pickUp({String requestserial}) async {
     ResponseData res = ResponseData();
     Map<String, dynamic> params = Map<String, String>();
 
     params["request_serial"] = requestserial;
-    params["serial"] = serial;
+    params["serial"] = user.serial;
 
     isLoading = true;
     var response = await http.post(
@@ -876,12 +885,12 @@ class Bloc with ChangeNotifier {
     return res;
   }
 
-  Future<ResponseData> finishDelivery({String requestserial,String serial}) async {
+  Future<ResponseData> finishDelivery({String requestserial}) async {
     ResponseData res = ResponseData();
     Map<String, dynamic> params = Map<String, String>();
 
     params["request_serial"] = requestserial;
-    params["serial"] = serial;
+    params["serial"] = user.serial;
 
     isLoading = true;
     var response = await http.post(
@@ -904,12 +913,45 @@ class Bloc with ChangeNotifier {
     return res;
   }
 
-  Future<ResponseData> sendmessage({String phone,String rider_message}) async {
+  Future<ResponseData> updateInfo({String phone, String name, String account_name, String account_num, String account_bank, String calculate_cycle}) async {
+    ResponseData res = ResponseData();
+    Map<String, dynamic> params = Map<String, String>();
+
+    params["phone"] = user.phone;
+    params["name"] = name;
+    params["serial"] = user.serial;
+    params["calculate_cycle"] = calculate_cycle;
+    params["account_name"] = account_name;
+    params["account_num"] = account_num;
+    params["account_bank"] = account_bank;
+
+    isLoading = true;
+    var response = await http.post(
+        Uri.encodeFull(baseURL + "/update"), body: params);
+    isLoading = false;
+    logger.d(response.body);
+    if (response.statusCode == 200) {
+      dynamic jsonObj = json.decode(response.body);
+      String code = jsonObj['code'];
+      if (code == "S01") {
+        res.success = true;
+      } else {
+        res.success = false;
+        res.errorMsg = jsonObj['message'];
+      }
+    } else {
+      res.success = false;
+      res.errorMsg = "http response code=${response.statusCode}";
+    }
+    return res;
+  }
+
+  Future<ResponseData> sendMessage({String phone, String message}) async {
     ResponseData res = ResponseData();
     Map<String, dynamic> params = Map<String, String>();
 
     params["phone"] = phone;
-    params["rider_message"] = rider_message;
+    params["rider_message"] = message;
 
     isLoading = true;
     var response = await http.post(
@@ -932,7 +974,90 @@ class Bloc with ChangeNotifier {
     return res;
   }
 
+  Future<List<Calculate>> getCalculateList() async {
+    List<Calculate> list = [];
+    Map<String, dynamic> params = Map<String, String>();
+    params["serial"] = user.serial;
 
+    isLoading = true;
+    var response = await http.post(
+        Uri.encodeFull(baseURL + "/rider_cal"), body: params);
+    isLoading = false;
+    logger.d(response.body);
+    if (response.statusCode == 200) {
+      dynamic jsonObj = json.decode(response.body);
+      String code = jsonObj['code'];
+      if (code == "S01") {
+        if (jsonObj['data'] != null) {
+          jsonObj['data'].forEach((v) {
+            list.add(new Calculate.fromJson(v));
+          });
+        }
+      } else {
+        logger.d(jsonObj['message']);
+      }
+    } else {
+      logger.d("http response code=${response.statusCode}");
+    }
+    return list;
+  }
 
+  Future<List<Order2>> getCalculateDetail({String startDate, String endDate}) async {
+    List<Order2> list = [];
+    Map<String, dynamic> params = Map<String, String>();
+    params["serial"] = user.serial;
+    params["start_date"] = startDate;
+    params["end_date"] = endDate;
+
+    isLoading = true;
+    var response = await http.post(
+        Uri.encodeFull(baseURL + "/delivery_history"), body: params);
+    isLoading = false;
+    logger.d(response.body);
+    if (response.statusCode == 200) {
+      dynamic jsonObj = json.decode(response.body);
+      String code = jsonObj['code'];
+      if (code == "S01") {
+        if(jsonObj['data'] != null){
+          jsonObj['data'].forEach((v) {
+            list.add(new Order2.fromJson(v));
+          });
+        }
+      } else {
+        logger.e(jsonObj['message']);
+      }
+    } else {
+      logger.e("http response code=${response.statusCode}");
+    }
+    return list;
+  }
+
+  Future<ResponseData> settingAlarm({String flag}) async {
+    ResponseData res = ResponseData();
+    Map<String, dynamic> params = Map<String, String>();
+
+    params["serial"] = user.serial;
+    params["flag"] = flag;
+
+    isLoading = true;
+    var response = await http.post(
+        Uri.encodeFull(baseURL + "/set_notice_alarm"), body: params);
+    isLoading = false;
+    logger.d(response.body);
+    if (response.statusCode == 200) {
+      dynamic jsonObj = json.decode(response.body);
+      String code = jsonObj['code'];
+      if (code == "S01") {
+        res.success = true;
+      } else {
+        res.success = false;
+        res.errorMsg = jsonObj['message'];
+      }
+    } else {
+      res.success = false;
+      res.errorMsg = "http response code=${response.statusCode}";
+    }
+    return res;
+  }
 
 }

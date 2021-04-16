@@ -1,126 +1,83 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:rider_app/bloc/bloc.dart';
+import 'package:rider_app/data/calculate.dart';
 import 'package:rider_app/page/drawer/calculate_detail_page.dart';
 import 'package:rider_app/ui/color.dart';
+import 'package:rider_app/ui/progress.dart';
 
 class CalculatePage extends StatefulWidget {
+  Bloc bloc;
+
+  CalculatePage({this.bloc});
+
   @override
   _CalculatePageState createState() => _CalculatePageState();
 }
 
 class _CalculatePageState extends State<CalculatePage> {
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
+  List<Calculate> calculateList = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.bloc.getCalculateList().then((value) {
+      calculateList = value;
+      isLoading = false;
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
-        key: _scaffoldkey,
-        backgroundColor: AppColor.navy,
-        appBar: AppBar(
-          brightness: Brightness.dark,
-          title: Text('정산', style: TextStyle(color: AppColor.yellow)),
-          centerTitle: true,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: AppColor.yellow),
-            onPressed: () {
-              Navigator.of(context).pop(true);
-            },
-          ),
+      key: _scaffoldkey,
+      backgroundColor: AppColor.navy,
+      appBar: AppBar(
+        brightness: Brightness.dark,
+        title: Text('정산', style: TextStyle(color: AppColor.yellow)),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: AppColor.yellow),
+          onPressed: () {
+            Navigator.of(context).pop(true);
+          },
         ),
-        body: Container(
-          height: screenSize.height,
-          child: ListView(
-            children: List.generate(10, (index) {
-              return Padding(
-                padding: EdgeInsets.only(top: 10, right: 10, left: 10),
-                child: CalculateItem(),
-              );
-            }),
-          ),
-        ));
+      ),
+      body: Container(
+        height: screenSize.height,
+        child: isLoading
+            ? ProgressPage(screenSize.width)
+            : ListView(
+                children: List.generate(calculateList.length, (index) {
+                  return Padding(
+                    padding: EdgeInsets.only(top: 10, right: 10, left: 10),
+                    child: CalculateItem(item: calculateList[index], bloc: widget.bloc),
+                  );
+                }),
+              ),
+      ),
+    );
   }
-
-// void _showDialog1() {
-//   showDialog(
-//     context: context,
-//     barrierDismissible: false,
-//     builder: (BuildContext context) {
-//       return AlertDialog(
-//         backgroundColor: const Color(0xff3B4255),
-//         content: Container(
-//           width: 328, height: 140,
-//           child: Column(
-//             children: [
-//               Padding(
-//                 padding: const EdgeInsets.fromLTRB(0,0,0,38),
-//                 child: Text('정산하시겠습니까?',style: TextStyle(fontSize: 24,color: Colors.white),),
-//               ),
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   Container(
-//                     width: 110, height: 48,
-//                     child: OutlineButton(onPressed: (){
-//                       Navigator.pop(context);
-//                     },
-//                     child: Text('취소',style: TextStyle(fontSize: 24,color: Colors.white),),
-//                     color: const Color(0xff3B4255),
-//                       borderSide: BorderSide(
-//                         color: Colors.white, width: 2
-//                       ),
-//                     ),
-//                   ),
-//
-//                   Container(
-//                     width: 110, height: 48,
-//                     child: RaisedButton(onPressed: (){
-//                       Navigator.pop(context);
-//                       _showDialog2();
-//                     },
-//                     child: Text('확인',style: TextStyle(fontSize: 24),),
-//                     color: const Color(0xffFFE600),
-//                     ),
-//                   ),
-//                 ],
-//               )
-//             ],
-//           ),
-//         )
-//       );
-//     },
-//   );
-// }
-// void _showDialog2() {
-//   showDialog(
-//     context: context,
-//     builder: (BuildContext context) {
-//       return AlertDialog(
-//           backgroundColor: const Color(0xff3B4255),
-//           content: Container(
-//             height: 140,
-//             child: Row(
-//               children: [
-//                 Image.asset('images/ch.png',width: 24, height: 24,),
-//                 Text('정산이 완료 되었습니다.',style: TextStyle(fontSize: 20,color: Colors.white),),
-//               ],
-//             ),
-//           )
-//       );
-//     },
-//   );
-// }
 }
 
 class CalculateItem extends StatelessWidget {
+  final formatter = new NumberFormat("#,###,###,###,###");
+  Calculate item;
+  Bloc bloc;
+
+  CalculateItem({this.item, this.bloc});
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-    Random random = Random();
-    int randomNumber = random.nextInt(2);
     bool done = false;
-    if (randomNumber == 1) {
+    if (item.flag == 'Y') {
       done = true;
     }
     return InkWell(
@@ -153,7 +110,7 @@ class CalculateItem extends StatelessWidget {
                       padding:
                           EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                       child: Text(
-                        '2021.01.04\n~ 2021.01.10',
+                        item.startDate+'\n~'+item.endDate,
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 16, color: Colors.white),
                       ),
@@ -161,7 +118,7 @@ class CalculateItem extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          '131,211원',
+                          '${formatter.format(int.parse(item.totalDeliveryPrice))}원',
                           style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -181,7 +138,7 @@ class CalculateItem extends StatelessWidget {
           )),
       onTap: () {
         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => CalculateDetailPage()));
+            MaterialPageRoute(builder: (context) => CalculateDetailPage(item:item, bloc: bloc)));
       },
     );
   }

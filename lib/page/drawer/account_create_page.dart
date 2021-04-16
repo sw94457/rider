@@ -159,9 +159,6 @@ class _AccountCreatePageState extends State<AccountCreatePage> {
               padding: EdgeInsets.all(10),
               child: RaisedButton(
                 onPressed: () {
-                  print(name_ctrl.text);
-                  print(banktext);
-                  print(num_ctrl.text);
                   widget.bloc.registerAccount(
                           serial: serial,
                           account_name: name_ctrl.text,

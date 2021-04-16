@@ -5,10 +5,9 @@ import 'package:intl/intl.dart';
 
 class OrderItem extends StatefulWidget {
   Function onTap;
-  Order item;
-  var state;
+  Order2 item;
   bool isNew;
-  OrderItem({this.onTap,this.item, this.state, this.isNew = false});
+  OrderItem({this.onTap,this.item,this.isNew = false});
 
   @override
   _OrderItemState createState() => _OrderItemState();
@@ -19,6 +18,7 @@ class _OrderItemState extends State<OrderItem> {
   Color mainColor;
   Color textColor;
   var phone = '';
+  bool paid = false;
 
   @override
   void initState() {
@@ -27,7 +27,7 @@ class _OrderItemState extends State<OrderItem> {
       mainColor = AppColor.red;
       textColor = Colors.white;
     }else{
-      if(widget.state==0){
+      if(widget.item.flag=='A'){
         mainColor = AppColor.neon_yellow;
       }else{
         mainColor = AppColor.neon_green;
@@ -46,6 +46,11 @@ class _OrderItemState extends State<OrderItem> {
             widget.item.userPhone.substring(3,6)+'-'+
             widget.item.userPhone.substring(6,10);
       }catch(e){}
+    }
+    if(widget.item.paid =='Y') {
+      paid = true;
+    }else{
+      paid = false;
     }
   }
   @override
@@ -70,23 +75,27 @@ class _OrderItemState extends State<OrderItem> {
                         padding: EdgeInsets.symmetric(
                             horizontal: 4, vertical: 5),
                         decoration: BoxDecoration(
-                          color: AppColor.neon_yellow,
+                          color: paid?AppColor.neon_yellow:AppColor.neon_green,
                           borderRadius: BorderRadius.circular(5),
                         ),
-                        child: Text('선불',
+                        child: Text(paid?'선불':'현장결제',
                             style: TextStyle(
                                 fontFamily: 'cafe24', fontSize: 20)),
                       ),
                       SizedBox(width: 5),
-                      Text('배달비 ${formatter.format(int.parse(widget.item.riderDeliveryPrice))}원',
-                        style: TextStyle(
-                            color: textColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
-                      ),
+                      // Text('배달비 ${formatter.format(
+                      //     widget.item.totalDeliveryPrice=!null?
+                      //     int.parse(widget.item.totalDeliveryPrice):'0')}원',
+                      //   style: TextStyle(
+                      //       color: textColor,
+                      //       fontWeight: FontWeight.bold,
+                      //       fontSize: 18),
+                      // ),
                     ],
                   ),
-                  Text('PM 12:08',
+                  Text(
+                    widget.item.registeredDate!=null?
+                  widget.item.registeredDate.substring(11,16):'',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -136,7 +145,8 @@ class _OrderItemState extends State<OrderItem> {
                         letterSpacing: 1.25),
                   ),
                   SizedBox(height: 5),
-                  Text(widget.item.userAddress!=null?
+                  Text(
+                    widget.item.userAddress!=null?
                     widget.item.userAddress:'',
                     style: TextStyle(
                         color: Colors.white, fontSize: 24, letterSpacing: 0.85),
