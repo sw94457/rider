@@ -3,7 +3,7 @@
     package="com.ibagudelivery.rider_app">
     <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="라이더 앱"
+        android:label="마싯성딜리버리"
        tools:replace="android:label"
        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
