@@ -1,41 +1,50 @@
 {
   "project_info": {
-    "project_number": "701854008700",
-    "project_id": "ibagudelivery-rider",
-    "storage_bucket": "ibagudelivery-rider.appspot.com"
+    "project_number": "131881537723",
+    "project_id": "donggu-rider",
+    "storage_bucket": "donggu-rider.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:701854008700:android:a72f344b0aaed9c18490f9",
+        "mobilesdk_app_id": "1:131881537723:android:9fabfdec1550ba9910999e",
         "android_client_info": {
           "package_name": "com.ibagudelivery.rider_app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "701854008700-lb2obhc6t3fme8cujhirvqb0nhffulhp.apps.googleusercontent.com",
+          "client_id": "131881537723-5sd3nc8gqgbicta44hasj32ttal9do7h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ibagudelivery.rider_app",
+            "certificate_hash": "49723725c019790ff4abd2ff6fdbe05173c60f8a"
+          }
+        },
+        {
+          "client_id": "131881537723-f6u2ch483q39kjjq2g2rnq2jjm9hkt0e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ibagudelivery.rider_app",
+            "certificate_hash": "8af9daa1da6854c52492eda36ded288a60c76839"
+          }
+        },
+        {
+          "client_id": "131881537723-cm8ovt2ev9er13n3r45jedu7bkbpv6r9.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBouvs5wISAdh5UajZnpW52cyuzIH55R4w"
+          "current_key": "AIzaSyA3isw9XsxrMk2CBbnb_41w209z0pZSxMc"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "701854008700-lb2obhc6t3fme8cujhirvqb0nhffulhp.apps.googleusercontent.com",
+              "client_id": "131881537723-cm8ovt2ev9er13n3r45jedu7bkbpv6r9.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "701854008700-7lk6lt6mkmpes9uc3c76dtcmi513vtds.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.ibagudelivery.riderApp"
-              }
             }
           ]
         }
