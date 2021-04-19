@@ -58,9 +58,9 @@ class Bloc with ChangeNotifier {
       if(position.longitude<0){
         long = (-1)*position.longitude;
       }
-      reverseGeo(lat: lat, lon: long).then((value) {
-        print('kakao location : '+value);
-      });
+      // reverseGeo(lat: lat, lon: long).then((value) {
+      //   print('kakao location : '+value);
+      // });
     });
     //Location location = new Location();
     // currentLocation =
@@ -88,45 +88,45 @@ class Bloc with ChangeNotifier {
     // });
   }
 
-  Future<String> reverseGeo({double lat, double lon}) async {
-    String _chagnedAddress = "";
-    String _shortAddress = "";
-    String _shortAddress2 = "";
-    List<Documents> resultList;
-
-    if (lat == 0 || lon == 0) return '';
-    var response = await http.get(
-        Uri.encodeFull(
-            "https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${lon}&y=${lat}"),
-        headers: header);
-    if (response.statusCode == 200) {
-      logger.d('[kakao]' + response.body);
-      dynamic jsonObj = json.decode(response.body);
-      if (jsonObj['documents'] != null) {
-        resultList = new List<Documents>();
-        jsonObj['documents'].forEach((dynamic v) {
-          resultList.add(new Documents.fromJson(v));
-        });
-        if (resultList.length > 0) {
-          for (int i = 0; i < resultList.length; i++) {
-            if (resultList[i].regionType == 'H') {
-              _shortAddress = resultList[i].addressName;
-              _shortAddress2 = resultList[i].region2depthName + " " +
-                  resultList[i].region3depthName + " " +
-                  resultList[i].region4depthName;
-              _chagnedAddress = resultList[i].addressName;
-              print(_shortAddress2);
-            }
-          }
-        }
-      } else {
-        logger.d('{}' + response.body);
-      }
-    } else {
-      logger.d(response.body);
-    }
-    return _shortAddress2;
-  }
+  // Future<String> reverseGeo({double lat, double lon}) async {
+  //   String _chagnedAddress = "";
+  //   String _shortAddress = "";
+  //   String _shortAddress2 = "";
+  //   List<Documents> resultList;
+  //
+  //   if (lat == 0 || lon == 0) return '';
+  //   var response = await http.get(
+  //       Uri.encodeFull(
+  //           "https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${lon}&y=${lat}"),
+  //       headers: header);
+  //   if (response.statusCode == 200) {
+  //     logger.d('[kakao]' + response.body);
+  //     dynamic jsonObj = json.decode(response.body);
+  //     if (jsonObj['documents'] != null) {
+  //       resultList = new List<Documents>();
+  //       jsonObj['documents'].forEach((dynamic v) {
+  //         resultList.add(new Documents.fromJson(v));
+  //       });
+  //       if (resultList.length > 0) {
+  //         for (int i = 0; i < resultList.length; i++) {
+  //           if (resultList[i].regionType == 'H') {
+  //             _shortAddress = resultList[i].addressName;
+  //             _shortAddress2 = resultList[i].region2depthName + " " +
+  //                 resultList[i].region3depthName + " " +
+  //                 resultList[i].region4depthName;
+  //             _chagnedAddress = resultList[i].addressName;
+  //             print(_shortAddress2);
+  //           }
+  //         }
+  //       }
+  //     } else {
+  //       logger.d('{}' + response.body);
+  //     }
+  //   } else {
+  //     logger.d(response.body);
+  //   }
+  //   return _shortAddress2;
+  // }
 
   Future<List<Location>> getLocation() async {
     List<Location> list = [];
@@ -376,7 +376,7 @@ class Bloc with ChangeNotifier {
     params["authcode"] = authcode;
     params["phone"] = phone;
     params["udid"] = await FlutterUdid.consistentUdid;
-    params["push_token"] = fcm.getToken();
+    params["push_token"] = await fcm.getToken();
 
     isLoading = true;
     var response = await http.post(
