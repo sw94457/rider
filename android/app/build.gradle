@@ -22,11 +22,11 @@ if (flutterVersionName == null) {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
-// flutter_background_geolocation (must be placed after the lines above)
+
 Project background_geolocation = project(':flutter_background_geolocation')
 apply from: "${background_geolocation.projectDir}/background_geolocation.gradle"
-
 
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
@@ -34,29 +34,23 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
-
 android {
     compileSdkVersion 30
-    //compileSdkVersion rootProject.ext.compileSdkVersion
 
     lintOptions {
-        checkReleaseBuilds false
-        // Or, if you prefer, you can continue to check for errors in release builds,
-        // but continue the build even when errors are found:
-        abortOnError false
+        disable 'InvalidPackage'
     }
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.ibagudelivery.rider_app"
-        minSdkVersion 16
+        minSdkVersion 18
         targetSdkVersion 30
-        //targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
-
     signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']
@@ -65,20 +59,16 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
-
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            //signingConfig signingConfigs.debug
             signingConfig signingConfigs.release
             minifyEnabled true
             useProguard true
-
+            shrinkResources false
+            proguardFiles "${background_geolocation.projectDir}/proguard-rules.pro"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
-            //signingConfig signingConfigs.debug
-//            shrinkResources false
-//            proguardFiles "${background_geolocation.projectDir}/proguard-rules.pro"
         }
     }
 }
@@ -86,12 +76,9 @@ android {
 flutter {
     source '../..'
 }
-
 dependencies {
-    compile 'com.android.support:multidex:1.0.0'
+    // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:27.0.0')
-    implementation 'com.google.firebase:firebase-analytics:18.0.3'
-    implementation 'com.google.firebase:firebase-messaging:21.1.0'
-
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.android.support:multidex:1.0.3' //enter the latest version
 }
-apply plugin: 'com.google.gms.google-services'

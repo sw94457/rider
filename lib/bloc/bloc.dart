@@ -18,15 +18,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Bloc with ChangeNotifier {
   String baseURL;//개발서버
-
-  Logger logger = Logger();
-  FirebaseMessaging fcm = FirebaseMessaging();
-  Map<String, String> header = {"Authorization": "KakaoAK a7b2324e5526da03326a0684c37e37ff"};
-  bool isLoading;
-  User user = User();
-  //MyLocation currentLocation;
-  String place;
   SharedPreferences pref;
+  User user = User();
+  Logger logger = Logger();
+  //Map<String, String> header = {"Authorization": "KakaoAK a7b2324e5526da03326a0684c37e37ff"};
+  bool isLoading;
+  String place;
   bool isdev = false;
   Position position;
 
@@ -96,7 +93,7 @@ class Bloc with ChangeNotifier {
   //
   //   if (lat == 0 || lon == 0) return '';
   //   var response = await http.get(
-  //       Uri.encodeFull(
+  //       Uri.parse(
   //           "https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${lon}&y=${lat}"),
   //       headers: header);
   //   if (response.statusCode == 200) {
@@ -134,7 +131,7 @@ class Bloc with ChangeNotifier {
     Map<String, dynamic> params = Map<String, String>();
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/getlocation"), body: params);
+        Uri.parse(baseURL + "/getlocation"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -160,7 +157,7 @@ class Bloc with ChangeNotifier {
     params["phone"] = num;
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/sendauthcode"), body: params);
+        Uri.parse(baseURL + "/sendauthcode"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -186,7 +183,7 @@ class Bloc with ChangeNotifier {
     params["phone"] = num;
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/sendloginauthcode"), body: params);
+        Uri.parse(baseURL + "/sendloginauthcode"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -213,7 +210,7 @@ class Bloc with ChangeNotifier {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/checkauthcode"), body: params);
+        Uri.parse(baseURL + "/checkauthcode"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -241,7 +238,7 @@ class Bloc with ChangeNotifier {
     logger.d(id);
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/id_check"), body: params);
+        Uri.parse(baseURL + "/id_check"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -267,8 +264,8 @@ class Bloc with ChangeNotifier {
     String image='', String image2='', String account_name, String account_num, String account_bank}) async {
     ResponseData res = ResponseData();
     logger.d(Platform.isAndroid ? 'and' : 'ios');
-    logger.d(FlutterUdid.consistentUdid);
-    logger.d(fcm.getToken());
+    //logger.d(FlutterUdid.consistentUdid);
+    //logger.d(fcm.getToken());
     logger.d(name);
     logger.d(phone);
     logger.d(location_serial);
@@ -286,7 +283,7 @@ class Bloc with ChangeNotifier {
     request = http.MultipartRequest('POST', uri)
       ..fields['app_platform'] = Platform.isAndroid ? 'and' : 'ios'
       ..fields["udid"] = await FlutterUdid.consistentUdid
-      ..fields["push_token"] = await fcm.getToken()
+      ..fields["push_token"] = await FirebaseMessaging.instance.getToken()
       ..fields["phone"] = phone
       ..fields["name"] = name
       ..fields["location_serial"] = location_serial
@@ -329,14 +326,14 @@ class Bloc with ChangeNotifier {
     logger.d(phone);
     params["phone"] = phone;
     params["udid"] = await FlutterUdid.consistentUdid;
-    params["push_token"] = await fcm.getToken();
-    fcm.getToken().then((value) {
+    params["push_token"] = await FirebaseMessaging.instance.getToken();
+    FirebaseMessaging.instance.getToken().then((value) {
       logger.d(value);
     });
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/relogin"), body: params);
+        Uri.parse(baseURL + "/relogin"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -376,11 +373,11 @@ class Bloc with ChangeNotifier {
     params["authcode"] = authcode;
     params["phone"] = phone;
     params["udid"] = await FlutterUdid.consistentUdid;
-    params["push_token"] = await fcm.getToken();
+    params["push_token"] = await FirebaseMessaging.instance.getToken();
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/loginwithauth"), body: params);
+        Uri.parse(baseURL + "/loginwithauth"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -410,11 +407,11 @@ class Bloc with ChangeNotifier {
     Map<String, dynamic> params = Map<String, String>();
     params["serial"] = serial;
     params["udid"] = udid;
-    params["push_token"] = fcm.getToken();
+    params["push_token"] = FirebaseMessaging.instance.getToken();
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/autologin"), body: params);
+        Uri.parse(baseURL + "/autologin"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -448,7 +445,7 @@ class Bloc with ChangeNotifier {
   //
   //   isLoading = true;
   //   var response = await http.post(
-  //       Uri.encodeFull(baseURL + "/onLocation"), body: params);
+  //       Uri.parse(baseURL + "/onLocation"), body: params);
   //   isLoading = false;
   //   logger.d(response.body);
   //   if (response.statusCode == 200) {
@@ -476,7 +473,7 @@ class Bloc with ChangeNotifier {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/onLocation"), body: params);
+        Uri.parse(baseURL + "/onLocation"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -503,7 +500,7 @@ class Bloc with ChangeNotifier {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/riderOn"), body: params);
+        Uri.parse(baseURL + "/riderOn"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -530,7 +527,7 @@ class Bloc with ChangeNotifier {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/riderOff"), body: params);
+        Uri.parse(baseURL + "/riderOff"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -553,7 +550,7 @@ class Bloc with ChangeNotifier {
     List<Notice> noticeList = [];
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/notice/get"));
+        Uri.parse(baseURL + "/notice/get"));
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -580,7 +577,7 @@ class Bloc with ChangeNotifier {
     params["phone"] = num;
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/updateauthcode"), body: params);
+        Uri.parse(baseURL + "/updateauthcode"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -609,7 +606,7 @@ class Bloc with ChangeNotifier {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/register_account"), body: params);
+        Uri.parse(baseURL + "/register_account"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -635,7 +632,7 @@ class Bloc with ChangeNotifier {
     params["phone"] = num;
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/find/sendauthcode"), body: params);
+        Uri.parse(baseURL + "/find/sendauthcode"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -662,7 +659,7 @@ class Bloc with ChangeNotifier {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/find/checkauthcode"), body: params);
+        Uri.parse(baseURL + "/find/checkauthcode"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -691,7 +688,7 @@ class Bloc with ChangeNotifier {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/find/checkIdAuth"), body: params);
+        Uri.parse(baseURL + "/find/checkIdAuth"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -719,7 +716,7 @@ class Bloc with ChangeNotifier {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/find/checkauthcodePw"), body: params);
+        Uri.parse(baseURL + "/find/checkauthcodePw"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -751,7 +748,7 @@ class Bloc with ChangeNotifier {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/find/changePw"), body: params);
+        Uri.parse(baseURL + "/find/changePw"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -779,7 +776,7 @@ class Bloc with ChangeNotifier {
     //logger.d(pref.getString('serial'));
 
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/order_list"), body: params);
+        Uri.parse(baseURL + "/order_list"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -809,7 +806,7 @@ class Bloc with ChangeNotifier {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/order_detail"), body: params);
+        Uri.parse(baseURL + "/order_detail"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -838,7 +835,7 @@ class Bloc with ChangeNotifier {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/accept_order"), body: params);
+        Uri.parse(baseURL + "/accept_order"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -867,7 +864,7 @@ class Bloc with ChangeNotifier {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/pickUp"), body: params);
+        Uri.parse(baseURL + "/pickUp"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -895,7 +892,7 @@ class Bloc with ChangeNotifier {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/finish_delivery"), body: params);
+        Uri.parse(baseURL + "/finish_delivery"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -928,7 +925,7 @@ class Bloc with ChangeNotifier {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/update"), body: params);
+        Uri.parse(baseURL + "/update"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -956,7 +953,7 @@ class Bloc with ChangeNotifier {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/send_message"), body: params);
+        Uri.parse(baseURL + "/send_message"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -982,7 +979,7 @@ class Bloc with ChangeNotifier {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/rider_cal"), body: params);
+        Uri.parse(baseURL + "/rider_cal"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -1012,7 +1009,7 @@ class Bloc with ChangeNotifier {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/delivery_history"), body: params);
+        Uri.parse(baseURL + "/delivery_history"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {
@@ -1042,7 +1039,7 @@ class Bloc with ChangeNotifier {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull(baseURL + "/set_notice_alarm"), body: params);
+        Uri.parse(baseURL + "/set_notice_alarm"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {

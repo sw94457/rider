@@ -206,17 +206,16 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
   getCounterFromSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
     setState(() {
-      workState = prefs.getBool('workState');
-      _uid = prefs.getString('uid') ?? '김동구';
+      if(prefs.getBool('workState') ==null){
+        workState = false;
+      }else{
+        workState = prefs.getBool('workState');
+      }
       serial = prefs.getString('serial');
-      userfaceImage = prefs.getString('userfaceImage');
       isload = true;
     });
-    print(workState);
-    print(prefs.getBool('workState'));
-    if(prefs.getBool('workState') ==null){
-      workState = false;
-    }
+    _uid = widget.bloc.user.name!=null? widget.bloc.user.name: '김동구';
+    userfaceImage = widget.bloc.user.faceImage!=null? widget.bloc.user.faceImage: '';
   }
 
   Future<Position> getCurrentLocation() async {
@@ -243,7 +242,7 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
 
     isLoading = true;
     var response = await http.post(
-        Uri.encodeFull("http://api.busandelivery.com/onLocation"), body: params);
+        Uri.parse("http://api.busandelivery.com/onLocation"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {

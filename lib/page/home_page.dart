@@ -1,7 +1,9 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rider_app/bloc/bloc.dart';
 import 'package:rider_app/data/order.dart';
 import 'package:rider_app/page/delivery_detail_page.dart';
@@ -22,6 +24,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
+
+  RefreshController refresh_ctrl = RefreshController(initialRefresh: false);
   TabController tab_ctrl;
   List<Order2> orderList = [];
   List<Order2> newOrderList = [];
@@ -52,6 +56,19 @@ class _HomePageState extends State<HomePage>
       Loading = false;
       setState(() {});
     });
+  }
+
+  void _onRefresh() async{
+    await Future.delayed(Duration(milliseconds: 1000));
+    getList();
+    setState(() {});
+    refresh_ctrl.refreshCompleted();
+  }
+
+  void _onLoading() async{
+    await Future.delayed(Duration(milliseconds: 1000));
+    if(mounted) setState(() {});
+    refresh_ctrl.loadComplete();
   }
 
   @override
@@ -90,47 +107,77 @@ class _HomePageState extends State<HomePage>
   }
 
   newOrder() {
-    return ListView(
-      children: List.generate(newOrderList.length, (index) {
-        return Padding(
-          padding: EdgeInsets.all(10),
-          child: OrderItem(
-            item: newOrderList[index],
-            isNew: true,
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(
-                      builder: (context) => OrderDetailPage(
-                            bloc: widget.bloc,
-                            item: newOrderList[index]))).then((value) {
-                getList();
-              });
-            },
-          ),
-        );
-      }),
+    return SmartRefresher(
+      controller: refresh_ctrl,
+      enablePullDown: true,
+      enablePullUp: false,
+      header: ClassicHeader(
+        refreshingText: '로딩중',
+        idleText: '',
+        failedText: '로딩 실패',
+        completeText: '로딩 완료',
+        releaseText: '',
+      ),
+      onRefresh: _onRefresh,
+      onLoading: _onLoading,
+      child: ListView(
+        children: List.generate(newOrderList.length, (index) {
+          return Padding(
+            padding: EdgeInsets.all(10),
+            child: OrderItem(
+              item: newOrderList[index],
+              isNew: true,
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(
+                        builder: (context) => OrderDetailPage(
+                              bloc: widget.bloc,
+                              item: newOrderList[index]))).then((value) {
+                  getList();
+                });
+              },
+            ),
+          );
+        }),
+      ),
     );
   }
 
   delivery() {
-    return ListView(
-      children: List.generate(deliveryOrderList.length, (index) {
-        return Padding(
-          padding: EdgeInsets.all(10),
-          child: OrderItem(
-            isNew: false,
-            item: deliveryOrderList[index],
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(
-                      builder: (context) => DeliveryDetailPage(
-                          bloc:widget.bloc, item: deliveryOrderList[index]))).then((value){
-                getList();
-              });
-            },
-          ),
-        );
-      }),
+    return SmartRefresher(
+      controller: refresh_ctrl,
+      enablePullDown: true,
+      enablePullUp: false,
+      header: ClassicHeader(
+        refreshingText: '로딩중',
+        idleText: '',
+        failedText: '로딩 실패',
+        completeText: '로딩 완료',
+        releaseText: '',
+      ),
+      onRefresh: _onRefresh,
+      onLoading: _onLoading,
+      child: ListView(
+        children: List.generate(deliveryOrderList.length, (index) {
+          return Padding(
+            padding: EdgeInsets.all(10),
+            child: OrderItem(
+              isNew: false,
+              item: deliveryOrderList[index],
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(
+                        builder: (context) => DeliveryDetailPage(
+                            bloc:widget.bloc, item: deliveryOrderList[index]))).then((value){
+                  getList();
+                });
+              },
+            ),
+          );
+        }),
+      ),
     );
   }
+
+
 }
