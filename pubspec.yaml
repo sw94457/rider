@@ -44,7 +44,6 @@ dependencies:
   logger: ^1.0.0
   adaptive_dialog: ^0.10.0+5
   google_maps_flutter: ^2.0.3
-  flutter_background_geolocation: ^2.0.2
   url_launcher:  ^6.0.3
   pull_to_refresh: ^1.6.5
   background_location: ^0.4.3

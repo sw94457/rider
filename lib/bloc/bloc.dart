@@ -406,8 +406,8 @@ class Bloc with ChangeNotifier {
     logger.d(udid);
     Map<String, dynamic> params = Map<String, String>();
     params["serial"] = serial;
-    params["udid"] = udid;
-    params["push_token"] = FirebaseMessaging.instance.getToken();
+    params["udid"] = await FlutterUdid.consistentUdid;
+    params["push_token"] = await FirebaseMessaging.instance.getToken();
 
     isLoading = true;
     var response = await http.post(
