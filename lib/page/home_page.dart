@@ -63,9 +63,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
 
-  getSharedPrefs() async {}
+  getSharedPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+  }
 
-  getList() async {
+  getList() {
     orderList.clear();
     newOrderList.clear();
     deliveryOrderList.clear();
@@ -103,6 +105,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
       drawer: MyDrawer(widget.bloc),
+      onDrawerChanged: (isOpen){
+        print(isOpen);
+        getList();
+        setState(() {});
+      },
       appBar: AppBar(
         brightness: Brightness.dark,
         iconTheme: IconThemeData(color: AppColor.yellow),
