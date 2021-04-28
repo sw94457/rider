@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:background_location/background_location.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -28,18 +26,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
-  RefreshController refresh_ctrl = RefreshController(initialRefresh: false);
+  RefreshController refresh_ctrl;
   DateTime currentBackPressTime;
   SharedPreferences prefs;
   TabController tab_ctrl;
   List<Order2> orderList = [];
   List<Order2> newOrderList = [];
+  List<Order2> reverseNewOrderList = [];
   List<Order2> deliveryOrderList = [];
+  List<Order2> reverseDeliveryOrderList = [];
   bool Loading = true;
 
   @override
   void initState() {
     super.initState();
+    refresh_ctrl = RefreshController(initialRefresh: false);
     tab_ctrl = new TabController(vsync: this, length: 2);
     getSharedPrefs();
     getList();
@@ -68,11 +69,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   }
 
   getList() {
-    orderList.clear();
-    newOrderList.clear();
-    deliveryOrderList.clear();
-
     widget.bloc.getOrderList().then((value) {
+      orderList.clear();
+      newOrderList.clear();
+      deliveryOrderList.clear();
       orderList = value;
       for(int i=0;i<orderList.length;i++){
         if(orderList[i].flag == 'W'){
@@ -81,7 +81,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           deliveryOrderList.add(orderList[i]);
         }
       }
-      print(orderList.length);
+      reverseDeliveryOrderList = List.from(deliveryOrderList.reversed);
+      reverseNewOrderList = List.from(newOrderList.reversed);
+
       Loading = false;
       setState(() {});
     });
@@ -120,11 +122,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           unselectedLabelColor: AppColor.grey,
           tabs: [
             Tab(
-              child: Text('신규(${newOrderList.length})',
+              child: Text('신규(${reverseNewOrderList.length})',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             ),
             Tab(
-              child: Text('배달(${deliveryOrderList.length})',
+              child: Text('배달(${reverseDeliveryOrderList.length})',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             ),
           ],
@@ -158,18 +160,20 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       onRefresh: _onRefresh,
       onLoading: _onLoading,
       child: ListView(
-        children: List.generate(newOrderList.length, (index) {
+        // shrinkWrap: true,
+        // reverse: true,
+        children: List.generate(reverseNewOrderList.length, (index) {
           return Padding(
             padding: EdgeInsets.all(10),
             child: OrderItem(
-              item: newOrderList[index],
+              item: reverseNewOrderList[index],
               isNew: true,
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(
                         builder: (context) => OrderDetailPage(
                               bloc: widget.bloc,
-                              item: newOrderList[index]))).then((value) {
+                              item: reverseNewOrderList[index]))).then((value) {
                   getList();
                 });
               },
@@ -195,17 +199,19 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       onRefresh: _onRefresh,
       onLoading: _onLoading,
       child: ListView(
-        children: List.generate(deliveryOrderList.length, (index) {
+        // shrinkWrap: true,
+        // reverse: true,
+        children: List.generate(reverseDeliveryOrderList.length, (index) {
           return Padding(
             padding: EdgeInsets.all(10),
             child: OrderItem(
               isNew: false,
-              item: deliveryOrderList[index],
+              item: reverseDeliveryOrderList[index],
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(
                         builder: (context) => DeliveryDetailPage(
-                            bloc:widget.bloc, item: deliveryOrderList[index]))).then((value){
+                            bloc:widget.bloc, item: reverseDeliveryOrderList[index]))).then((value){
                   getList();
                 });
               },
@@ -225,7 +231,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       showOkCancelAlertDialog(
         context: context,
         title: '앱 종료',
-        message: '뒤로가기 버튼을 한번 더 누르면 앱이 종료됩니다.',
+        message: '앱 종료 시 위치를 더이상 업데이트 할 수 없습니다. 그래도 종료하시겠습니까?',
         cancelLabel: '취소',
         okLabel: '확인'
       ).then((value) {

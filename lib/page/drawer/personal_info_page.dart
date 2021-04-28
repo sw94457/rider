@@ -44,8 +44,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
       name_ctrl.text = widget.bloc.user.name;
       name2_ctrl.text = widget.bloc.user.accountName;
       choice_bank = widget.bloc.user.accountBank;
-      choice_period = widget.bloc.user.term + '주';
-      period = widget.bloc.user.term;
+      choice_period = widget.bloc.user.calculateCycle + '주';
+      period = widget.bloc.user.calculateCycle;
       account_ctrl.text = widget.bloc.user.accountNum;
     });
   }

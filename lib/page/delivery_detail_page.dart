@@ -431,7 +431,7 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
                           if(res.success){
                             //buttonText = '현장결제';
                             Toast.show('배달이 완료되었습니다.', context, duration:2);
-                            setState(() {});
+                            Navigator.pop(context);
                           }else{
                             Toast.show(''+res.errorMsg, context, duration:2);
                           }

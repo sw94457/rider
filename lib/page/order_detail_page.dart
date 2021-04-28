@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'package:rider_app/bloc/bloc.dart';
 import 'package:rider_app/data/order.dart';
 import 'package:rider_app/ui/color.dart';
@@ -21,23 +23,39 @@ class OrderDetailPage extends StatefulWidget {
 }
 
 class _OrderDetailPageState extends State<OrderDetailPage> {
+  final formatter = new NumberFormat("#,###,###,###,###");
+  Logger logger = Logger();
   Order2 order;
   Completer<GoogleMapController> _controller = Completer();
   Set<Marker> markers = Set();
+  // BitmapDescriptor pin_start;
+  // BitmapDescriptor pin_end;
   bool paid = false;
   bool Loading = true;
   var startDistance;
   var endDistance;
+  var start_Distance;
+  var end_Distance;
   String phone = '';
 
   static CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
+  //
+  // void setCustomMapPin() async {
+  //   pin_start = await BitmapDescriptor.fromAssetImage(
+  //       ImageConfiguration(devicePixelRatio: 2.5),
+  //       'assets/destination_map_marker.png');
+  //   pin_end = await BitmapDescriptor.fromAssetImage(
+  //       ImageConfiguration(devicePixelRatio: 2.5),
+  //       'assets/destination_map_marker.png');
+  // }
 
   @override
   void initState() {
     super.initState();
+   // setCustomMapPin();
     widget.bloc.getOrderDetail(request_serial: widget.item.serial).then((value) {
       order = value;
       var companyLatLng = LatLng(double.parse(order.companyLatitude), double.parse(order.companyLongitude));
@@ -50,16 +68,16 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             zoom: 14.4746);
           markers.add(
             Marker(
-              infoWindow: InfoWindow(title: '출발지', ),
-              //icon: getDustIcon(list[i]),
+              //icon: pin_start,
+              infoWindow: InfoWindow(title: '출발지'),
               markerId: MarkerId(order.serial),
               position: companyLatLng,
             ),
           );
           markers.add(
             Marker(
-              infoWindow: InfoWindow(title: '도착지', ),
-              //icon: getDustIcon(list[i]),
+             // icon: pin_end,
+              infoWindow: InfoWindow(title: '도착지'),
               markerId: MarkerId(order.orderSerial),
               position: userLatLng,
             ),
@@ -90,22 +108,26 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         paid = false;
       }
       Loading = false;
-      startDistance = Geolocator.distanceBetween(
+      start_Distance = Geolocator.distanceBetween(
           double.parse(order.companyLatitude),
           double.parse(order.companyLongitude),
           widget.bloc.position.latitude,
           widget.bloc.position.longitude).floor();
-      endDistance = Geolocator.distanceBetween(
+      end_Distance = Geolocator.distanceBetween(
           double.parse(order.userLatitude),
           double.parse(order.userLongitude),
           widget.bloc.position.latitude,
           widget.bloc.position.longitude).floor();
 
-      if(startDistance>=1000.0){
-        startDistance = startDistance/1000;
+      if(start_Distance>=1000.0){
+        startDistance = start_Distance/1000;
+      }else{
+        startDistance = start_Distance;
       }
-      if(endDistance>=1000.0){
-        endDistance = endDistance/1000;
+      if(end_Distance>=1000.0){
+        endDistance = end_Distance/1000;
+      }else{
+        endDistance = end_Distance;
       }
       setState(() {});
     });
@@ -115,6 +137,11 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
+    logger.d(startDistance);
+    logger.d(endDistance);
+    logger.d(start_Distance);
+    logger.d(end_Distance);
+
     return Scaffold(
       backgroundColor: AppColor.navy,
       appBar: AppBar(
@@ -167,7 +194,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                   ),
                                   SizedBox(width: 5),
                                   Text(
-                                    '배달비 3,800원',
+                                    '배달비 ${formatter.format(int.parse(order.riderDeliveryPrice))}원',
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 20),
                                   ),
@@ -211,7 +238,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                       ),
                                       SizedBox(width: 5),
                                       Text(
-                                          startDistance<1000.0?
+                                          start_Distance<1000.0?
                                       '${startDistance}m':
                                       '${startDistance.toStringAsFixed(2)}km',
                                           style: TextStyle(
@@ -276,8 +303,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                       fontFamily: 'cafe24', fontSize: 20)),
                             ),
                             SizedBox(width: 5),
-                            Text( endDistance<1000.0?
-                            '${endDistance.round()}m':
+                            Text(end_Distance<1000.0?
+                            '${endDistance}m':
                             '${endDistance.toStringAsFixed(2)}km',
                                 style: TextStyle(
                                     fontSize: 20, color: AppColor.neon_green))
@@ -311,8 +338,9 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Text(
                     order.riderMemo!=null?
-                    order.riderMemo:'',
-                        style: TextStyle(fontSize: 24, color: Colors.white)),
+                    order.riderMemo:'없음',
+                        style: TextStyle(fontSize: 24,
+                            color: order.riderMemo!=null?Colors.white:Colors.grey)),
                   ),
                   SizedBox(height: 5),
                   Divider(color: AppColor.grey),
