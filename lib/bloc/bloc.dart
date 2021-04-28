@@ -16,7 +16,7 @@ import 'package:rider_app/data/response_data.dart';
 import 'package:rider_app/data/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Bloc with ChangeNotifier {
+class Bloc{
   String baseURL;//개발서버
   SharedPreferences pref;
   User user = User();
@@ -25,9 +25,10 @@ class Bloc with ChangeNotifier {
   bool isLoading;
   String place;
   bool isdev = false;
-  Position position;
-  var lat;
-  var long;
+  // Position position;
+  static double LATITUDE = 35.16041032189371;
+  static double LONGITUDE = 129.06268053114317;
+
 
   Bloc() {
     if (isdev){
@@ -47,15 +48,14 @@ class Bloc with ChangeNotifier {
     });
 
     Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high).then((value) {
-      position = value;
-      lat = position.latitude;
-      long = position.longitude;
+      Bloc.LATITUDE = value.latitude;
+      Bloc.LONGITUDE = value.longitude;
 
-      if(position.latitude<0){
-        lat = (-1)*position.latitude;
+      if(value.latitude<0){
+        Bloc.LATITUDE = (-1)*value.latitude;
       }
-      if(position.longitude<0){
-        long = (-1)*position.longitude;
+      if(value.longitude<0){
+        Bloc.LATITUDE = (-1)*value.longitude;
       }
     });
   }

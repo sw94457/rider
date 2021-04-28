@@ -273,10 +273,6 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
             lat: location.latitude.toString(),
             long: location.longitude.toString()).then((res) {
       if (res.success) {
-        widget.bloc.user.latitude = location.latitude.toString();
-        widget.bloc.user.longitude = location.longitude.toString();
-        logger.d(widget.bloc.user.latitude);
-        logger.d(widget.bloc.user.longitude);
         print('위치 보냄');
       } else {
         print('위치 못보냄');

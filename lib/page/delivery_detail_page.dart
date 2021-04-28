@@ -79,13 +79,13 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
       start_Distance = Geolocator.distanceBetween(
           double.parse(order.companyLatitude),
           double.parse(order.companyLongitude),
-          widget.bloc.position.latitude,
-          widget.bloc.position.longitude).floor();
+          Bloc.LATITUDE,
+         Bloc.LONGITUDE).floor();
       end_Distance = Geolocator.distanceBetween(
           double.parse(order.userLatitude),
           double.parse(order.userLongitude),
-          widget.bloc.position.latitude,
-          widget.bloc.position.longitude).floor();
+          Bloc.LATITUDE,
+          Bloc.LONGITUDE).floor();
 
       if(start_Distance>=1000.0){
         startDistance = start_Distance/1000;
