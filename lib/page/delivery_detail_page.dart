@@ -32,8 +32,13 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
   bool message_dialog = false;
   String phone = '';
   var dialog_selecet = 0;
+
+  Position position;
   var startDistance;
   var endDistance;
+  var start_Distance;
+  var end_Distance;
+
   var message1 = false;
   var message2 = false;
   var message3 = false;
@@ -71,26 +76,37 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
       }else{
         paid = false;
       }
-      Loading = false;
-      startDistance = Geolocator.distanceBetween(
-        double.parse(order.companyLatitude),
-        double.parse(order.companyLongitude),
-        widget.bloc.position.latitude,
-        widget.bloc.position.longitude).floor();
-      endDistance = Geolocator.distanceBetween(
-          double.parse(order.userLatitude),
-          double.parse(order.userLongitude),
-          widget.bloc.position.latitude,
-          widget.bloc.position.longitude).floor();
+      getLocation();
 
-      if(startDistance>=1000.0){
-        startDistance = startDistance/1000;
-      }
-      if(endDistance>=1000.0){
-        endDistance = endDistance/1000;
-      }
+      Loading = false;
       setState(() {});
     });
+  }
+
+  getLocation () async{
+    position = await Geolocator.getCurrentPosition();
+
+    startDistance = Geolocator.distanceBetween(
+        double.parse(order.companyLatitude),
+        double.parse(order.companyLongitude),
+        position.latitude,
+        position.longitude).floor();
+    endDistance = Geolocator.distanceBetween(
+        double.parse(order.userLatitude),
+        double.parse(order.userLongitude),
+        position.latitude,
+        position.longitude).floor();
+
+    if(start_Distance>=1000.0){
+      startDistance = start_Distance/1000;
+    }else{
+      startDistance = start_Distance;
+    }
+    if(end_Distance>=1000.0){
+      endDistance = end_Distance/1000;
+    }else{
+      endDistance = end_Distance;
+    }
   }
 
   setColor(flag){

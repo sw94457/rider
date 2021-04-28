@@ -25,7 +25,9 @@ class Bloc with ChangeNotifier {
   bool isLoading;
   String place;
   bool isdev = false;
-  Position position;
+  static Position position;
+  var lat;
+  var long;
 
   Bloc() {
     if (isdev){
@@ -46,8 +48,8 @@ class Bloc with ChangeNotifier {
 
     Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high).then((value) {
       position = value;
-      var lat = position.latitude;
-      var long = position.longitude;
+      lat = position.latitude;
+      long = position.longitude;
 
       if(position.latitude<0){
         lat = (-1)*position.latitude;
@@ -55,75 +57,8 @@ class Bloc with ChangeNotifier {
       if(position.longitude<0){
         long = (-1)*position.longitude;
       }
-      // reverseGeo(lat: lat, lon: long).then((value) {
-      //   print('kakao location : '+value);
-      // });
     });
-    //Location location = new Location();
-    // currentLocation =
-    //     MyLocation(37.547598, 126.979931, address: "서울특별시", short: "서울특별시");
-    //
-    // location.getLocation().then((onValue) {
-    //   if (onValue != null) {
-    //     if (onValue.longitude < 0) {
-    //       currentLocation =
-    //           MyLocation(37.547598, 126.979931, address: "", short: "");
-    //     } else {
-    //       currentLocation = MyLocation(onValue.latitude, onValue.longitude,
-    //           address: "", short: "");
-    //     }
-    //     logger.d(currentLocation.latitude.toString() + ',' +
-    //         currentLocation.longitude.toString());
-    //   }
-    //
-    //   reverseGeo(lat: currentLocation.latitude, lon: currentLocation.longitude);
-    // }).catchError((err) {
-    //   FlutterUdid.consistentUdid.then((udid) {
-    //     uuid = udid;
-    //   });
-    //   reverseGeo(lat: currentLocation.latitude, lon: currentLocation.longitude);
-    // });
   }
-
-  // Future<String> reverseGeo({double lat, double lon}) async {
-  //   String _chagnedAddress = "";
-  //   String _shortAddress = "";
-  //   String _shortAddress2 = "";
-  //   List<Documents> resultList;
-  //
-  //   if (lat == 0 || lon == 0) return '';
-  //   var response = await http.get(
-  //       Uri.parse(
-  //           "https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${lon}&y=${lat}"),
-  //       headers: header);
-  //   if (response.statusCode == 200) {
-  //     logger.d('[kakao]' + response.body);
-  //     dynamic jsonObj = json.decode(response.body);
-  //     if (jsonObj['documents'] != null) {
-  //       resultList = new List<Documents>();
-  //       jsonObj['documents'].forEach((dynamic v) {
-  //         resultList.add(new Documents.fromJson(v));
-  //       });
-  //       if (resultList.length > 0) {
-  //         for (int i = 0; i < resultList.length; i++) {
-  //           if (resultList[i].regionType == 'H') {
-  //             _shortAddress = resultList[i].addressName;
-  //             _shortAddress2 = resultList[i].region2depthName + " " +
-  //                 resultList[i].region3depthName + " " +
-  //                 resultList[i].region4depthName;
-  //             _chagnedAddress = resultList[i].addressName;
-  //             print(_shortAddress2);
-  //           }
-  //         }
-  //       }
-  //     } else {
-  //       logger.d('{}' + response.body);
-  //     }
-  //   } else {
-  //     logger.d(response.body);
-  //   }
-  //   return _shortAddress2;
-  // }
 
   Future<List<Location>> getLocation() async {
     List<Location> list = [];

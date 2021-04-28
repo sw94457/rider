@@ -14,8 +14,6 @@ import 'package:rider_app/ui/color.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:toast/toast.dart';
-
-//import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
 import 'package:url_launcher/url_launcher.dart';
 
 class MyDrawer extends StatefulWidget {
@@ -273,9 +271,12 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
     updateLocation(
             serial: widget.bloc.user.serial,
             lat: location.latitude.toString(),
-            long: location.longitude.toString())
-        .then((res) {
+            long: location.longitude.toString()).then((res) {
       if (res.success) {
+        widget.bloc.user.latitude = location.latitude.toString();
+        widget.bloc.user.longitude = location.longitude.toString();
+        logger.d(widget.bloc.user.latitude);
+        logger.d(widget.bloc.user.longitude);
         print('위치 보냄');
       } else {
         print('위치 못보냄');
@@ -322,12 +323,24 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
           workState = true;
           prefs.setBool('workState', workState);
         });
+        Geolocator.getCurrentPosition().then((value){
+          Location location = Location();
+          location.latitude = value.latitude;
+          location.longitude = value.longitude;
+          location.accuracy = value.accuracy;
+          location.altitude = value.altitude;
+          location.isMock = value.isMocked;
+          location.speed = value.speed;
+          getCurrentLocation(location);
+        });
         Toast.show(widget.bloc.user.name+'라이더님 출근처리 되었습니다.', context, duration:2);
         BackgroundLocation.startLocationService();
 
         BackgroundLocation.getLocationUpdates((location) {
-          // print(location.latitude.toString()+', '+location.longitude.toString());
+          print(location.latitude.toString()+', '+location.longitude.toString());
           getCurrentLocation(location);
+          // widget.bloc.user.latitude = location.latitude.toString();
+          // widget.bloc.user.longitude = location.longitude.toString();
         });
         // bg.BackgroundGeolocation.ready(bg.Config(
         //     desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,

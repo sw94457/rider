@@ -396,7 +396,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 onPressed: () {
                   widget.bloc.acceptOrder(
                     request_serial: order.serial,
-                    order_serial: order.serial,
+                    order_serial: order.orderSerial,
                     serial: widget.bloc.user.serial).then((res){
                       if(res.success){
                         Navigator.pop(context);
