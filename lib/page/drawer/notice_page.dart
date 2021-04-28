@@ -22,6 +22,7 @@ class _NoticePageState extends State<NoticePage> {
   bool isAlarm = true;
   int _itemCount = 0;
   List<Notice> noticeList = [];
+  List<Notice> reverseNoticeList = [];
   List a = ['a', 'b', 'c', 'd'];
 
   @override
@@ -32,6 +33,7 @@ class _NoticePageState extends State<NoticePage> {
     widget.bloc.getNotice().then((value) {
       noticeList = value;
       _itemCount = noticeList.length;
+      reverseNoticeList = List.from(noticeList.reversed);
       setState(() {
         isLoading = false;
       });
@@ -99,10 +101,10 @@ class _NoticePageState extends State<NoticePage> {
   notice() {
     Size screenSize = MediaQuery.of(context).size;
     return ListView(
-      children: List.generate(noticeList.length, (i) {
+      children: List.generate(reverseNoticeList.length, (i) {
         var type_text='';
         var type_color = AppColor.neon_green;
-        switch(noticeList[i].type){
+        switch(reverseNoticeList[i].type){
           case 'R':
             type_text = '1:1';
             type_color = AppColor.neon_green;
@@ -153,7 +155,7 @@ class _NoticePageState extends State<NoticePage> {
                         ),
                         Container(
                           child: Text(
-                            noticeList[i].title,
+                            reverseNoticeList[i].title,
                             //'title',
                             style: TextStyle(
                                 fontSize: 14,
@@ -164,7 +166,7 @@ class _NoticePageState extends State<NoticePage> {
                       ],
                     ),
                     Text(
-                      noticeList[i].registeredDate.substring(0, 10),
+                      reverseNoticeList[i].registeredDate.substring(0, 10),
                       // 'register',
                       style: TextStyle(
                           fontSize: 13,
@@ -181,7 +183,7 @@ class _NoticePageState extends State<NoticePage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        NoticeDetailPage(notice: noticeList[i])));
+                        NoticeDetailPage(notice: reverseNoticeList[i])));
           },
         );
       }),
