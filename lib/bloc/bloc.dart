@@ -25,7 +25,7 @@ class Bloc with ChangeNotifier {
   bool isLoading;
   String place;
   bool isdev = false;
-  static Position position;
+  Position position;
   var lat;
   var long;
 

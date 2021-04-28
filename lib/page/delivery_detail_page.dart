@@ -76,37 +76,31 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
       }else{
         paid = false;
       }
-      getLocation();
+      start_Distance = Geolocator.distanceBetween(
+          double.parse(order.companyLatitude),
+          double.parse(order.companyLongitude),
+          widget.bloc.position.latitude,
+          widget.bloc.position.longitude).floor();
+      end_Distance = Geolocator.distanceBetween(
+          double.parse(order.userLatitude),
+          double.parse(order.userLongitude),
+          widget.bloc.position.latitude,
+          widget.bloc.position.longitude).floor();
+
+      if(start_Distance>=1000.0){
+        startDistance = start_Distance/1000;
+      }else{
+        startDistance = start_Distance;
+      }
+      if(end_Distance>=1000.0){
+        endDistance = end_Distance/1000;
+      }else{
+        endDistance = end_Distance;
+      }
 
       Loading = false;
       setState(() {});
     });
-  }
-
-  getLocation () async{
-    position = await Geolocator.getCurrentPosition();
-
-    startDistance = Geolocator.distanceBetween(
-        double.parse(order.companyLatitude),
-        double.parse(order.companyLongitude),
-        position.latitude,
-        position.longitude).floor();
-    endDistance = Geolocator.distanceBetween(
-        double.parse(order.userLatitude),
-        double.parse(order.userLongitude),
-        position.latitude,
-        position.longitude).floor();
-
-    if(start_Distance>=1000.0){
-      startDistance = start_Distance/1000;
-    }else{
-      startDistance = start_Distance;
-    }
-    if(end_Distance>=1000.0){
-      endDistance = end_Distance/1000;
-    }else{
-      endDistance = end_Distance;
-    }
   }
 
   setColor(flag){
