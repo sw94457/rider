@@ -339,8 +339,6 @@ class _MyDrawerState extends State<MyDrawer> with WidgetsBindingObserver {
         BackgroundLocation.getLocationUpdates((location) {
           print(location.latitude.toString()+', '+location.longitude.toString());
           getCurrentLocation(location);
-          // widget.bloc.user.latitude = location.latitude.toString();
-          // widget.bloc.user.longitude = location.longitude.toString();
         });
         // bg.BackgroundGeolocation.ready(bg.Config(
         //     desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,

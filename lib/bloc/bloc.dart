@@ -790,11 +790,12 @@ class Bloc with ChangeNotifier {
     return res;
   }
 
-  Future<ResponseData> pickUp({String requestserial}) async {
+  Future<ResponseData> pickUp({String requestserial, String order_serial}) async {
     ResponseData res = ResponseData();
     Map<String, dynamic> params = Map<String, String>();
 
     params["request_serial"] = requestserial;
+    params["order_serial"] = order_serial;
     params["serial"] = user.serial;
 
     isLoading = true;
@@ -818,11 +819,12 @@ class Bloc with ChangeNotifier {
     return res;
   }
 
-  Future<ResponseData> finishDelivery({String requestserial}) async {
+  Future<ResponseData> finishDelivery({String requestserial, String order_serial}) async {
     ResponseData res = ResponseData();
     Map<String, dynamic> params = Map<String, String>();
 
     params["request_serial"] = requestserial;
+    params["order_serial"] = order_serial;
     params["serial"] = user.serial;
 
     isLoading = true;
