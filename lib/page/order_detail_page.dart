@@ -41,7 +41,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   bool endDataNull = false;
 
   static CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
+    target: LatLng(37.547598, 126.979931),
     zoom: 14.4746,
   );
   //
@@ -98,7 +98,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         }
       }catch(e) {
         _kGooglePlex = CameraPosition(
-          target: LatLng(37.547598, 126.979931),
+          target: LatLng(Bloc.LATITUDE, Bloc.LONGITUDE),
           zoom: 14.4746,
         );
       }

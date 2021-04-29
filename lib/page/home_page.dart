@@ -40,9 +40,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    refresh_ctrl = RefreshController(initialRefresh: false);
+    refresh_ctrl = RefreshController(initialRefresh: true);
     tab_ctrl = new TabController(vsync: this, length: 2);
-    getSharedPrefs();
+
     getList();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print(message.category);
@@ -62,6 +62,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         // Show a message asking the user to reconsider or do something else
       },
     );
+    getSharedPrefs();
   }
 
   getSharedPrefs() async {
