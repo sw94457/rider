@@ -19,10 +19,16 @@ class _OrderItemState extends State<OrderItem> {
   Color textColor;
   var phone = '';
   bool paid = false;
+  bool endDataNull = false;
 
   @override
   void initState() {
     super.initState();
+    if(widget.item.userAddress!=null){
+      endDataNull = false;
+    }else{
+      endDataNull = true;
+    }
     if(widget.isNew){
       mainColor = AppColor.red;
       textColor = Colors.white;
@@ -34,23 +40,25 @@ class _OrderItemState extends State<OrderItem> {
       }
       textColor = Colors.black;
     }
-    if(widget.item.userPhone.length==11){
-      try{
-        phone = widget.item.userPhone.substring(0,3)+'-'+
-            widget.item.userPhone.substring(3,7)+'-'+
-            widget.item.userPhone.substring(7,11);
-      }catch(e){}
-    }else{
-      try{
-        phone = widget.item.userPhone.substring(0,3)+'-'+
-            widget.item.userPhone.substring(3,6)+'-'+
-            widget.item.userPhone.substring(6,10);
-      }catch(e){}
-    }
     if(widget.item.paid =='Y') {
       paid = true;
     }else{
       paid = false;
+    }
+    if(!endDataNull){
+      if(widget.item.userPhone.length==11){
+        try{
+          phone = widget.item.userPhone.substring(0,3)+'-'+
+              widget.item.userPhone.substring(3,7)+'-'+
+              widget.item.userPhone.substring(7,11);
+        }catch(e){}
+      } else{
+        try{
+          phone = widget.item.userPhone.substring(0,3)+'-'+
+              widget.item.userPhone.substring(3,6)+'-'+
+              widget.item.userPhone.substring(6,10);
+        }catch(e){}
+      }
     }
   }
   @override
@@ -95,7 +103,7 @@ class _OrderItemState extends State<OrderItem> {
                   ),
                   Text(
                     widget.item.registeredDate!=null?
-                  widget.item.registeredDate.substring(11,16):'',
+                    widget.item.registeredDate.substring(11,16):'',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -131,26 +139,33 @@ class _OrderItemState extends State<OrderItem> {
                     style: TextStyle(
                         color: Colors.white, fontSize: 24, letterSpacing: 0.85),
                   ),
-                  SizedBox(height: 5),
-                  Container(
-                    width: screenSize.width,
-                    child: Icon(Icons.arrow_downward, color: AppColor.yellow),
-                  ),
-                  SizedBox(height: 5),
-                  Text(phone,
-                    style: TextStyle(
-                        color: AppColor.neon_yellow,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.25),
-                  ),
-                  SizedBox(height: 5),
-                  Text(
-                    widget.item.userAddress!=null?
-                    widget.item.userAddress:'',
-                    style: TextStyle(
-                        color: Colors.white, fontSize: 24, letterSpacing: 0.85),
-                  ),
+                  !endDataNull?
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 5),
+                      Container(
+                        width: screenSize.width,
+                        child: Icon(Icons.arrow_downward, color: AppColor.yellow),
+                      ),
+                      SizedBox(height: 5),
+                      Text(phone,
+                        style: TextStyle(
+                            color: AppColor.neon_yellow,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.25),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        widget.item.userAddress!=null?
+                        widget.item.userAddress:'',
+                        style: TextStyle(
+                            color: Colors.white, fontSize: 24, letterSpacing: 0.85),
+                      ),
+                    ],
+                  ):
+                  SizedBox(),
                 ],
               ),
             )

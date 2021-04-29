@@ -46,62 +46,7 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
   var message5 = false;
   var message_text = '';
 
-  @override
-  void initState() {
-    super.initState();
-    //색변경
-    setColor(widget.item.flag);
-    //카카오네비 세팅
-    // String kakaoAppKey = "fd1e5f69c505814fb8dbd278443fc0f0";
-    // KakaoContext.clientId = kakaoAppKey;
-
-    //디테일 불러오기
-    widget.bloc.getOrderDetail(request_serial: widget.item.serial).then((value) {
-      order = value;
-      if(order.userPhone.length==11){
-        try{
-          phone = order.userPhone.substring(0,3)+'-'+
-              order.userPhone.substring(3,7)+'-'+
-              order.userPhone.substring(7,11);
-        }catch(e){}
-      }else{
-        try{
-          phone = order.userPhone.substring(0,3)+'-'+
-              order.userPhone.substring(3,6)+'-'+
-              order.userPhone.substring(6,10);
-        }catch(e){}
-      }
-      if(order.paid =='Y') {
-        paid = true;
-      }else{
-        paid = false;
-      }
-      start_Distance = Geolocator.distanceBetween(
-          double.parse(order.companyLatitude),
-          double.parse(order.companyLongitude),
-          Bloc.LATITUDE,
-         Bloc.LONGITUDE).floor();
-      end_Distance = Geolocator.distanceBetween(
-          double.parse(order.userLatitude),
-          double.parse(order.userLongitude),
-          Bloc.LATITUDE,
-          Bloc.LONGITUDE).floor();
-
-      if(start_Distance>=1000.0){
-        startDistance = start_Distance/1000;
-      }else{
-        startDistance = start_Distance;
-      }
-      if(end_Distance>=1000.0){
-        endDistance = end_Distance/1000;
-      }else{
-        endDistance = end_Distance;
-      }
-
-      Loading = false;
-      setState(() {});
-    });
-  }
+  bool endDataNull = false;
 
   setColor(flag){
     if(flag == 'A'){
@@ -120,6 +65,88 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    //색변경
+    setColor(widget.item.flag);
+
+    //디테일 불러오기
+    widget.bloc.getOrderDetail(request_serial: widget.item.serial).then((value) {
+      order = value;
+      if(order.userAddress !=null){
+        endDataNull = false;
+      }else{
+        endDataNull = true;
+      }
+
+      if(order.paid =='Y') {
+        paid = true;
+      }else{
+        paid = false;
+      }
+
+      if(!endDataNull){
+        if(order.userPhone.length==11){
+          try{
+            phone = order.userPhone.substring(0,3)+'-'+
+                order.userPhone.substring(3,7)+'-'+
+                order.userPhone.substring(7,11);
+          }catch(e){
+            phone = '정보없음';
+          }
+        }
+        else{
+          try{
+            phone = order.userPhone.substring(0,3)+'-'+
+                order.userPhone.substring(3,6)+'-'+
+                order.userPhone.substring(6,10);
+          }catch(e){
+            phone = '정보없음';
+          }
+        }
+      }else{
+        phone = '정보없음';
+      }
+
+      try{
+        start_Distance = Geolocator.distanceBetween(
+            double.parse(order.companyLatitude),
+            double.parse(order.companyLongitude),
+            Bloc.LATITUDE,
+            Bloc.LONGITUDE).floor();
+
+        if(start_Distance>=1000.0){
+          startDistance = start_Distance/1000;
+        }else{
+          startDistance = start_Distance;
+        }
+        if(!endDataNull){
+          end_Distance = Geolocator.distanceBetween(
+              double.parse(order.userLatitude),
+              double.parse(order.userLongitude),
+              Bloc.LATITUDE,
+              Bloc.LONGITUDE).floor();
+          if(end_Distance>=1000.0){
+            endDistance = end_Distance/1000;
+          }else{
+            endDistance = end_Distance;
+          }
+        }else{
+          endDistance = 0;
+          end_Distance = 0;
+        }
+      }catch(e){
+        start_Distance = 0;
+        startDistance = 0;
+        endDistance = 0;
+        end_Distance = 0;
+      }
+      Loading = false;
+      setState(() {});
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
@@ -134,333 +161,340 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
         ),
       ),
       body: Stack(
-        children:[
-          Stack(
-            children: [
-              Loading?
-              ProgressPage(screenSize.width):
-              Container(
-                height: screenSize.height,
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Container(
-                        child: Column(
-                          children: [
-                            Container(
-                              width: screenSize.width,
-                              height: 30,
-                              padding: EdgeInsets.only(right: 5),
-                              decoration: BoxDecoration(
-                                  color: buttonColor, borderRadius: BorderRadius.circular(5)),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 4, vertical: 5),
-                                        decoration: BoxDecoration(
-                                          color: paid? AppColor.neon_yellow:AppColor.neon_green,
-                                          borderRadius: BorderRadius.circular(5),
-                                        ),
-                                        child: Text(paid?'선불':'현장결제',
-                                            style: TextStyle(
-                                                fontFamily: 'cafe24', fontSize: 20)),
-                                      ),
-                                      SizedBox(width: 5),
-                                      Text(
-                                        '배달비 ${formatter.format(int.parse(order.riderDeliveryPrice))}원',
-                                        style: TextStyle(
-                                          //color: Colors.white,
-                                            fontSize: 20),
-                                      ),
-                                    ],
-                                  ),
-                                  Text( widget.item.registeredDate!=null?
-                                  widget.item.registeredDate.substring(11,16):'',
-                                      style: TextStyle(fontSize: 20))
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(5),
-                              width: screenSize.width,
-                              decoration: BoxDecoration(
-                                border: Border.all(color: startColor),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        children: [
-                                          Container(
-                                            padding: EdgeInsets.symmetric(horizontal: 4,vertical: 1),
-                                            decoration: BoxDecoration(
-                                              color: startColor,
-                                              borderRadius: BorderRadius.circular(30),
-                                            ),
-                                            child: Text('출발지',style: TextStyle(fontFamily: 'cafe24', fontSize: 20)),
-                                          ),
-                                          SizedBox(height: 5),
-                                          Text(
-                                              startDistance<1000.0?
-                                              '${startDistance}m':
-                                              '${startDistance.toStringAsFixed(2)}km',
-                                              style: TextStyle(fontSize: 20, color: startColor))
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          InkWell(
-                                            customBorder: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(50),
-                                            ),
-                                            child: Container(
-                                              margin: EdgeInsets.all(5),
-                                              width: 70,
-                                              child: isPicked?
-                                              Image.asset('assets/images/ic_call_y.png'):
-                                              Image.asset('assets/images/ic_call_b.png'),
-                                            ),
-                                            onTap: (){
-                                              launch("tel://${order.companyTel}");
-                                            },
-                                          ),
-                                          InkWell(
-                                            customBorder: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(50),
-                                            ),
-                                            child: Container(
-                                              margin: EdgeInsets.all(5),
-                                              width: 70,
-                                              child: isPicked?
-                                              Image.asset('assets/images/ic_map_y.png'):
-                                              Image.asset('assets/images/ic_map_b.png'),
-                                            ),
-                                            onTap: (){
-
-                                            },
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(height: 10),
-                                  Text(
-                                    order.companyName!=null?
-                                    order.companyName:'',
-                                    style: TextStyle(
-                                        color: startColor,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 28,
-                                        letterSpacing: 1.25),
-                                  ),
-                                  SizedBox(height: 5),
-                                  Text(
-                                    order.companyAddress!=null?
-                                    order.companyAddress:'',
-                                    style: TextStyle(
-                                        color: startColor, fontSize: 24, letterSpacing: 0.85),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        width: screenSize.width,
-                        child: Icon(Icons.arrow_downward, color: AppColor.yellow),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        padding: EdgeInsets.all(5),
-                        width: screenSize.width,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: endColor),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
+          children:[
+            Stack(
+              children: [
+                Loading?
+                ProgressPage(screenSize.width):
+                Container(
+                  height: screenSize.height,
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Container(
+                          child: Column(
+                            children: [
+                              Container(
+                                width: screenSize.width,
+                                height: 30,
+                                padding: EdgeInsets.only(right: 5),
+                                decoration: BoxDecoration(
+                                    color: buttonColor, borderRadius: BorderRadius.circular(5)),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 4,vertical: 1),
-                                      decoration: BoxDecoration(
-                                        color: endColor,
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                      child: Text('도착지',style: TextStyle(fontFamily: 'cafe24', fontSize: 20)),
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 4, vertical: 5),
+                                          decoration: BoxDecoration(
+                                            color: paid? AppColor.neon_yellow:AppColor.neon_green,
+                                            borderRadius: BorderRadius.circular(5),
+                                          ),
+                                          child: Text(paid?'선불':'현장결제',
+                                              style: TextStyle(
+                                                  fontFamily: 'cafe24', fontSize: 20)),
+                                        ),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          '배달비 ${formatter.format(int.parse(order.riderDeliveryPrice))}원',
+                                          style: TextStyle(
+                                            //color: Colors.white,
+                                              fontSize: 20),
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(height: 5),
-                                    Text(endDistance<1000.0?
-                                        '${endDistance}m':
-                                        '${endDistance.toStringAsFixed(2)}km',
-                                        style: TextStyle(fontSize: 20, color: endColor))
+                                    Text( widget.item.registeredDate!=null?
+                                    widget.item.registeredDate.substring(11,16):'',
+                                        style: TextStyle(fontSize: 20))
                                   ],
                                 ),
-                                Row(
+                              ),
+                              Container(
+                                padding: EdgeInsets.all(5),
+                                width: screenSize.width,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: startColor),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    InkWell(
-                                      customBorder: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(50),
-                                      ),
-                                      child: Container(
-                                        margin: EdgeInsets.all(5),
-                                        width: 70,
-                                        child: isPicked?
-                                        Image.asset('assets/images/ic_call_b.png'):
-                                        Image.asset('assets/images/ic_call_g.png'),
-                                      ),
-                                      onTap: (){
-                                        launch("tel://${order.userPhone}");
-                                      },
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.symmetric(horizontal: 4,vertical: 1),
+                                              decoration: BoxDecoration(
+                                                color: startColor,
+                                                borderRadius: BorderRadius.circular(30),
+                                              ),
+                                              child: Text('출발지',style: TextStyle(fontFamily: 'cafe24', fontSize: 20)),
+                                            ),
+                                            SizedBox(height: 5),
+                                            Text(
+                                                startDistance<1000.0?
+                                                '${startDistance}m':
+                                                '${startDistance.toStringAsFixed(2)}km',
+                                                style: TextStyle(fontSize: 20, color: startColor))
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            InkWell(
+                                              customBorder: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(50),
+                                              ),
+                                              child: Container(
+                                                margin: EdgeInsets.all(5),
+                                                width: 70,
+                                                child: isPicked?
+                                                Image.asset('assets/images/ic_call_y.png'):
+                                                Image.asset('assets/images/ic_call_b.png'),
+                                              ),
+                                              onTap: (){
+                                                launch("tel://${order.companyTel}");
+                                              },
+                                            ),
+                                            InkWell(
+                                              customBorder: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(50),
+                                              ),
+                                              child: Container(
+                                                margin: EdgeInsets.all(5),
+                                                width: 70,
+                                                child: isPicked?
+                                                Image.asset('assets/images/ic_map_y.png'):
+                                                Image.asset('assets/images/ic_map_b.png'),
+                                              ),
+                                              onTap: (){
+
+                                              },
+                                            ),
+                                          ],
+                                        )
+                                      ],
                                     ),
-                                    InkWell(
-                                      customBorder: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(50),
-                                      ),
-                                      child: Container(
-                                        margin: EdgeInsets.all(5),
-                                        width: 70,
-                                        child: isPicked?
-                                        Image.asset('assets/images/ic_mail_b.png'):
-                                        Image.asset('assets/images/ic_mail_g.png'),
-                                      ),
-                                      onTap: (){
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) =>MyDialog(screenSize));
-                                        setState(() {});
-                                      },
+                                    SizedBox(height: 10),
+                                    Text(
+                                      order.companyName!=null?
+                                      order.companyName:'',
+                                      style: TextStyle(
+                                          color: startColor,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 28,
+                                          letterSpacing: 1.25),
                                     ),
-                                    InkWell(
-                                      customBorder: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(50),
-                                      ),
-                                      child: Container(
-                                        margin: EdgeInsets.all(5),
-                                        width: 70,
-                                        child: isPicked?
-                                        Image.asset('assets/images/ic_map_b.png'):
-                                        Image.asset('assets/images/ic_map_g.png'),
-                                      ),
-                                      onTap: (){
-                                        launch("kakaonavi://route?y=${order.userLongitude}&x=${order.userLatitude}"
-                                            "&sX=${order.userLatitude}&sY=${order.userLongitude}");//출발, 위에는 도착
-                                      },
+                                    SizedBox(height: 5),
+                                    Text(
+                                      order.companyAddress!=null?
+                                      order.companyAddress:'',
+                                      style: TextStyle(
+                                          color: startColor, fontSize: 24, letterSpacing: 0.85),
                                     ),
                                   ],
-                                )
-                              ],
-                            ),
-                            SizedBox(height: 10),
-                            Text(phone,
-                              style: TextStyle(
-                                  color: endColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 28,
-                                  letterSpacing: 1.25),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              order.userAddress!=null?
-                              order.userAddress:'',
-                              style: TextStyle(
-                                  color: endColor, fontSize: 24, letterSpacing: 0.85),
-                            ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        Container(
+                          width: screenSize.width,
+                          child: Icon(Icons.arrow_downward, color: AppColor.yellow),
+                        ),
+                        SizedBox(height: 5),
+                        Container(
+                          padding: EdgeInsets.all(5),
+                          width: screenSize.width,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: endColor),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 4,vertical: 1),
+                                        decoration: BoxDecoration(
+                                          color: endColor,
+                                          borderRadius: BorderRadius.circular(30),
+                                        ),
+                                        child: Text('도착지',style: TextStyle(fontFamily: 'cafe24', fontSize: 20)),
+                                      ),
+                                      SizedBox(height: 5),
+                                      Text(endDistance<1000.0?
+                                      '${endDistance}m':
+                                      '${endDistance.toStringAsFixed(2)}km',
+                                          style: TextStyle(fontSize: 20, color: endColor))
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      InkWell(
+                                        customBorder: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(50),
+                                        ),
+                                        child: Container(
+                                          margin: EdgeInsets.all(5),
+                                          width: 70,
+                                          child: isPicked?
+                                          Image.asset('assets/images/ic_call_b.png'):
+                                          Image.asset('assets/images/ic_call_g.png'),
+                                        ),
+                                        onTap: (){
+                                          if(!endDataNull){
+                                            launch("tel://${order.userPhone}");
+                                          }else{
+                                            Toast.show('고객의 번호가 없습니다.', context, duration: 2);
+                                          }
+                                        },
+                                      ),
+                                      InkWell(
+                                        customBorder: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(50),
+                                        ),
+                                        child: Container(
+                                          margin: EdgeInsets.all(5),
+                                          width: 70,
+                                          child: isPicked?
+                                          Image.asset('assets/images/ic_mail_b.png'):
+                                          Image.asset('assets/images/ic_mail_g.png'),
+                                        ),
+                                        onTap: (){
+                                          if(!endDataNull){
+                                            showDialog(
+                                                context: context,
+                                                builder: (BuildContext context) =>MyDialog(screenSize));
+                                          }else{
+                                            Toast.show('고객의 번호가 없습니다.', context, duration: 2);
+                                          }
+                                        },
+                                      ),
+                                      InkWell(
+                                        customBorder: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(50),
+                                        ),
+                                        child: Container(
+                                          margin: EdgeInsets.all(5),
+                                          width: 70,
+                                          child: isPicked?
+                                          Image.asset('assets/images/ic_map_b.png'):
+                                          Image.asset('assets/images/ic_map_g.png'),
+                                        ),
+                                        onTap: (){
+                                          launch("kakaonavi://route?y=${order.userLongitude}&x=${order.userLatitude}"
+                                              "&sX=${order.userLatitude}&sY=${order.userLongitude}");//출발, 위에는 도착
+                                        },
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                              Text(phone,
+                                style: TextStyle(
+                                    color: endColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 28,
+                                    letterSpacing: 1.25),
+                              ),
+                              SizedBox(height: 5),
+                              Text(
+                                order.userAddress!=null?
+                                order.userAddress:'정보없음',
+                                style: TextStyle(
+                                    color: endColor, fontSize: 24, letterSpacing: 0.85),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 15),
+                        Text('요청사항 메세지',style: TextStyle(color: AppColor.yellow,fontSize: 24)),
+                        SizedBox(height: 5),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Text( order.riderMemo!=null?
+                          order.riderMemo:'없음',
+                              style: TextStyle(fontSize: 24,color: order.riderMemo!=null?Colors.white:Colors.grey)),
+                        ),
+                        SizedBox(height: 5),
+                        Divider(color: AppColor.grey),
+                        SizedBox(height: 5),
+                        Row(
+                          children: [
+                            Text('접수번호',style: TextStyle(color: AppColor.yellow,fontSize: 24)),
+                            SizedBox(width: 20),
+                            Text('#${order.orderSerial}', style: TextStyle(fontSize: 24,color: Colors.white)),
                           ],
                         ),
-                      ),
-                      SizedBox(height: 15),
-                      Text('요청사항 메세지',style: TextStyle(color: AppColor.yellow,fontSize: 24)),
-                      SizedBox(height: 5),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Text( order.riderMemo!=null?
-                        order.riderMemo:'없음',
-                            style: TextStyle(fontSize: 24,color: order.riderMemo!=null?Colors.white:Colors.grey)),
-                      ),
-                      SizedBox(height: 5),
-                      Divider(color: AppColor.grey),
-                      SizedBox(height: 5),
-                      Row(
-                        children: [
-                          Text('접수번호',style: TextStyle(color: AppColor.yellow,fontSize: 24)),
-                          SizedBox(width: 20),
-                          Text('#${order.orderSerial}', style: TextStyle(fontSize: 24,color: Colors.white)),
-                        ],
-                      ),
-                      SizedBox(height: 120)
-                    ],
+                        SizedBox(height: 120)
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Positioned(
-                bottom: 0,
-                child: Container(
-                  padding: EdgeInsets.only(left: 10,right: 10,bottom: 30),
-                  width: screenSize.width,
-                  color: AppColor.navy,
-                  height: 88,
-                  child: TextButton(
-                    child: Text(buttonText,
-                        style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-                    style: ButtonStyle(
-                        backgroundColor:
-                        MaterialStateProperty.all<Color>(buttonColor),
-                        overlayColor: MaterialStateProperty.all<Color>(
-                            Colors.black.withOpacity(0.5))),
-                    onPressed: () {
-                      if(buttonText == '픽업완료'){
-                        widget.bloc.pickUp(
-                            requestserial: widget.item.serial,
-                            order_serial: widget.item.orderSerial).then((res) {
-                          if(res.success){
-                            buttonText = '배달완료';
-                            setColor('D');
-                            setState(() {});
-                            Toast.show('픽업이 완료되었습니다.', context, duration:2);
-                          }else{
-                            Toast.show(''+res.errorMsg, context, duration:2);
-                          }
-                        });
-                      }
-                      else if(buttonText == '배달완료'){
-                        widget.bloc.finishDelivery(
-                            requestserial: widget.item.serial,
-                            order_serial: widget.item.orderSerial).then((res) {
-                          if(res.success){
-                            //buttonText = '현장결제';
-                            Toast.show('배달이 완료되었습니다.', context, duration:2);
-                            Navigator.pop(context);
-                          }else{
-                            Toast.show(''+res.errorMsg, context, duration:2);
-                          }
-                        });
-                      }
-                    },
+                Positioned(
+                  bottom: 0,
+                  child: Container(
+                    padding: EdgeInsets.only(left: 10,right: 10,bottom: 30),
+                    width: screenSize.width,
+                    color: AppColor.navy,
+                    height: 88,
+                    child: TextButton(
+                      child: Text(buttonText,
+                          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+                      style: ButtonStyle(
+                          backgroundColor:
+                          MaterialStateProperty.all<Color>(buttonColor),
+                          overlayColor: MaterialStateProperty.all<Color>(
+                              Colors.black.withOpacity(0.5))),
+                      onPressed: () {
+                        if(buttonText == '픽업완료'){
+                          widget.bloc.pickUp(
+                              requestserial: widget.item.serial,
+                              order_serial: widget.item.orderSerial).then((res) {
+                            if(res.success){
+                              buttonText = '배달완료';
+                              setColor('D');
+                              setState(() {});
+                              Toast.show('픽업이 완료되었습니다.', context, duration:2);
+                            }else{
+                              Toast.show(''+res.errorMsg, context, duration:2);
+                            }
+                          });
+                        }
+                        else if(buttonText == '배달완료'){
+                          widget.bloc.finishDelivery(
+                              requestserial: widget.item.serial,
+                              order_serial: widget.item.orderSerial).then((res) {
+                            if(res.success){
+                              //buttonText = '현장결제';
+                              Toast.show('배달이 완료되었습니다.', context, duration:2);
+                              Navigator.pop(context);
+                            }else{
+                              Toast.show(''+res.errorMsg, context, duration:2);
+                            }
+                          });
+                        }
+                      },
+                    ),
                   ),
-                ),
-              )
-            ],
-          ),
-          //message_dialog? MyDialog(screenSize):SizedBox()
-        ]
+                )
+              ],
+            ),
+            //message_dialog? MyDialog(screenSize):SizedBox()
+          ]
       ),
     );
   }

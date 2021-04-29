@@ -38,6 +38,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   var end_Distance;
   String phone = '';
 
+  bool endDataNull = false;
+
   static CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
@@ -55,17 +57,25 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   @override
   void initState() {
     super.initState();
-   // setCustomMapPin();
+    // setCustomMapPin();
     widget.bloc.getOrderDetail(request_serial: widget.item.serial).then((value) {
       order = value;
-      var companyLatLng = LatLng(double.parse(order.companyLatitude), double.parse(order.companyLongitude));
-      var userLatLng = LatLng(double.parse(order.userLatitude), double.parse(order.userLongitude));
-
+      if(order.userAddress !=null){
+        endDataNull = false;
+      }else{
+        endDataNull = true;
+      }
+      if(order.paid =='Y') {
+        paid = true;
+      }else{
+        paid = false;
+      }
       try{
         if(order.companyLatitude !=null && order.companyLongitude !=null){
+          var companyLatLng = LatLng(double.parse(order.companyLatitude), double.parse(order.companyLongitude));
           _kGooglePlex = CameraPosition(
-            target: companyLatLng,
-            zoom: 14.4746);
+              target: companyLatLng,
+              zoom: 14.4746);
           markers.add(
             Marker(
               //icon: pin_start,
@@ -74,9 +84,12 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               position: companyLatLng,
             ),
           );
+        }
+        if(!endDataNull){
+          var userLatLng = LatLng(double.parse(order.userLatitude), double.parse(order.userLongitude));
           markers.add(
             Marker(
-             // icon: pin_end,
+              // icon: pin_end,
               infoWindow: InfoWindow(title: '도착지'),
               markerId: MarkerId(order.orderSerial),
               position: userLatLng,
@@ -89,46 +102,64 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           zoom: 14.4746,
         );
       }
-      if(order.userPhone.length==11){
-        try{
-          phone = order.userPhone.substring(0,3)+'-'+
-              order.userPhone.substring(3,7)+'-'+
-              order.userPhone.substring(7,11);
-        }catch(e){}
+      if(!endDataNull){
+        if(order.userPhone.length==11){
+          try{
+            phone = order.userPhone.substring(0,3)+'-'+
+                order.userPhone.substring(3,7)+'-'+
+                order.userPhone.substring(7,11);
+          }catch(e){
+            phone = '정보없음';
+          }
+        }
+        else{
+          try{
+            phone = order.userPhone.substring(0,3)+'-'+
+                order.userPhone.substring(3,6)+'-'+
+                order.userPhone.substring(6,10);
+          }catch(e){
+            phone = '정보없음';
+          }
+        }
       }else{
-        try{
-          phone = order.userPhone.substring(0,3)+'-'+
-              order.userPhone.substring(3,6)+'-'+
-              order.userPhone.substring(6,10);
-        }catch(e){}
+        phone = '정보없음';
       }
-      if(order.paid =='Y') {
-        paid = true;
-      }else{
-        paid = false;
+
+      try{
+        start_Distance = Geolocator.distanceBetween(
+            double.parse(order.companyLatitude),
+            double.parse(order.companyLongitude),
+            Bloc.LATITUDE,
+            Bloc.LONGITUDE).floor();
+
+        if(start_Distance>=1000.0){
+          startDistance = start_Distance/1000;
+        }else{
+          startDistance = start_Distance;
+        }
+
+        if(!endDataNull){
+          end_Distance = Geolocator.distanceBetween(
+              double.parse(order.userLatitude),
+              double.parse(order.userLongitude),
+              Bloc.LATITUDE,
+              Bloc.LONGITUDE).floor();
+          if(end_Distance>=1000.0){
+            endDistance = end_Distance/1000;
+          }else{
+            endDistance = end_Distance;
+          }
+        }else{
+          endDistance = 0;
+          end_Distance = 0;
+        }
+      }catch(e){
+        start_Distance = 0;
+        startDistance = 0;
+        endDistance = 0;
+        end_Distance = 0;
       }
       Loading = false;
-      start_Distance = Geolocator.distanceBetween(
-          double.parse(order.companyLatitude),
-          double.parse(order.companyLongitude),
-          Bloc.LATITUDE,
-          Bloc.LONGITUDE).floor();
-      end_Distance = Geolocator.distanceBetween(
-          double.parse(order.userLatitude),
-          double.parse(order.userLongitude),
-          Bloc.LATITUDE,
-          Bloc.LONGITUDE).floor();
-
-      if(start_Distance>=1000.0){
-        startDistance = start_Distance/1000;
-      }else{
-        startDistance = start_Distance;
-      }
-      if(end_Distance>=1000.0){
-        endDistance = end_Distance/1000;
-      }else{
-        endDistance = end_Distance;
-      }
       setState(() {});
     });
   }
