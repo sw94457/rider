@@ -323,6 +323,12 @@ class Bloc{
         if (jsonObj['data'] != null) {
           user = User.fromJson(jsonObj['data']);
           pref.setString('serial', user.serial);
+          pref.setString('uid', user.name);
+          if(user.flagOnoff == 'Y'){
+            pref.setBool('workState', true);
+          }else{
+            pref.setBool('workState', false);
+          }
         }
       } else {
         res.success = false;
@@ -358,7 +364,11 @@ class Bloc{
           user = User.fromJson(jsonObj['data']);
           pref.setString('serial', user.serial);
           pref.setString('uid', user.name);
-
+          if(user.flagOnoff == 'Y'){
+            pref.setBool('workState', true);
+          }else{
+            pref.setBool('workState', false);
+          }
         }
       } else {
         res.success = false;

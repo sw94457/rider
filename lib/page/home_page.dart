@@ -224,24 +224,26 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   }
 
   Future<bool> doubleBackTap() {
-    DateTime now = DateTime.now();
-    if (currentBackPressTime == null ||
-        now.difference(currentBackPressTime) > Duration(seconds: 2)) {
-      currentBackPressTime = now;
-      //Toast.show('앱을 종료하려면 다시 누르세요.', context);
-      showOkCancelAlertDialog(
+    // DateTime now = DateTime.now();
+    // if (currentBackPressTime == null ||
+    //     now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+    //   currentBackPressTime = now;
+    //   //Toast.show('앱을 종료하려면 다시 누르세요.', context);
+    // }
+    showOkCancelAlertDialog(
         context: context,
         title: '앱 종료',
         message: '앱 종료 시 위치를 더이상 업데이트 할 수 없습니다. 그래도 종료하시겠습니까?',
         cancelLabel: '취소',
         okLabel: '확인'
-      ).then((value) {
-        if(value == OkCancelResult.ok){
-          return Future.value(false);
-        }
-      });
-    }
-    return Future.value(true);
+    ).then((value) {
+      if(value == OkCancelResult.ok){
+        Navigator.of(context).pop(true);
+        return true;
+      }else{
+        return false;
+      }
+    })?? false;
   }
 
 }
