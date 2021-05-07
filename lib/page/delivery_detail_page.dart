@@ -1,3 +1,4 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
@@ -480,8 +481,13 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
                               order_serial: widget.item.orderSerial).then((res) {
                             if(res.success){
                               //buttonText = '현장결제';
-                              Toast.show('배달이 완료되었습니다.', context, duration:2);
-                              Navigator.pop(context);
+                              showOkAlertDialog(
+                                  context: context,
+                                  title: '배달이 완료되었습니다.',
+                              ).then((value) {
+                                setState(() {});
+                                Navigator.pop(context);
+                              });
                             }else{
                               Toast.show(''+res.errorMsg, context, duration:2);
                             }
