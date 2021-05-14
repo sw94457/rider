@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rider_app/bloc/bloc.dart';
@@ -50,18 +48,21 @@ class _CalculatePageState extends State<CalculatePage> {
         ),
       ),
       body: Container(
-        height: screenSize.height,
-        child: isLoading
-            ? ProgressPage(screenSize.width)
-            : ListView(
-                children: List.generate(calculateList.length, (index) {
-                  return Padding(
-                    padding: EdgeInsets.only(top: 10, right: 10, left: 10),
-                    child: CalculateItem(item: calculateList[index], bloc: widget.bloc),
-                  );
-                }),
-              ),
-      ),
+          height: screenSize.height,
+          child: isLoading
+              ? ProgressPage(screenSize.width)
+              : calculateList.length > 0
+                  ? (ListView(
+                      children: List.generate(calculateList.length, (index) {
+                        return Padding(
+                          padding:
+                              EdgeInsets.only(top: 10, right: 10, left: 10),
+                          child: CalculateItem(
+                              item: calculateList[index], bloc: widget.bloc),
+                        );
+                      }),
+                    ))
+                  : ErrorPage(width: screenSize.width, text: '정산 내역이 없습니다.')),
     );
   }
 }
@@ -110,7 +111,7 @@ class CalculateItem extends StatelessWidget {
                       padding:
                           EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                       child: Text(
-                        item.startDate+'\n~'+item.endDate,
+                        item.startDate + '\n~' + item.endDate,
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 16, color: Colors.white),
                       ),
@@ -137,8 +138,11 @@ class CalculateItem extends StatelessWidget {
             ),
           )),
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => CalculateDetailPage(item:item, bloc: bloc)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    CalculateDetailPage(item: item, bloc: bloc)));
       },
     );
   }

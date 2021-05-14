@@ -862,13 +862,20 @@ class Bloc{
     ResponseData res = ResponseData();
     Map<String, dynamic> params = Map<String, String>();
 
-    params["phone"] = user.phone;
+    //params["phone"] = user.phone;
     params["name"] = name;
     params["serial"] = user.serial;
     params["calculate_cycle"] = calculate_cycle;
     params["account_name"] = account_name;
     params["account_num"] = account_num;
     params["account_bank"] = account_bank;
+
+    logger.d(user.serial);
+    logger.d(name);
+    logger.d(calculate_cycle);
+    logger.d(account_name);
+    logger.d(account_num);
+    logger.d(account_bank);
 
     isLoading = true;
     var response = await http.post(

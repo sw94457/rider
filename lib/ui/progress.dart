@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rider_app/ui/color.dart';
 
 Widget ProgressPage(width) {
   return Container(
@@ -44,7 +45,7 @@ Widget ErrorPage({width, text = '', subtext = ''}) {
         Text(text,
             style: TextStyle(
                 fontSize: 20,
-                color: Colors.grey[600],
+                color: AppColor.grey,
                 fontWeight: FontWeight.bold)),
         SizedBox(height: 5),
         Text(subtext, style: TextStyle(fontSize: 14)),
