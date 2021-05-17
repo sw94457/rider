@@ -3,6 +3,7 @@ import 'package:background_location/background_location.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rider_app/bloc/bloc.dart';
@@ -238,10 +239,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         okLabel: '확인'
     ).then((value) {
       if(value == OkCancelResult.ok){
-        Navigator.of(context).pop(true);
-        return true;
+        SystemNavigator.pop();
       }else{
-        return false;
+        Navigator.of(context).pop();
       }
     })?? false;
   }
