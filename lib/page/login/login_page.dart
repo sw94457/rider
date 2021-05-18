@@ -138,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      ReLoginPage(widget.bloc)));
+                                      ReLoginPage(bloc: widget.bloc, phone: phone_text,)));
                         }
                         Toast.show(res.errorMsg, context, duration: 2);
                       }
@@ -172,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ReLoginPage(widget.bloc)));
+                              builder: (context) => ReLoginPage(bloc:widget.bloc, phone: '',)));
                     },
                   ),
                 ),

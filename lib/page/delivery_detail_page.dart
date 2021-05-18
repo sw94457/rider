@@ -180,7 +180,7 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
                             children: [
                               Container(
                                 width: screenSize.width,
-                                height: 30,
+                                //height: 30,
                                 padding: EdgeInsets.only(right: 5),
                                 decoration: BoxDecoration(
                                     color: buttonColor, borderRadius: BorderRadius.circular(5)),
@@ -198,7 +198,7 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
                                           ),
                                           child: Text(paid?'선불':'현장결제',
                                               style: TextStyle(
-                                                  fontFamily: 'cafe24', fontSize: 20)),
+                                                  fontFamily: 'cafe24', fontSize: 18)),
                                         ),
                                         SizedBox(width: 5),
                                         Text(
@@ -260,7 +260,9 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
                                                 Image.asset('assets/images/ic_call_b.png'),
                                               ),
                                               onTap: (){
-                                                launch("tel://${order.companyTel}");
+                                                if(isPicked){
+                                                  launch("tel://${order.companyTel}");
+                                                }
                                               },
                                             ),
                                             InkWell(
@@ -274,10 +276,13 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
                                                 Image.asset('assets/images/ic_map_y.png'):
                                                 Image.asset('assets/images/ic_map_b.png'),
                                               ),
-                                              onTap: (){
-
-                                              },
-                                            ),
+                                              onTap: () {
+                                                  if (isPicked) {
+                                                    launch(
+                                                        'https://www.google.com/maps/search/?api=1&query=${double.parse(order.companyLatitude)},${double.parse(order.companyLongitude)}');
+                                                  }
+                                                },
+                                              ),
                                           ],
                                         )
                                       ],
@@ -355,10 +360,12 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
                                           Image.asset('assets/images/ic_call_g.png'),
                                         ),
                                         onTap: (){
-                                          if(!endDataNull){
-                                            launch("tel://${order.userPhone}");
-                                          }else{
-                                            Toast.show('고객의 번호가 없습니다.', context, duration: 2);
+                                          if(!isPicked){
+                                            if(!endDataNull){
+                                              launch("tel://${order.userPhone}");
+                                            }else{
+                                              Toast.show('고객의 번호가 없습니다.', context, duration: 2);
+                                            }
                                           }
                                         },
                                       ),
@@ -374,12 +381,14 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
                                           Image.asset('assets/images/ic_mail_g.png'),
                                         ),
                                         onTap: (){
-                                          if(!endDataNull){
-                                            showDialog(
-                                                context: context,
-                                                builder: (BuildContext context) =>MyDialog(screenSize));
-                                          }else{
-                                            Toast.show('고객의 번호가 없습니다.', context, duration: 2);
+                                          if(!isPicked){
+                                            if(!endDataNull){
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (BuildContext context) =>MyDialog(screenSize));
+                                            }else{
+                                              Toast.show('고객의 번호가 없습니다.', context, duration: 2);
+                                            }
                                           }
                                         },
                                       ),
@@ -395,8 +404,10 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
                                           Image.asset('assets/images/ic_map_g.png'),
                                         ),
                                         onTap: (){
-                                          launch("kakaonavi://route?y=${order.userLongitude}&x=${order.userLatitude}"
-                                              "&sX=${order.userLatitude}&sY=${order.userLongitude}");//출발, 위에는 도착
+                                          if(!isPicked){
+                                            launch(
+                                                'https://www.google.com/maps/search/?api=1&query=${double.parse(order.userLatitude)},${double.parse(order.userLongitude)}');
+                                          }
                                         },
                                       ),
                                     ],
@@ -510,260 +521,264 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
       onTap: () {
         Navigator.of(context).pop();
       },
-      child: Dialog(
-        backgroundColor: AppColor.navy,
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          child: Column(
-            children: [
-              Text(
-                '간편메세지',
-                style: TextStyle(color: AppColor.yellow, fontSize: 25),
-              ),
-              Divider(color: Colors.grey),
-              InkWell(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 3),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 35,
-                        height: 30,
-                        margin: EdgeInsets.only(right: 5),
-                        child: Theme(
-                          data: ThemeData(unselectedWidgetColor: AppColor.grey),
-                          child: Checkbox(
-                              value: message1,
-                              onChanged: (value) {
-                                message1 = value;
-                                message2 = false;
-                                message3 = false;
-                                message4 = false;
-                                message5 = false;
-                                message_text = '문 앞에 두고 갑니다.';
-                                setState(() {});
-                              },
-                              activeColor: AppColor.yellow),
-                        ),
-                      ),
-                      Text(
-                        '문 앞에 두고 갑니다.',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                    ],
+      child: StatefulBuilder(
+        builder: (context, setState){
+          return Dialog(
+            backgroundColor: AppColor.navy,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              child: Column(
+                children: [
+                  Text(
+                    '간편메세지',
+                    style: TextStyle(color: AppColor.yellow, fontSize: 25),
                   ),
-                ),
-                onTap: () {
-                  message1 = !message1;
-                  message2 = false;
-                  message3 = false;
-                  message4 = false;
-                  message5 = false;
-                  message_text = '문 앞에 두고 갑니다.';
-                  setState(() {});
-                },
-              ),
-              Divider(color: Colors.grey),
-              InkWell(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 3),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 35,
-                        height: 30,
-                        margin: EdgeInsets.only(right: 5),
-                        child: Theme(
-                          data: ThemeData(unselectedWidgetColor: AppColor.grey),
-                          child: Checkbox(
-                              value: message2,
-                              onChanged: (value) {
-                                message1 = false;
-                                message2 = value;
-                                message3 = false;
-                                message4 = false;
-                                message5 = false;
-                                message_text = '5분 후에 도착 예정입니다.';
-                                setState(() {});
-                              },
-                              activeColor: AppColor.yellow),
-                        ),
+                  Divider(color: Colors.grey),
+                  InkWell(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 3),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 35,
+                            height: 30,
+                            margin: EdgeInsets.only(right: 5),
+                            child: Theme(
+                              data: ThemeData(unselectedWidgetColor: AppColor.grey),
+                              child: Checkbox(
+                                  value: message1,
+                                  onChanged: (value) {
+                                    message1 = value;
+                                    message2 = false;
+                                    message3 = false;
+                                    message4 = false;
+                                    message5 = false;
+                                    message_text = '문 앞에 두고 갑니다.';
+                                    setState(() {});
+                                  },
+                                  activeColor: AppColor.yellow),
+                            ),
+                          ),
+                          Text(
+                            '문 앞에 두고 갑니다.',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                        ],
                       ),
-                      Text(
-                        '1분 후에 도착 예정입니다.',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                    ],
+                    ),
+                    onTap: () {
+                      message1 = !message1;
+                      message2 = false;
+                      message3 = false;
+                      message4 = false;
+                      message5 = false;
+                      message_text = '문 앞에 두고 갑니다.';
+                      setState(() {});
+                    },
                   ),
-                ),
-                onTap: () {
-                  message1 = false;
-                  message2 = !message2;
-                  message3 = false;
-                  message4 = false;
-                  message5 = false;
-                  message_text = '1분 후에 도착 예정입니다.';
-                  setState(() {});
-                },
-              ),
-              Divider(color: Colors.grey),
-              InkWell(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 3),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 35,
-                        height: 30,
-                        margin: EdgeInsets.only(right: 5),
-                        child: Theme(
-                          data: ThemeData(unselectedWidgetColor: AppColor.grey),
-                          child: Checkbox(
-                              value: message3,
-                              onChanged: (value) {
-                                message1 = false;
-                                message2 = false;
-                                message3 = value;
-                                message4 = false;
-                                message5 = false;
-                                message_text = '5분 후에 도착 예정입니다.';
-                                setState(() {});
-                              },
-                              activeColor: AppColor.yellow),
-                        ),
+                  Divider(color: Colors.grey),
+                  InkWell(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 3),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 35,
+                            height: 30,
+                            margin: EdgeInsets.only(right: 5),
+                            child: Theme(
+                              data: ThemeData(unselectedWidgetColor: AppColor.grey),
+                              child: Checkbox(
+                                  value: message2,
+                                  onChanged: (value) {
+                                    message1 = false;
+                                    message2 = value;
+                                    message3 = false;
+                                    message4 = false;
+                                    message5 = false;
+                                    message_text = '5분 후에 도착 예정입니다.';
+                                    setState(() {});
+                                  },
+                                  activeColor: AppColor.yellow),
+                            ),
+                          ),
+                          Text(
+                            '1분 후에 도착 예정입니다.',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                        ],
                       ),
-                      Text(
-                        '5분 후에 도착 예정입니다.',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                    ],
+                    ),
+                    onTap: () {
+                      message1 = false;
+                      message2 = !message2;
+                      message3 = false;
+                      message4 = false;
+                      message5 = false;
+                      message_text = '1분 후에 도착 예정입니다.';
+                      setState(() {});
+                    },
                   ),
-                ),
-                onTap: () {
-                  message1 = false;
-                  message2 = false;
-                  message3 = !message3;
-                  message4 = false;
-                  message5 = false;
-                  message_text = '5분 후에 도착 예정입니다.';
-                  setState(() {});
-                },
-              ),
-              Divider(color: Colors.grey),
-              InkWell(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 3),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 35,
-                        height: 30,
-                        margin: EdgeInsets.only(right: 5),
-                        child: Theme(
-                          data: ThemeData(unselectedWidgetColor: AppColor.grey),
-                          child: Checkbox(
-                              value: message4,
-                              onChanged: (value) {
-                                message1 = false;
-                                message2 = false;
-                                message3 = false;
-                                message4 = value;
-                                message5 = false;
-                                message_text =  '10분 후에 도착 예정입니다.';
-                                setState(() {});
-                              },
-                              activeColor: AppColor.yellow),
-                        ),
+                  Divider(color: Colors.grey),
+                  InkWell(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 3),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 35,
+                            height: 30,
+                            margin: EdgeInsets.only(right: 5),
+                            child: Theme(
+                              data: ThemeData(unselectedWidgetColor: AppColor.grey),
+                              child: Checkbox(
+                                  value: message3,
+                                  onChanged: (value) {
+                                    message1 = false;
+                                    message2 = false;
+                                    message3 = value;
+                                    message4 = false;
+                                    message5 = false;
+                                    message_text = '5분 후에 도착 예정입니다.';
+                                    setState(() {});
+                                  },
+                                  activeColor: AppColor.yellow),
+                            ),
+                          ),
+                          Text(
+                            '5분 후에 도착 예정입니다.',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                        ],
                       ),
-                      Text(
-                        '10분 후에 도착 예정입니다.',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                    ],
+                    ),
+                    onTap: () {
+                      message1 = false;
+                      message2 = false;
+                      message3 = !message3;
+                      message4 = false;
+                      message5 = false;
+                      message_text = '5분 후에 도착 예정입니다.';
+                      setState(() {});
+                    },
                   ),
-                ),
-                onTap: () {
-                  message1 = false;
-                  message2 = false;
-                  message3 = false;
-                  message4 = !message4;
-                  message5 = false;
-                  message_text =  '10분 후에 도착 예정입니다.';
-                  setState(() {});
-                },
-              ),
-              Divider(color: Colors.grey),
-              InkWell(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 3),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 35,
-                        height: 30,
-                        margin: EdgeInsets.only(right: 5),
-                        child: Theme(
-                          data: ThemeData(unselectedWidgetColor: AppColor.grey),
-                          child: Checkbox(
-                              value: message5,
-                              onChanged: (value) {
-                                message1 = false;
-                                message2 = false;
-                                message3 = false;
-                                message4 = false;
-                                message5 = value;
-                                message_text =   '조금 늦을것 같습니다.';
-                                setState(() {});
-                              },
-                              activeColor: AppColor.yellow),
-                        ),
+                  Divider(color: Colors.grey),
+                  InkWell(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 3),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 35,
+                            height: 30,
+                            margin: EdgeInsets.only(right: 5),
+                            child: Theme(
+                              data: ThemeData(unselectedWidgetColor: AppColor.grey),
+                              child: Checkbox(
+                                  value: message4,
+                                  onChanged: (value) {
+                                    message1 = false;
+                                    message2 = false;
+                                    message3 = false;
+                                    message4 = value;
+                                    message5 = false;
+                                    message_text =  '10분 후에 도착 예정입니다.';
+                                    setState(() {});
+                                  },
+                                  activeColor: AppColor.yellow),
+                            ),
+                          ),
+                          Text(
+                            '10분 후에 도착 예정입니다.',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                        ],
                       ),
-                      Text(
-                        '조금 늦을것 같습니다.',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                    ],
+                    ),
+                    onTap: () {
+                      message1 = false;
+                      message2 = false;
+                      message3 = false;
+                      message4 = !message4;
+                      message5 = false;
+                      message_text =  '10분 후에 도착 예정입니다.';
+                      setState(() {});
+                    },
                   ),
-                ),
-                onTap: () {
-                  message1 = false;
-                  message2 = false;
-                  message3 = false;
-                  message4 = false;
-                  message5 = !message5;
-                  message_text =   '조금 늦을것 같습니다.';
-                  setState(() {});
-                },
-              ),
-              SizedBox(height: 15),
-              SizedBox(
-                width: size.width - 80,
-                child: MyButton(
-                  color: AppColor.yellow,
-                  child: Text('보내기', style: TextStyle(color: Colors.black, fontWeight:FontWeight.bold, fontSize: 25) ),
-                  onPressed: (){
-                    if(!(message1||message2||message3||message4||message5)){
-                      Toast.show('전송할 메세지를 선택하세요.', context, duration: 2);
-                      return;
-                    }
-                    widget.bloc.sendMessage(message:message_text, phone: order.userPhone).then((res) {
-                      if(res.success){
-                        message_dialog = false;
-                        Toast.show('메세지를 전송하였습니다.', context, duration: 2);
-                        setState(() {});
-                      }else{
-                        Toast.show('메세지를 전송에 실패하였습니다.\n'+res.errorMsg, context, duration: 2);
-                      }
-                    });
+                  Divider(color: Colors.grey),
+                  InkWell(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 3),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 35,
+                            height: 30,
+                            margin: EdgeInsets.only(right: 5),
+                            child: Theme(
+                              data: ThemeData(unselectedWidgetColor: AppColor.grey),
+                              child: Checkbox(
+                                  value: message5,
+                                  onChanged: (value) {
+                                    message1 = false;
+                                    message2 = false;
+                                    message3 = false;
+                                    message4 = false;
+                                    message5 = value;
+                                    message_text =   '조금 늦을것 같습니다.';
+                                    setState(() {});
+                                  },
+                                  activeColor: AppColor.yellow),
+                            ),
+                          ),
+                          Text(
+                            '조금 늦을것 같습니다.',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                        ],
+                      ),
+                    ),
+                    onTap: () {
+                      message1 = false;
+                      message2 = false;
+                      message3 = false;
+                      message4 = false;
+                      message5 = !message5;
+                      message_text =   '조금 늦을것 같습니다.';
+                      setState(() {});
+                    },
+                  ),
+                  SizedBox(height: 15),
+                  SizedBox(
+                    width: size.width - 80,
+                    child: MyButton(
+                      color: AppColor.yellow,
+                      child: Text('보내기', style: TextStyle(color: Colors.black, fontWeight:FontWeight.bold, fontSize: 25) ),
+                      onPressed: (){
+                        if(!(message1||message2||message3||message4||message5)){
+                          Toast.show('전송할 메세지를 선택하세요.', context, duration: 2);
+                          return;
+                        }
+                        widget.bloc.sendMessage(message:message_text, phone: order.userPhone).then((res) {
+                          if(res.success){
+                            message_dialog = false;
+                            Toast.show('메세지를 전송하였습니다.', context, duration: 2);
+                            setState(() {});
+                          }else{
+                            Toast.show('메세지를 전송에 실패하였습니다.\n'+res.errorMsg, context, duration: 2);
+                          }
+                        });
 
-                  },
-                ),
-              )
+                      },
+                    ),
+                  )
 
-            ],
-          ),
-        ),
-      ),
+                ],
+              ),
+            ),
+          );
+        },
+      )
     );
   }
 

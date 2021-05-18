@@ -5,25 +5,36 @@ import 'package:rider_app/bloc/bloc.dart';
 import 'package:rider_app/page/home_page.dart';
 import 'package:rider_app/ui/button.dart';
 import 'package:rider_app/ui/color.dart';
+import 'package:rider_app/ui/muti_formatter.dart';
 import 'package:rider_app/ui/text_field.dart';
 import 'package:toast/toast.dart';
 
 class ReLoginPage extends StatefulWidget {
   Bloc bloc;
+  var phone;
 
-  ReLoginPage(this.bloc);
+  ReLoginPage({this.bloc, this.phone});
 
   @override
   _ReLoginPageState createState() => _ReLoginPageState();
 }
 
 class _ReLoginPageState extends State<ReLoginPage> {
-  var logger = Logger();
+  Logger logger = Logger();
   TextEditingController phone_ctrl = TextEditingController();
   TextEditingController code_ctrl = TextEditingController();
   bool next = false;
   bool getCode = false;
   String text_phone = '';
+
+  @override
+  void initState() {
+    super.initState();
+    phone_ctrl.text = widget.phone;
+    text_phone = widget.phone;
+    logger.d(widget.phone);
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,13 +86,13 @@ class _ReLoginPageState extends State<ReLoginPage> {
                         hintText: '숫자만 입력해주세요',
                         color: AppColor.grey,
                         hintStyle: TextStyle(fontSize: 15, color: Colors.grey),
-                        // inputFormatters: [
-                        //   MultiMaskedTextInputFormatter(masks: [
-                        //     '010-xxxx-xxxx',
-                        //     '01x-xxx-xxxx',
-                        //     '01x-xxxx-xxxx'
-                        //   ], separator: '-')
-                        // ],
+                        inputFormatters: [
+                          MultiMaskedTextInputFormatter(masks: [
+                            '010-xxxx-xxxx',
+                            '01x-xxx-xxxx',
+                            '01x-xxxx-xxxx'
+                          ], separator: '-')
+                        ],
                         onChanged: (str) {
                           var a = str.split("-");
                           text_phone='';

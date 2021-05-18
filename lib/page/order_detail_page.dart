@@ -202,7 +202,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       children: [
                         Container(
                           width: screenSize.width,
-                          height: 30,
+                          //height: 30,
                           padding: EdgeInsets.only(right: 5),
                           decoration: BoxDecoration(
                               color: AppColor.red,
