@@ -241,7 +241,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       if(value == OkCancelResult.ok){
         SystemNavigator.pop();
       }else{
-        Navigator.of(context).pop();
+        return false;
+        //Navigator.of(context).pop();
       }
     })?? false;
   }
