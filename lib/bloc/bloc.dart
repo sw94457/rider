@@ -90,6 +90,7 @@ class Bloc{
     ResponseData res = ResponseData();
     Map<String, dynamic> params = Map<String, String>();
     params["phone"] = num;
+    print(num);
     isLoading = true;
     var response = await http.post(
         Uri.parse(baseURL + "/sendauthcode"), body: params);
@@ -263,6 +264,9 @@ class Bloc{
     params["udid"] = await FlutterUdid.consistentUdid;
     params["push_token"] = await FirebaseMessaging.instance.getToken();
     FirebaseMessaging.instance.getToken().then((value) {
+      logger.d(value);
+    });
+    FlutterUdid.consistentUdid.then((value) {
       logger.d(value);
     });
 
@@ -493,9 +497,12 @@ class Bloc{
 
   Future<List<Notice>> getNotice() async {
     List<Notice> noticeList = [];
+    Map<String, dynamic> params = Map<String, String>();
+    //params["serial"] = pref.getString('serial');
+    params["serial"] = user.serial;
     isLoading = true;
     var response = await http.post(
-        Uri.parse(baseURL + "/notice/get"));
+        Uri.parse(baseURL + "/notice/get"), body: params);
     isLoading = false;
     logger.d(response.body);
     if (response.statusCode == 200) {

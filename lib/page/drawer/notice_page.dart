@@ -255,7 +255,8 @@ class NoticeDetailPage extends StatelessWidget {
             padding: EdgeInsets.all(15),
             child: Column(
               children: [
-                Image.network(notice.image),
+                notice.image!=null?
+                Image.network(notice.image):SizedBox(),
                 HtmlWidget(
                   '''
                   ${this.notice.description}
