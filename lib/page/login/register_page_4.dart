@@ -21,6 +21,7 @@ class RegisterPage4 extends StatefulWidget {
 }
 
 class _RegisterPage4State extends State<RegisterPage4> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   Logger logger = Logger();
   File _image2;
   bool isFile = false;
@@ -30,6 +31,7 @@ class _RegisterPage4State extends State<RegisterPage4> {
   Widget build(BuildContext context) {
     Size screen = MediaQuery.of(context).size;
     return Scaffold(
+        key: scaffoldKey,
         backgroundColor: AppColor.navy,
         appBar: AppBar(
           brightness: Brightness.dark,
@@ -169,7 +171,8 @@ class _RegisterPage4State extends State<RegisterPage4> {
                                               RegisterFinalPage(widget.bloc)));
                                 }else{
                                   logger.d(res.errorMsg);
-                                  Toast.show(res.errorMsg+'',context);
+                                  scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text(res.errorMsg+'')));
                                 }
                               });
                             }

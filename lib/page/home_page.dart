@@ -27,6 +27,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   RefreshController refresh_ctrl;
   DateTime currentBackPressTime;
   SharedPreferences prefs;
@@ -49,7 +50,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       print(message.category);
       print('Got a message whilst in the foreground!');
       print('Message data: ${message.data}');
-      Toast.show('새로운 주문이 도착했습니다.', context, duration: 2);
+      scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text('새로운 주문이 도착했습니다.')));
       getList();
       if (message.notification != null) {
         print('Message also contained a notification: ${message.notification.title}');
@@ -108,6 +110,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
+        key: scaffoldKey,
       drawer: MyDrawer(widget.bloc),
       onDrawerChanged: (isOpen){
         print(isOpen);
@@ -229,7 +232,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     // if (currentBackPressTime == null ||
     //     now.difference(currentBackPressTime) > Duration(seconds: 2)) {
     //   currentBackPressTime = now;
-    //   //Toast.show('앱을 종료하려면 다시 누르세요.', context);
+    // scaffoldKey.currentState.showSnackBar(
+    //     SnackBar(content: Text('앱을 종료하려면 다시 누르세요.')));
     // }
     showOkCancelAlertDialog(
         context: context,

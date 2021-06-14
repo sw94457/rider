@@ -20,6 +20,7 @@ class ReLoginPage extends StatefulWidget {
 }
 
 class _ReLoginPageState extends State<ReLoginPage> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   Logger logger = Logger();
   TextEditingController phone_ctrl = TextEditingController();
   TextEditingController code_ctrl = TextEditingController();
@@ -40,6 +41,7 @@ class _ReLoginPageState extends State<ReLoginPage> {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: AppColor.navy,
       appBar: AppBar(
         brightness: Brightness.dark,
@@ -114,10 +116,12 @@ class _ReLoginPageState extends State<ReLoginPage> {
                             //기기 달라서 다시 로그인시 인증코드 요청
                             widget.bloc.getLoginSms(num: text_phone).then((res) {
                               if (res.success) {
-                                Toast.show('인증 코드가 발송되었습니다.', context);
+                                scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text('인증 코드가 발송되었습니다.')));
                                 getCode = true;
                               } else {
-                                Toast.show(res.errorMsg, context);
+                                scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text(res.errorMsg)));
                                 getCode = false;
                               }
                               setState(() {});
@@ -157,7 +161,8 @@ class _ReLoginPageState extends State<ReLoginPage> {
                                 builder: (context) => HomePage(widget.bloc)),
                                     (route) => false);
                           }else{
-                            Toast.show(''+res.errorMsg, context);
+                            scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text(''+res.errorMsg)));
                           }
                         });
                       },

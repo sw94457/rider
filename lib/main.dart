@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:rider_app/bloc/bloc.dart';
 import 'package:rider_app/page/home_page.dart';
 import 'package:rider_app/page/login/login_page.dart';
 import 'package:rider_app/ui/color.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'page/login/login_page.dart';
 
@@ -50,17 +52,42 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashState extends State<SplashScreen> {
   Timer _timer;
+  Logger logger = Logger();
   bool isLoading = true;
+  SharedPreferences pref;
 
-  _SplashState() {
+  @override
+  void initState() {
     _timer = new Timer(const Duration(seconds: 1), () {
       goMain();
     });
   }
 
-  void goMain(){
-    Route route = MaterialPageRoute(builder: (context) => LoginPage(widget.bloc));
-    Navigator.pushReplacement(context, route);
+  goMain(){
+    SharedPreferences.getInstance().then((pref) {
+      pref = pref;
+      var serial = pref.getString("serial");
+      //logger.d('로그인 전에 가지고 있는 serial :' + serial);
+      logger.d(serial);
+
+      if (serial != null && serial != "") {
+        print('serial : ' + serial);
+
+        widget.bloc.autoLogin(serial: serial).then((res) {
+          if (res.success) {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => HomePage(widget.bloc)));
+          } else {
+            pref.clear();
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => LoginPage(widget.bloc)));
+          }
+        });
+      }else{
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginPage(widget.bloc)));
+      }
+    });
   }
 
   @override
@@ -88,7 +115,8 @@ class _SplashState extends State<SplashScreen> {
                     fontWeight: FontWeight.bold,
                     fontSize: 30,
                     fontFamily: 'cafe24',
-                    color: AppColor.yellow),),
+                    color: AppColor.yellow),
+              ),
               SizedBox(height: 100,),
             ],
           )

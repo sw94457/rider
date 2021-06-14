@@ -17,9 +17,12 @@ class NoticePage extends StatefulWidget {
 }
 
 class _NoticePageState extends State<NoticePage> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   SharedPreferences pref;
+
   bool isLoading = true;
   bool isAlarm = true;
+
   int _itemCount = 0;
   List<Notice> noticeList = [];
   List<Notice> reverseNoticeList = [];
@@ -44,6 +47,7 @@ class _NoticePageState extends State<NoticePage> {
   Widget build(BuildContext context) {
     Size screen = MediaQuery.of(context).size;
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: AppColor.navy,
       appBar: AppBar(
         brightness: Brightness.dark,
@@ -70,17 +74,21 @@ class _NoticePageState extends State<NoticePage> {
               if (isAlarm) {
                 widget.bloc.settingAlarm(flag: 'N').then((res) {
                   if(res.success){
-                    Toast.show('공지사항 알림 off', context, duration: 2);
+                    scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text('공지사항 알림 off')));
                   }else{
-                    Toast.show('공지사항 알림 설정에 실패했습니다.', context, duration: 2);
+                    scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text('공지사항 알림 설정에 실패했습니다.')));
                   }
                 });
               } else {
                 widget.bloc.settingAlarm(flag: 'Y').then((res) {
                   if(res.success){
-                    Toast.show('공지사항 알림 on', context, duration: 2);
+                    scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text('공지사항 알림 on')));
                   }else{
-                    Toast.show('공지사항 알림 설정에 실패했습니다.', context, duration: 2);
+                    scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text('공지사항 알림 설정에 실패했습니다.')));
                   }
                 });
               }

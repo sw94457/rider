@@ -18,6 +18,7 @@ class RegisterPage1 extends StatefulWidget {
 }
 
 class _RegisterPage1State extends State<RegisterPage1> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   var _checkboxa = false;
   var _checkbox1 = false;
   var _checkbox2 = false;
@@ -28,6 +29,7 @@ class _RegisterPage1State extends State<RegisterPage1> {
   Widget build(BuildContext context) {
     Size screen = MediaQuery.of(context).size;
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: AppColor.navy,
       appBar: AppBar(
         brightness: Brightness.dark,
@@ -201,7 +203,8 @@ class _RegisterPage1State extends State<RegisterPage1> {
                         )
                       : MyLineButton(
                           onPressed: () {
-                            Toast.show('약관에 동의가 필요합니다.',context, duration:2);
+                            scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text('약관에 동의가 필요합니다.')));
                           },
                           color: AppColor.yellow,
                           child: Text("다음",

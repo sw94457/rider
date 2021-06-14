@@ -16,6 +16,7 @@ class PhoneUpdatePage extends StatefulWidget {
 }
 
 class _PhoneUpdatePageState extends State<PhoneUpdatePage> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController phone_ctrl = TextEditingController();
   TextEditingController authcode = TextEditingController();
   bool isAuth = false;
@@ -24,6 +25,7 @@ class _PhoneUpdatePageState extends State<PhoneUpdatePage> {
   Widget build(BuildContext context) {
     Size screen = MediaQuery.of(context).size;
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: AppColor.navy,
       appBar: AppBar(
         brightness: Brightness.dark,
@@ -85,9 +87,11 @@ class _PhoneUpdatePageState extends State<PhoneUpdatePage> {
                           FocusScope.of(context).requestFocus(new FocusNode());
                           widget.bloc.getJoinSms(num: phone_ctrl.text).then((res) {
                             if (res.success) {
-                              Toast.show('인증코드가 발송되었습니다.', context);
+                              scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text('인증코드가 발송되었습니다.')));
                             } else {
-                              Toast.show(res.errorMsg, context);
+                              scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text(res.errorMsg)));
                             }
                           });
                         },
@@ -124,12 +128,14 @@ class _PhoneUpdatePageState extends State<PhoneUpdatePage> {
                         onPressed: () {
                           widget.bloc.checkAuthCode(num: phone_ctrl.text, code: authcode.text).then((res) {
                             if (res.success) {
-                              Toast.show('인증 되었습니다.', context);
+                              scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text('인증 되었습니다.')));
                               setState(() {
                                 isAuth = true;
                               });
                             } else {
-                              Toast.show(res.errorMsg, context);
+                              scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text(res.errorMsg)));
                             }
                           });
                         },
@@ -160,7 +166,8 @@ class _PhoneUpdatePageState extends State<PhoneUpdatePage> {
                             fontWeight: FontWeight.bold,
                             color: AppColor.yellow)),
                     onPressed: () {
-                      Toast.show('휴대폰 번호 인증이 필요합니다.',context, duration:2);
+                      scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text('휴대폰 번호 인증이 필요합니다.')));
                     },
                   ),
                 ),

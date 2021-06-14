@@ -15,7 +15,7 @@ class AccountCreatePage extends StatefulWidget {
 }
 
 class _AccountCreatePageState extends State<AccountCreatePage> {
-  final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   final _items = [
     '은행 및 증권사를 선택해주세요.',
     '경남',
@@ -59,7 +59,7 @@ class _AccountCreatePageState extends State<AccountCreatePage> {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
-      key: _scaffoldkey,
+      key: scaffoldKey,
       backgroundColor: AppColor.navy,
       appBar: AppBar(
         title: Text('출금계좌관리',
@@ -166,9 +166,11 @@ class _AccountCreatePageState extends State<AccountCreatePage> {
                           account_bank: banktext)
                       .then((res) {
                     if (res.success) {
-                      Toast.show('등록 되었습니다.', context);
+                      scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text('등록 되었습니다.')));
                     } else {
-                      Toast.show(res.errorMsg, context);
+                      scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text(res.errorMsg)));
                     }
                   });
                 },

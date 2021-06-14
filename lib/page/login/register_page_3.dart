@@ -25,12 +25,15 @@ class RegisterPage3 extends StatefulWidget {
 }
 
 class _RegisterPage3State extends State<RegisterPage3> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   Logger logger = Logger();
   TextEditingController name_ctrl = TextEditingController();
   TextEditingController name2_ctrl = TextEditingController();
   TextEditingController account_ctrl = TextEditingController();
+
   File _image;
   final ImagePicker imagePicker = ImagePicker();
+
   var location_serial='';
   var period='';
   var choice_place1 = '지역1을 선택해주세요';
@@ -52,6 +55,7 @@ class _RegisterPage3State extends State<RegisterPage3> {
   Widget build(BuildContext context) {
     Size screen = MediaQuery.of(context).size;
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: AppColor.navy,
       appBar: AppBar(
         brightness: Brightness.dark,
@@ -366,37 +370,45 @@ class _RegisterPage3State extends State<RegisterPage3> {
                   child: RaisedButton(
                     onPressed: () {
                       if (name_ctrl.text == null || name_ctrl.text == '') {
-                        Toast.show('이름을 입력해주세요', context);
+                        scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text('이름을 입력해주세요')));
                         return;
                       }
                       if (choice_place1 == '지역1을 선택해주세요') {
-                        Toast.show('지역1을 선택해주세요', context);
+                        scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text('지역1을 선택해주세요')));
                         return;
                       }
                       if(choice_place1 == '부산광역시'){
                         if (choice_place2 == '지역2를 선택해주세요') {
-                          Toast.show('지역2를 선택해주세요', context);
+                          scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text('지역2를 선택해주세요')));
                           return;
                         }
                       }
                       if (_image == null) {
-                        Toast.show('프로필 사진을 추가해주세요', context);
+                        scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text('프로필 사진을 추가해주세요')));
                         return;
                       }
                       if (name2_ctrl.text == null || name2_ctrl.text == '') {
-                        Toast.show('예금주를 입력해주세요', context);
+                        scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text('예금주를 입력해주세요')));
                         return;
                       }
                       if (choice_bank == '은행을 선택해주세요') {
-                        Toast.show('은행을 선택해주세요', context);
+                        scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text('은행을 선택해주세요')));
                         return;
                       }
                       if (account_ctrl.text == null || account_ctrl.text == '') {
-                        Toast.show('계좌번호를 입력해주세요', context);
+                        scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text('계좌번호를 입력해주세요')));
                         return;
                       }
                       if (choice_period == '정산주기를 선택해주세요') {
-                        Toast.show('정산주기를 선택해주세요', context);
+                        scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text('정산주기를 선택해주세요')));
                         return;
                       }
                       widget.bloc.user.name = name_ctrl.text;

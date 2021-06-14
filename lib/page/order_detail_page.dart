@@ -24,6 +24,7 @@ class OrderDetailPage extends StatefulWidget {
 
 class _OrderDetailPageState extends State<OrderDetailPage> {
   final formatter = new NumberFormat("#,###,###,###,###");
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   Logger logger = Logger();
   Order2 order;
   Completer<GoogleMapController> _controller = Completer();
@@ -174,6 +175,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     logger.d(end_Distance);
 
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: AppColor.navy,
       appBar: AppBar(
         brightness: Brightness.dark,
@@ -431,9 +433,11 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                     serial: widget.bloc.user.serial).then((res){
                       if(res.success){
                         Navigator.pop(context);
-                        Toast.show(res.errorMsg+'',context, duration: 2);
+                        scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text(res.errorMsg+'')));
                       }else{
-                        Toast.show(res.errorMsg+'',context, duration: 2);
+                        scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text(res.errorMsg+'')));
                       }
                   });
                 },

@@ -14,6 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 class DeliveryDetailPage extends StatefulWidget {
   Bloc bloc;
   Order2 item;
+
   DeliveryDetailPage({this.bloc, this.item});
 
   @override
@@ -22,7 +23,9 @@ class DeliveryDetailPage extends StatefulWidget {
 
 class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
   final formatter = new NumberFormat("#,###,###,###,###");
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   Order2 order;
+
   bool isPicked;
   Color startColor;
   Color endColor;
@@ -49,14 +52,14 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
 
   bool endDataNull = false;
 
-  setColor(flag){
-    if(flag == 'A'){
+  setColor(flag) {
+    if (flag == 'A') {
       isPicked = true;
       startColor = AppColor.neon_yellow;
       endColor = AppColor.grey;
       buttonColor = AppColor.neon_yellow;
       buttonText = '픽업완료';
-    }else{
+    } else {
       isPicked = false;
       startColor = AppColor.grey;
       endColor = AppColor.neon_green;
@@ -72,71 +75,78 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
     setColor(widget.item.flag);
 
     //디테일 불러오기
-    widget.bloc.getOrderDetail(request_serial: widget.item.serial).then((value) {
+    widget.bloc
+        .getOrderDetail(request_serial: widget.item.serial)
+        .then((value) {
       order = value;
-      if(order.userAddress !=null){
+      if (order.userAddress != null) {
         endDataNull = false;
-      }else{
+      } else {
         endDataNull = true;
       }
 
-      if(order.paid =='Y') {
+      if (order.paid == 'Y') {
         paid = true;
-      }else{
+      } else {
         paid = false;
       }
 
-      if(!endDataNull){
-        if(order.userPhone.length==11){
-          try{
-            phone = order.userPhone.substring(0,3)+'-'+
-                order.userPhone.substring(3,7)+'-'+
-                order.userPhone.substring(7,11);
-          }catch(e){
+      if (!endDataNull) {
+        if (order.userPhone.length == 11) {
+          try {
+            phone = order.userPhone.substring(0, 3) +
+                '-' +
+                order.userPhone.substring(3, 7) +
+                '-' +
+                order.userPhone.substring(7, 11);
+          } catch (e) {
+            phone = '정보없음';
+          }
+        } else {
+          try {
+            phone = order.userPhone.substring(0, 3) +
+                '-' +
+                order.userPhone.substring(3, 6) +
+                '-' +
+                order.userPhone.substring(6, 10);
+          } catch (e) {
             phone = '정보없음';
           }
         }
-        else{
-          try{
-            phone = order.userPhone.substring(0,3)+'-'+
-                order.userPhone.substring(3,6)+'-'+
-                order.userPhone.substring(6,10);
-          }catch(e){
-            phone = '정보없음';
-          }
-        }
-      }else{
+      } else {
         phone = '정보없음';
       }
 
-      try{
+      try {
         start_Distance = Geolocator.distanceBetween(
-            double.parse(order.companyLatitude),
-            double.parse(order.companyLongitude),
-            Bloc.LATITUDE,
-            Bloc.LONGITUDE).floor();
+                double.parse(order.companyLatitude),
+                double.parse(order.companyLongitude),
+                Bloc.LATITUDE,
+                Bloc.LONGITUDE)
+            .floor();
 
-        if(start_Distance>=1000.0){
-          startDistance = start_Distance/1000;
-        }else{
+        if (start_Distance >= 1000.0) {
+          startDistance = start_Distance / 1000;
+        } else {
           startDistance = start_Distance;
         }
-        if(!endDataNull){
+        if (!endDataNull) {
           end_Distance = Geolocator.distanceBetween(
-              double.parse(order.userLatitude),
-              double.parse(order.userLongitude),
-              Bloc.LATITUDE,
-              Bloc.LONGITUDE).floor();
-          if(end_Distance>=1000.0){
-            endDistance = end_Distance/1000;
-          }else{
+                  double.parse(order.userLatitude),
+                  double.parse(order.userLongitude),
+                  Bloc.LATITUDE,
+                  Bloc.LONGITUDE)
+              .floor();
+          if (end_Distance >= 1000.0) {
+            endDistance = end_Distance / 1000;
+          } else {
             endDistance = end_Distance;
           }
-        }else{
+        } else {
           endDistance = 0;
           end_Distance = 0;
         }
-      }catch(e){
+      } catch (e) {
         start_Distance = 0;
         startDistance = 0;
         endDistance = 0;
@@ -151,6 +161,7 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: AppColor.navy,
       appBar: AppBar(
         brightness: Brightness.dark,
@@ -161,625 +172,717 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
           },
         ),
       ),
-      body: Stack(
-          children:[
-            Stack(
-              children: [
-                Loading?
-                ProgressPage(screenSize.width):
-                Container(
-                  height: screenSize.height,
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Container(
-                          child: Column(
-                            children: [
-                              Container(
-                                width: screenSize.width,
-                                //height: 30,
-                                padding: EdgeInsets.only(right: 5),
-                                decoration: BoxDecoration(
-                                    color: buttonColor, borderRadius: BorderRadius.circular(5)),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 4, vertical: 5),
-                                          decoration: BoxDecoration(
-                                            color: paid? AppColor.neon_yellow:AppColor.neon_green,
-                                            borderRadius: BorderRadius.circular(5),
+      body: Stack(children: [
+        Stack(
+          children: [
+            Loading
+                ? ProgressPage(screenSize.width)
+                : Container(
+                    height: screenSize.height,
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Container(
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: screenSize.width,
+                                  //height: 30,
+                                  padding: EdgeInsets.only(right: 5),
+                                  decoration: BoxDecoration(
+                                      color: buttonColor,
+                                      borderRadius: BorderRadius.circular(5)),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 4, vertical: 5),
+                                            decoration: BoxDecoration(
+                                              color: paid
+                                                  ? AppColor.neon_yellow
+                                                  : AppColor.neon_green,
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                            child: Text(paid ? '선불' : '현장결제',
+                                                style: TextStyle(
+                                                    fontFamily: 'cafe24',
+                                                    fontSize: 18)),
                                           ),
-                                          child: Text(paid?'선불':'현장결제',
-                                              style: TextStyle(
-                                                  fontFamily: 'cafe24', fontSize: 18)),
-                                        ),
-                                        SizedBox(width: 5),
-                                        Text(
-                                          '배달비 ${formatter.format(int.parse(order.riderDeliveryPrice))}원',
-                                          style: TextStyle(
-                                            //color: Colors.white,
-                                              fontSize: 20),
-                                        ),
-                                      ],
-                                    ),
-                                    Text( widget.item.registeredDate!=null?
-                                    widget.item.registeredDate.substring(11,16):'',
-                                        style: TextStyle(fontSize: 20))
-                                  ],
+                                          SizedBox(width: 5),
+                                          Text(
+                                            '배달비 ${formatter.format(int.parse(order.riderDeliveryPrice))}원',
+                                            style: TextStyle(
+                                                //color: Colors.white,
+                                                fontSize: 20),
+                                          ),
+                                        ],
+                                      ),
+                                      Text(
+                                          widget.item.registeredDate != null
+                                              ? widget.item.registeredDate
+                                                  .substring(11, 16)
+                                              : '',
+                                          style: TextStyle(fontSize: 20))
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                padding: EdgeInsets.all(5),
-                                width: screenSize.width,
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: startColor),
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          children: [
-                                            Container(
-                                              padding: EdgeInsets.symmetric(horizontal: 4,vertical: 1),
-                                              decoration: BoxDecoration(
-                                                color: startColor,
-                                                borderRadius: BorderRadius.circular(30),
+                                Container(
+                                  padding: EdgeInsets.all(5),
+                                  width: screenSize.width,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: startColor),
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 4, vertical: 1),
+                                                decoration: BoxDecoration(
+                                                  color: startColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                ),
+                                                child: Text('출발지',
+                                                    style: TextStyle(
+                                                        fontFamily: 'cafe24',
+                                                        fontSize: 20)),
                                               ),
-                                              child: Text('출발지',style: TextStyle(fontFamily: 'cafe24', fontSize: 20)),
-                                            ),
-                                            SizedBox(height: 5),
-                                            Text(
-                                                startDistance<1000.0?
-                                                '${startDistance}m':
-                                                '${startDistance.toStringAsFixed(2)}km',
-                                                style: TextStyle(fontSize: 20, color: startColor))
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            InkWell(
-                                              customBorder: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(50),
+                                              SizedBox(height: 5),
+                                              Text(
+                                                  startDistance < 1000.0
+                                                      ? '${startDistance}m'
+                                                      : '${startDistance.toStringAsFixed(2)}km',
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: startColor))
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              InkWell(
+                                                customBorder:
+                                                    RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(50),
+                                                ),
+                                                child: Container(
+                                                  margin: EdgeInsets.all(5),
+                                                  width: 70,
+                                                  child: isPicked
+                                                      ? Image.asset(
+                                                          'assets/images/ic_call_y.png')
+                                                      : Image.asset(
+                                                          'assets/images/ic_call_b.png'),
+                                                ),
+                                                onTap: () {
+                                                  if (isPicked) {
+                                                    launch(
+                                                        "tel://${order.companyTel}");
+                                                  }
+                                                },
                                               ),
-                                              child: Container(
-                                                margin: EdgeInsets.all(5),
-                                                width: 70,
-                                                child: isPicked?
-                                                Image.asset('assets/images/ic_call_y.png'):
-                                                Image.asset('assets/images/ic_call_b.png'),
-                                              ),
-                                              onTap: (){
-                                                if(isPicked){
-                                                  launch("tel://${order.companyTel}");
-                                                }
-                                              },
-                                            ),
-                                            InkWell(
-                                              customBorder: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(50),
-                                              ),
-                                              child: Container(
-                                                margin: EdgeInsets.all(5),
-                                                width: 70,
-                                                child: isPicked?
-                                                Image.asset('assets/images/ic_map_y.png'):
-                                                Image.asset('assets/images/ic_map_b.png'),
-                                              ),
-                                              onTap: () {
+                                              InkWell(
+                                                customBorder:
+                                                    RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(50),
+                                                ),
+                                                child: Container(
+                                                  margin: EdgeInsets.all(5),
+                                                  width: 70,
+                                                  child: isPicked
+                                                      ? Image.asset(
+                                                          'assets/images/ic_map_y.png')
+                                                      : Image.asset(
+                                                          'assets/images/ic_map_b.png'),
+                                                ),
+                                                onTap: () {
                                                   if (isPicked) {
                                                     launch(
                                                         'https://www.google.com/maps/search/?api=1&query=${double.parse(order.companyLatitude)},${double.parse(order.companyLongitude)}');
                                                   }
                                                 },
                                               ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      order.companyName!=null?
-                                      order.companyName:'',
-                                      style: TextStyle(
-                                          color: startColor,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 28,
-                                          letterSpacing: 1.25),
-                                    ),
-                                    SizedBox(height: 5),
-                                    Text(
-                                      order.companyAddress!=null?
-                                      order.companyAddress:'',
-                                      style: TextStyle(
-                                          color: startColor, fontSize: 24, letterSpacing: 0.85),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 5),
-                        Container(
-                          width: screenSize.width,
-                          child: Icon(Icons.arrow_downward, color: AppColor.yellow),
-                        ),
-                        SizedBox(height: 5),
-                        Container(
-                          padding: EdgeInsets.all(5),
-                          width: screenSize.width,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: endColor),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.symmetric(horizontal: 4,vertical: 1),
-                                        decoration: BoxDecoration(
-                                          color: endColor,
-                                          borderRadius: BorderRadius.circular(30),
-                                        ),
-                                        child: Text('도착지',style: TextStyle(fontFamily: 'cafe24', fontSize: 20)),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        order.companyName != null
+                                            ? order.companyName
+                                            : '',
+                                        style: TextStyle(
+                                            color: startColor,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 28,
+                                            letterSpacing: 1.25),
                                       ),
                                       SizedBox(height: 5),
-                                      Text(endDistance<1000.0?
-                                      '${endDistance}m':
-                                      '${endDistance.toStringAsFixed(2)}km',
-                                          style: TextStyle(fontSize: 20, color: endColor))
+                                      Text(
+                                        order.companyAddress != null
+                                            ? order.companyAddress
+                                            : '',
+                                        style: TextStyle(
+                                            color: startColor,
+                                            fontSize: 24,
+                                            letterSpacing: 0.85),
+                                      ),
                                     ],
                                   ),
-                                  Row(
-                                    children: [
-                                      InkWell(
-                                        customBorder: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(50),
+                                )
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Container(
+                            width: screenSize.width,
+                            child: Icon(Icons.arrow_downward,
+                                color: AppColor.yellow),
+                          ),
+                          SizedBox(height: 5),
+                          Container(
+                            padding: EdgeInsets.all(5),
+                            width: screenSize.width,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: endColor),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 4, vertical: 1),
+                                          decoration: BoxDecoration(
+                                            color: endColor,
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                          child: Text('도착지',
+                                              style: TextStyle(
+                                                  fontFamily: 'cafe24',
+                                                  fontSize: 20)),
                                         ),
-                                        child: Container(
-                                          margin: EdgeInsets.all(5),
-                                          width: 70,
-                                          child: isPicked?
-                                          Image.asset('assets/images/ic_call_b.png'):
-                                          Image.asset('assets/images/ic_call_g.png'),
-                                        ),
-                                        onTap: (){
-                                          if(!isPicked){
-                                            if(!endDataNull){
-                                              launch("tel://${order.userPhone}");
-                                            }else{
-                                              Toast.show('고객의 번호가 없습니다.', context, duration: 2);
+                                        SizedBox(height: 5),
+                                        Text(
+                                            endDistance < 1000.0
+                                                ? '${endDistance}m'
+                                                : '${endDistance.toStringAsFixed(2)}km',
+                                            style: TextStyle(
+                                                fontSize: 20, color: endColor))
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        InkWell(
+                                          customBorder: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                          ),
+                                          child: Container(
+                                            margin: EdgeInsets.all(5),
+                                            width: 70,
+                                            child: isPicked
+                                                ? Image.asset(
+                                                    'assets/images/ic_call_b.png')
+                                                : Image.asset(
+                                                    'assets/images/ic_call_g.png'),
+                                          ),
+                                          onTap: () {
+                                            if (!isPicked) {
+                                              if (!endDataNull) {
+                                                launch(
+                                                    "tel://${order.userPhone}");
+                                              } else {
+                                                scaffoldKey.currentState
+                                                    .showSnackBar(SnackBar(
+                                                        content: Text(
+                                                            '고객의 번호가 없습니다.')));
+                                              }
                                             }
-                                          }
-                                        },
-                                      ),
-                                      InkWell(
-                                        customBorder: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(50),
+                                          },
                                         ),
-                                        child: Container(
-                                          margin: EdgeInsets.all(5),
-                                          width: 70,
-                                          child: isPicked?
-                                          Image.asset('assets/images/ic_mail_b.png'):
-                                          Image.asset('assets/images/ic_mail_g.png'),
-                                        ),
-                                        onTap: (){
-                                          if(!isPicked){
-                                            if(!endDataNull){
-                                              showDialog(
-                                                  context: context,
-                                                  builder: (BuildContext context) =>MyDialog(screenSize));
-                                            }else{
-                                              Toast.show('고객의 번호가 없습니다.', context, duration: 2);
+                                        InkWell(
+                                          customBorder: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                          ),
+                                          child: Container(
+                                            margin: EdgeInsets.all(5),
+                                            width: 70,
+                                            child: isPicked
+                                                ? Image.asset(
+                                                    'assets/images/ic_mail_b.png')
+                                                : Image.asset(
+                                                    'assets/images/ic_mail_g.png'),
+                                          ),
+                                          onTap: () {
+                                            if (!isPicked) {
+                                              if (!endDataNull) {
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        MyDialog(screenSize));
+                                              } else {
+                                                scaffoldKey.currentState
+                                                    .showSnackBar(SnackBar(
+                                                        content: Text(
+                                                            '고객의 번호가 없습니다.')));
+                                              }
                                             }
-                                          }
-                                        },
-                                      ),
-                                      InkWell(
-                                        customBorder: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(50),
+                                          },
                                         ),
-                                        child: Container(
-                                          margin: EdgeInsets.all(5),
-                                          width: 70,
-                                          child: isPicked?
-                                          Image.asset('assets/images/ic_map_b.png'):
-                                          Image.asset('assets/images/ic_map_g.png'),
+                                        InkWell(
+                                          customBorder: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                          ),
+                                          child: Container(
+                                            margin: EdgeInsets.all(5),
+                                            width: 70,
+                                            child: isPicked
+                                                ? Image.asset(
+                                                    'assets/images/ic_map_b.png')
+                                                : Image.asset(
+                                                    'assets/images/ic_map_g.png'),
+                                          ),
+                                          onTap: () {
+                                            if (!isPicked) {
+                                              launch(
+                                                  'https://www.google.com/maps/search/?api=1&query=${double.parse(order.userLatitude)},${double.parse(order.userLongitude)}');
+                                            }
+                                          },
                                         ),
-                                        onTap: (){
-                                          if(!isPicked){
-                                            launch(
-                                                'https://www.google.com/maps/search/?api=1&query=${double.parse(order.userLatitude)},${double.parse(order.userLongitude)}');
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                              SizedBox(height: 10),
-                              Text(phone,
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  phone,
+                                  style: TextStyle(
+                                      color: endColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 28,
+                                      letterSpacing: 1.25),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  order.userAddress != null
+                                      ? order.userAddress
+                                      : '정보없음',
+                                  style: TextStyle(
+                                      color: endColor,
+                                      fontSize: 24,
+                                      letterSpacing: 0.85),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 15),
+                          Text('요청사항 메세지',
+                              style: TextStyle(
+                                  color: AppColor.yellow, fontSize: 24)),
+                          SizedBox(height: 5),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Text(
+                                order.riderMemo != null
+                                    ? order.riderMemo
+                                    : '없음',
                                 style: TextStyle(
-                                    color: endColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 28,
-                                    letterSpacing: 1.25),
-                              ),
-                              SizedBox(height: 5),
-                              Text(
-                                order.userAddress!=null?
-                                order.userAddress:'정보없음',
-                                style: TextStyle(
-                                    color: endColor, fontSize: 24, letterSpacing: 0.85),
-                              ),
+                                    fontSize: 24,
+                                    color: order.riderMemo != null
+                                        ? Colors.white
+                                        : Colors.grey)),
+                          ),
+                          SizedBox(height: 5),
+                          Divider(color: AppColor.grey),
+                          SizedBox(height: 5),
+                          Row(
+                            children: [
+                              Text('접수번호',
+                                  style: TextStyle(
+                                      color: AppColor.yellow, fontSize: 24)),
+                              SizedBox(width: 20),
+                              Text('#${order.orderSerial}',
+                                  style: TextStyle(
+                                      fontSize: 24, color: Colors.white)),
                             ],
                           ),
+                          SizedBox(height: 120)
+                        ],
+                      ),
+                    ),
+                  ),
+            Positioned(
+              bottom: 0,
+              child: Container(
+                padding: EdgeInsets.only(left: 10, right: 10, bottom: 30),
+                width: screenSize.width,
+                color: AppColor.navy,
+                height: 88,
+                child: TextButton(
+                  child: Text(buttonText,
+                      style:
+                          TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(buttonColor),
+                      overlayColor: MaterialStateProperty.all<Color>(
+                          Colors.black.withOpacity(0.5))),
+                  onPressed: () {
+                    if (buttonText == '픽업완료') {
+                      widget.bloc
+                          .pickUp(
+                              requestserial: widget.item.serial,
+                              order_serial: widget.item.orderSerial)
+                          .then((res) {
+                        if (res.success) {
+                          buttonText = '배달완료';
+                          setColor('D');
+                          setState(() {});
+                          scaffoldKey.currentState.showSnackBar(
+                              SnackBar(content: Text('픽업이 완료되었습니다.')));
+                          scaffoldKey.currentState.showSnackBar(
+                              SnackBar(content: Text('' + res.errorMsg)));
+                        }
+                      });
+                    } else if (buttonText == '배달완료') {
+                      widget.bloc
+                          .finishDelivery(
+                              requestserial: widget.item.serial,
+                              order_serial: widget.item.orderSerial)
+                          .then((res) {
+                        if (res.success) {
+                          //buttonText = '현장결제';
+                          showOkAlertDialog(
+                            context: context,
+                            title: '배달이 완료되었습니다.',
+                          ).then((value) {
+                            setState(() {});
+                            Navigator.pop(context);
+                          });
+                        } else {
+                          scaffoldKey.currentState.showSnackBar(
+                              SnackBar(content: Text('' + res.errorMsg)));
+                        }
+                      });
+                    }
+                  },
+                ),
+              ),
+            )
+          ],
+        ),
+        //message_dialog? MyDialog(screenSize):SizedBox()
+      ]),
+    );
+  }
+
+  Widget MyDialog(size) {
+    return GestureDetector(onTap: () {
+      Navigator.of(context).pop();
+    }, child: StatefulBuilder(
+      builder: (context, setState) {
+        return Dialog(
+          backgroundColor: AppColor.navy,
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            child: Column(
+              children: [
+                Text(
+                  '간편메세지',
+                  style: TextStyle(color: AppColor.yellow, fontSize: 25),
+                ),
+                Divider(color: Colors.grey),
+                InkWell(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 3),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 35,
+                          height: 30,
+                          margin: EdgeInsets.only(right: 5),
+                          child: Theme(
+                            data:
+                                ThemeData(unselectedWidgetColor: AppColor.grey),
+                            child: Checkbox(
+                                value: message1,
+                                onChanged: (value) {
+                                  message1 = value;
+                                  message2 = false;
+                                  message3 = false;
+                                  message4 = false;
+                                  message5 = false;
+                                  message_text = '문 앞에 두고 갑니다.';
+                                  setState(() {});
+                                },
+                                activeColor: AppColor.yellow),
+                          ),
                         ),
-                        SizedBox(height: 15),
-                        Text('요청사항 메세지',style: TextStyle(color: AppColor.yellow,fontSize: 24)),
-                        SizedBox(height: 5),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Text( order.riderMemo!=null?
-                          order.riderMemo:'없음',
-                              style: TextStyle(fontSize: 24,color: order.riderMemo!=null?Colors.white:Colors.grey)),
+                        Text(
+                          '문 앞에 두고 갑니다.',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
-                        SizedBox(height: 5),
-                        Divider(color: AppColor.grey),
-                        SizedBox(height: 5),
-                        Row(
-                          children: [
-                            Text('접수번호',style: TextStyle(color: AppColor.yellow,fontSize: 24)),
-                            SizedBox(width: 20),
-                            Text('#${order.orderSerial}', style: TextStyle(fontSize: 24,color: Colors.white)),
-                          ],
-                        ),
-                        SizedBox(height: 120)
                       ],
                     ),
                   ),
+                  onTap: () {
+                    message1 = !message1;
+                    message2 = false;
+                    message3 = false;
+                    message4 = false;
+                    message5 = false;
+                    message_text = '문 앞에 두고 갑니다.';
+                    setState(() {});
+                  },
                 ),
-                Positioned(
-                  bottom: 0,
-                  child: Container(
-                    padding: EdgeInsets.only(left: 10,right: 10,bottom: 30),
-                    width: screenSize.width,
-                    color: AppColor.navy,
-                    height: 88,
-                    child: TextButton(
-                      child: Text(buttonText,
-                          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-                      style: ButtonStyle(
-                          backgroundColor:
-                          MaterialStateProperty.all<Color>(buttonColor),
-                          overlayColor: MaterialStateProperty.all<Color>(
-                              Colors.black.withOpacity(0.5))),
-                      onPressed: () {
-                        if(buttonText == '픽업완료'){
-                          widget.bloc.pickUp(
-                              requestserial: widget.item.serial,
-                              order_serial: widget.item.orderSerial).then((res) {
-                            if(res.success){
-                              buttonText = '배달완료';
-                              setColor('D');
-                              setState(() {});
-                              Toast.show('픽업이 완료되었습니다.', context, duration:2);
-                            }else{
-                              Toast.show(''+res.errorMsg, context, duration:2);
-                            }
-                          });
-                        }
-                        else if(buttonText == '배달완료'){
-                          widget.bloc.finishDelivery(
-                              requestserial: widget.item.serial,
-                              order_serial: widget.item.orderSerial).then((res) {
-                            if(res.success){
-                              //buttonText = '현장결제';
-                              showOkAlertDialog(
-                                  context: context,
-                                  title: '배달이 완료되었습니다.',
-                              ).then((value) {
-                                setState(() {});
-                                Navigator.pop(context);
-                              });
-                            }else{
-                              Toast.show(''+res.errorMsg, context, duration:2);
-                            }
-                          });
-                        }
-                      },
+                Divider(color: Colors.grey),
+                InkWell(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 3),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 35,
+                          height: 30,
+                          margin: EdgeInsets.only(right: 5),
+                          child: Theme(
+                            data:
+                                ThemeData(unselectedWidgetColor: AppColor.grey),
+                            child: Checkbox(
+                                value: message2,
+                                onChanged: (value) {
+                                  message1 = false;
+                                  message2 = value;
+                                  message3 = false;
+                                  message4 = false;
+                                  message5 = false;
+                                  message_text = '5분 후에 도착 예정입니다.';
+                                  setState(() {});
+                                },
+                                activeColor: AppColor.yellow),
+                          ),
+                        ),
+                        Text(
+                          '1분 후에 도착 예정입니다.',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      ],
                     ),
+                  ),
+                  onTap: () {
+                    message1 = false;
+                    message2 = !message2;
+                    message3 = false;
+                    message4 = false;
+                    message5 = false;
+                    message_text = '1분 후에 도착 예정입니다.';
+                    setState(() {});
+                  },
+                ),
+                Divider(color: Colors.grey),
+                InkWell(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 3),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 35,
+                          height: 30,
+                          margin: EdgeInsets.only(right: 5),
+                          child: Theme(
+                            data:
+                                ThemeData(unselectedWidgetColor: AppColor.grey),
+                            child: Checkbox(
+                                value: message3,
+                                onChanged: (value) {
+                                  message1 = false;
+                                  message2 = false;
+                                  message3 = value;
+                                  message4 = false;
+                                  message5 = false;
+                                  message_text = '5분 후에 도착 예정입니다.';
+                                  setState(() {});
+                                },
+                                activeColor: AppColor.yellow),
+                          ),
+                        ),
+                        Text(
+                          '5분 후에 도착 예정입니다.',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                  onTap: () {
+                    message1 = false;
+                    message2 = false;
+                    message3 = !message3;
+                    message4 = false;
+                    message5 = false;
+                    message_text = '5분 후에 도착 예정입니다.';
+                    setState(() {});
+                  },
+                ),
+                Divider(color: Colors.grey),
+                InkWell(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 3),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 35,
+                          height: 30,
+                          margin: EdgeInsets.only(right: 5),
+                          child: Theme(
+                            data:
+                                ThemeData(unselectedWidgetColor: AppColor.grey),
+                            child: Checkbox(
+                                value: message4,
+                                onChanged: (value) {
+                                  message1 = false;
+                                  message2 = false;
+                                  message3 = false;
+                                  message4 = value;
+                                  message5 = false;
+                                  message_text = '10분 후에 도착 예정입니다.';
+                                  setState(() {});
+                                },
+                                activeColor: AppColor.yellow),
+                          ),
+                        ),
+                        Text(
+                          '10분 후에 도착 예정입니다.',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                  onTap: () {
+                    message1 = false;
+                    message2 = false;
+                    message3 = false;
+                    message4 = !message4;
+                    message5 = false;
+                    message_text = '10분 후에 도착 예정입니다.';
+                    setState(() {});
+                  },
+                ),
+                Divider(color: Colors.grey),
+                InkWell(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 3),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 35,
+                          height: 30,
+                          margin: EdgeInsets.only(right: 5),
+                          child: Theme(
+                            data:
+                                ThemeData(unselectedWidgetColor: AppColor.grey),
+                            child: Checkbox(
+                                value: message5,
+                                onChanged: (value) {
+                                  message1 = false;
+                                  message2 = false;
+                                  message3 = false;
+                                  message4 = false;
+                                  message5 = value;
+                                  message_text = '조금 늦을것 같습니다.';
+                                  setState(() {});
+                                },
+                                activeColor: AppColor.yellow),
+                          ),
+                        ),
+                        Text(
+                          '조금 늦을것 같습니다.',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                  onTap: () {
+                    message1 = false;
+                    message2 = false;
+                    message3 = false;
+                    message4 = false;
+                    message5 = !message5;
+                    message_text = '조금 늦을것 같습니다.';
+                    setState(() {});
+                  },
+                ),
+                SizedBox(height: 15),
+                SizedBox(
+                  width: size.width - 80,
+                  child: MyButton(
+                    color: AppColor.yellow,
+                    child: Text('보내기',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 25)),
+                    onPressed: () {
+                      if (!(message1 ||
+                          message2 ||
+                          message3 ||
+                          message4 ||
+                          message5)) {
+                        scaffoldKey.currentState.showSnackBar(
+                            SnackBar(content: Text('전송할 메세지를 선택하세요.')));
+                        return;
+                      }
+                      widget.bloc
+                          .sendMessage(
+                              message: message_text, phone: order.userPhone)
+                          .then((res) {
+                        if (res.success) {
+                          message_dialog = false;
+                          scaffoldKey.currentState.showSnackBar(
+                              SnackBar(content: Text('메세지를 전송하였습니다.')));
+                          setState(() {});
+                        } else {
+                          scaffoldKey.currentState.showSnackBar(SnackBar(
+                              content:
+                                  Text('메세지를 전송에 실패하였습니다.\n' + res.errorMsg)));
+                        }
+                      });
+                    },
                   ),
                 )
               ],
             ),
-            //message_dialog? MyDialog(screenSize):SizedBox()
-          ]
-      ),
-    );
-  }
-
-  Widget MyDialog(size){
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).pop();
+          ),
+        );
       },
-      child: StatefulBuilder(
-        builder: (context, setState){
-          return Dialog(
-            backgroundColor: AppColor.navy,
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              child: Column(
-                children: [
-                  Text(
-                    '간편메세지',
-                    style: TextStyle(color: AppColor.yellow, fontSize: 25),
-                  ),
-                  Divider(color: Colors.grey),
-                  InkWell(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 3),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 35,
-                            height: 30,
-                            margin: EdgeInsets.only(right: 5),
-                            child: Theme(
-                              data: ThemeData(unselectedWidgetColor: AppColor.grey),
-                              child: Checkbox(
-                                  value: message1,
-                                  onChanged: (value) {
-                                    message1 = value;
-                                    message2 = false;
-                                    message3 = false;
-                                    message4 = false;
-                                    message5 = false;
-                                    message_text = '문 앞에 두고 갑니다.';
-                                    setState(() {});
-                                  },
-                                  activeColor: AppColor.yellow),
-                            ),
-                          ),
-                          Text(
-                            '문 앞에 두고 갑니다.',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
-                        ],
-                      ),
-                    ),
-                    onTap: () {
-                      message1 = !message1;
-                      message2 = false;
-                      message3 = false;
-                      message4 = false;
-                      message5 = false;
-                      message_text = '문 앞에 두고 갑니다.';
-                      setState(() {});
-                    },
-                  ),
-                  Divider(color: Colors.grey),
-                  InkWell(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 3),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 35,
-                            height: 30,
-                            margin: EdgeInsets.only(right: 5),
-                            child: Theme(
-                              data: ThemeData(unselectedWidgetColor: AppColor.grey),
-                              child: Checkbox(
-                                  value: message2,
-                                  onChanged: (value) {
-                                    message1 = false;
-                                    message2 = value;
-                                    message3 = false;
-                                    message4 = false;
-                                    message5 = false;
-                                    message_text = '5분 후에 도착 예정입니다.';
-                                    setState(() {});
-                                  },
-                                  activeColor: AppColor.yellow),
-                            ),
-                          ),
-                          Text(
-                            '1분 후에 도착 예정입니다.',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
-                        ],
-                      ),
-                    ),
-                    onTap: () {
-                      message1 = false;
-                      message2 = !message2;
-                      message3 = false;
-                      message4 = false;
-                      message5 = false;
-                      message_text = '1분 후에 도착 예정입니다.';
-                      setState(() {});
-                    },
-                  ),
-                  Divider(color: Colors.grey),
-                  InkWell(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 3),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 35,
-                            height: 30,
-                            margin: EdgeInsets.only(right: 5),
-                            child: Theme(
-                              data: ThemeData(unselectedWidgetColor: AppColor.grey),
-                              child: Checkbox(
-                                  value: message3,
-                                  onChanged: (value) {
-                                    message1 = false;
-                                    message2 = false;
-                                    message3 = value;
-                                    message4 = false;
-                                    message5 = false;
-                                    message_text = '5분 후에 도착 예정입니다.';
-                                    setState(() {});
-                                  },
-                                  activeColor: AppColor.yellow),
-                            ),
-                          ),
-                          Text(
-                            '5분 후에 도착 예정입니다.',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
-                        ],
-                      ),
-                    ),
-                    onTap: () {
-                      message1 = false;
-                      message2 = false;
-                      message3 = !message3;
-                      message4 = false;
-                      message5 = false;
-                      message_text = '5분 후에 도착 예정입니다.';
-                      setState(() {});
-                    },
-                  ),
-                  Divider(color: Colors.grey),
-                  InkWell(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 3),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 35,
-                            height: 30,
-                            margin: EdgeInsets.only(right: 5),
-                            child: Theme(
-                              data: ThemeData(unselectedWidgetColor: AppColor.grey),
-                              child: Checkbox(
-                                  value: message4,
-                                  onChanged: (value) {
-                                    message1 = false;
-                                    message2 = false;
-                                    message3 = false;
-                                    message4 = value;
-                                    message5 = false;
-                                    message_text =  '10분 후에 도착 예정입니다.';
-                                    setState(() {});
-                                  },
-                                  activeColor: AppColor.yellow),
-                            ),
-                          ),
-                          Text(
-                            '10분 후에 도착 예정입니다.',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
-                        ],
-                      ),
-                    ),
-                    onTap: () {
-                      message1 = false;
-                      message2 = false;
-                      message3 = false;
-                      message4 = !message4;
-                      message5 = false;
-                      message_text =  '10분 후에 도착 예정입니다.';
-                      setState(() {});
-                    },
-                  ),
-                  Divider(color: Colors.grey),
-                  InkWell(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 3),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 35,
-                            height: 30,
-                            margin: EdgeInsets.only(right: 5),
-                            child: Theme(
-                              data: ThemeData(unselectedWidgetColor: AppColor.grey),
-                              child: Checkbox(
-                                  value: message5,
-                                  onChanged: (value) {
-                                    message1 = false;
-                                    message2 = false;
-                                    message3 = false;
-                                    message4 = false;
-                                    message5 = value;
-                                    message_text =   '조금 늦을것 같습니다.';
-                                    setState(() {});
-                                  },
-                                  activeColor: AppColor.yellow),
-                            ),
-                          ),
-                          Text(
-                            '조금 늦을것 같습니다.',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
-                        ],
-                      ),
-                    ),
-                    onTap: () {
-                      message1 = false;
-                      message2 = false;
-                      message3 = false;
-                      message4 = false;
-                      message5 = !message5;
-                      message_text =   '조금 늦을것 같습니다.';
-                      setState(() {});
-                    },
-                  ),
-                  SizedBox(height: 15),
-                  SizedBox(
-                    width: size.width - 80,
-                    child: MyButton(
-                      color: AppColor.yellow,
-                      child: Text('보내기', style: TextStyle(color: Colors.black, fontWeight:FontWeight.bold, fontSize: 25) ),
-                      onPressed: (){
-                        if(!(message1||message2||message3||message4||message5)){
-                          Toast.show('전송할 메세지를 선택하세요.', context, duration: 2);
-                          return;
-                        }
-                        widget.bloc.sendMessage(message:message_text, phone: order.userPhone).then((res) {
-                          if(res.success){
-                            message_dialog = false;
-                            Toast.show('메세지를 전송하였습니다.', context, duration: 2);
-                            setState(() {});
-                          }else{
-                            Toast.show('메세지를 전송에 실패하였습니다.\n'+res.errorMsg, context, duration: 2);
-                          }
-                        });
-
-                      },
-                    ),
-                  )
-
-                ],
-              ),
-            ),
-          );
-        },
-      )
-    );
+    ));
   }
-
 }

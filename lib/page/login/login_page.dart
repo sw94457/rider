@@ -24,38 +24,40 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   TextEditingController phone_ctrl = TextEditingController();
-  SharedPreferences pref;
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+  //SharedPreferences pref;
   Logger logger = Logger();
   String id_text;
   var phone_text;
-  
-  void initState() {
-    super.initState();
-    getCounterFromSharedPrefs();
-  }
 
-  getCounterFromSharedPrefs() async {
-    SharedPreferences.getInstance().then((pref) {
-      pref = pref;
-      logger.d(pref.getString('serial'));
-      if (pref.getString('serial') != null && pref.getString('serial') != '') {
-        print('serial : ' + pref.getString('serial').toString());
-        widget.bloc.autoLogin(serial: pref.getString('serial')).then((res) {
-          if (res.success) {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => HomePage(widget.bloc)));
-          } else {
-            pref.clear();
-          }
-        });
-      }
-    });
-  }
+  // void initState() {
+  //   super.initState();
+  //   getCounterFromSharedPrefs();
+  // }
+  //
+  // getCounterFromSharedPrefs() async {
+  //   SharedPreferences.getInstance().then((pref) {
+  //     pref = pref;
+  //     logger.d(pref.getString('serial'));
+  //     if (pref.getString('serial') != null && pref.getString('serial') != '') {
+  //       print('serial : ' + pref.getString('serial').toString());
+  //       widget.bloc.autoLogin(serial: pref.getString('serial')).then((res) {
+  //         if (res.success) {
+  //           Navigator.pushReplacement(context,
+  //               MaterialPageRoute(builder: (context) => HomePage(widget.bloc)));
+  //         } else {
+  //           pref.clear();
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: AppColor.navy,
       body: GestureDetector(
         onTap: () {
@@ -140,7 +142,8 @@ class _LoginPageState extends State<LoginPage> {
                                   builder: (BuildContext context) =>
                                       ReLoginPage(bloc: widget.bloc, phone: phone_text,)));
                         }
-                        Toast.show(res.errorMsg, context, duration: 2);
+                        scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text(res.errorMsg)));
                       }
                     });
 
